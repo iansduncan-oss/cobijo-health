@@ -1,0 +1,30 @@
+# Downloaded policy PDFs (766M+, re-fetchable from HCAI via hcai_lookup_scraper.py)
+data/pdfs/
+
+# Per-corpus LLM extraction cache + in-flight batch state (regenerable / resumable)
+data/extract_cache/
+
+# Large generated datasets (rebuild: hcai_lookup_scraper.py / extract_llm.py / build_dataset.py)
+data/dataset_current.json
+data/dataset.json
+data/extracted_full.json
+data/extracted_spread.json
+data/extracted_smoke.json
+data/extracted_scanned.json
+data/cobijo_charity_care_dataset.json
+data/freshness_baseline.json
+
+# Generated outputs (letters, QA worksheet/report, rendered PDFs)
+output/
+
+# Scrape logs
+*.log
+
+# Secrets — never commit (keys live in macOS Keychain: claude-memory/anthropic-api-key)
+.env
+*.key
+
+# Python / OS cruft
+__pycache__/
+*.pyc
+.DS_Store

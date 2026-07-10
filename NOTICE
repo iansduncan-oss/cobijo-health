@@ -1,0 +1,10 @@
+Cobijo Health
+Copyright 2026 Cobijo Health (Ian Duncan and contributors)
+
+This product is licensed under the Apache License, Version 2.0. See the LICENSE
+file for the full terms.
+
+The compiled California hospital charity-care dataset produced by this project
+(the structured policy data in data/*.json) is licensed separately under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0). See
+DATA-LICENSE.md.

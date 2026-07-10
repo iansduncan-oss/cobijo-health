@@ -1,0 +1,1232 @@
+[
+  {
+    "hospital": "ADVENTIST HEALTH AND RIDEOUT",
+    "oshpdid": "106580996",
+    "city": "MARYSVILLE",
+    "county": "Yuba",
+    "zip": "95901",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-and-rideout/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=bfb734fe-4e7f-484a-bd20-da3e6db76885",
+    "charity_effective_date": "05/13/2025",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=bfb734fe-4e7f-484a-bd20-da3e6db76885",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=47d17dfe-cc85-4461-b272-44d1680766bb",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "c96d7898664c1beceddd785b49a29ad5c964b97de4955bcff799e1075ebfacaf",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (Financial Assistance Policy for California-Based Hospitals)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 200,
+        "notes": "Uninsured patients at or below 200% FPL receive Zero (Full Charity) for Emergency Medical Care and Medically Necessary Care (Table 1). Insured patients with High Medical Costs at or below 400% FPL owe only remaining AGB, if any, after insurance (Table 2) — this is not necessarily fully free. Presumptive 100% charity applies to Medicaid-eligible/active-Medicaid patients. Note: for uninsured non-emergency/non-medically-necessary care, patients ≤200% FPL still pay 50% of AGB (a discount, not free)."
+      },
+      "discount_payment": {
+        "agb_method": "look-back (Medicare fee-for-service claims over 12-month period per Treasury Regs under IRC 501(r)); updated annually January 1st, implemented within 120 days of change",
+        "agb_percentage": null,
+        "fpl_ceiling_pct": 400,
+        "notes": "AGB varies by facility (see Appendix C): e.g. Bakersfield 15%, Clear Lake 36%, Delano 20%, Glendale 15%, Hanford 19%, Howard Memorial 30%, Lodi Memorial 7%, Mendocino Coast 66%, Reedley 19%, Rideout 22%, Sierra Vista 9%, Simi Valley 16%, Sonora 17%, St. Helena 15%, Tehachapi Valley 27%, Twin Cities 7%, Tulare 19%, Ukiah Valley 20%, White Memorial 18%, Physician Network 34%, Home Care 60%. Charges limited to what hospital would expect from Medicare or Medi-Cal, whichever is greater, if lower than table amounts. Discount tiers below are for UNINSURED patients (Table 1). Tiers differ by whether care is Emergency/Medically Necessary vs. neither.",
+        "tiers": [
+          {
+            "fpl_low_pct": 0,
+            "fpl_high_pct": 200,
+            "benefit": "Emergency/Medically Necessary: Zero (Full Charity). Care that is neither: 50% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 201,
+            "fpl_high_pct": 300,
+            "benefit": "Emergency/Medically Necessary: 50% of the AGB (Discount). Care that is neither: 75% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 301,
+            "fpl_high_pct": 350,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 351,
+            "fpl_high_pct": 400,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          }
+        ]
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "High Medical Costs = annual Out-of-Pocket Costs incurred at an Adventist Health hospital exceeding the lesser of 10% of patient's current Household Income or Household Income in prior 12 months; OR annual OOP more than 10% of Household Income if patient documents medical expenses paid in prior 12 months. Table 2: Insured patients with High Medical Costs at ≤400% FPL owe remaining AGB, if any, after applying insurance payment; >400% FPL no discount, patient liable for remaining cost sharing."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": null,
+        "documentation_required": [
+          "Recent pay stubs from within 6 months before or after first billed (or in preservice when application submitted)",
+          "Copy of Federal Income Tax Return (Form 1040) for patient and spouse/domestic partner from year first billed or 12 months prior to first billed",
+          "Documentation of monetary assets may be required if seeking reduction of Medi-Cal/Medicare Share of Cost (for Medicare bad debt reimbursement); assets NOT considered in determining Charity Care/Discounted Care eligibility"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "100% Charity Care presumptive determination if: patient has active Medicaid plan, is eligible for Medicaid, or has current active Medicaid coverage even if not on date of service. Other presumptive factors (socio-economic): FA granted within last 180 days; homeless per medical record; patient expired with no known estate or spouse; currently incarcerated; qualifies for public benefit program (SSDI, Unemployment, Medicaid, County Indigent Health, TANF, Food Stamps, WIC); or meets another similar public benefit program's requirements. Electronic credit-based eligibility tool estimates income; data supporting ≤200% FPL applied only to past patient balances.",
+        "notes": "Application may be completed with assistance of PFS staff; must be signed by patient/legal representative; submitted by email, mail or online. Determination notified in writing by mail. Appeals in writing to facility Finance Officer within 30 days of decision letter; Finance Officer is final level of appeal."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "If eligible for Discounted Care, patient may enter an extended payment plan. Terms negotiated considering Household Income, Essential Living Expenses, and availability of health savings account. If no agreement, hospital creates plan where monthly payments do not exceed 10% of monthly Household Income, excluding deductions for Essential Living Expenses. All Extended Payment Plans are interest-free (per Self-Pay Billing & Collection Policy). Reasonable Payment Plan references HSC-style standard."
+      },
+      "debt_collection": {
+        "ecas_used": [
+          "Selling an individual's debt to another party (with exceptions)",
+          "Deferring or denying, or requiring payment before providing, Medically Necessary care (excluding emergency care) due to nonpayment",
+          "Legal/judicial actions: certain liens, foreclosures on real estate, attachments/seizures, commencing a civil action, writ of attachment, wage garnishment"
+        ],
+        "notes": "ECAs do NOT include reporting/furnishing medical debt info to credit bureaus; Adventist Health shall NOT furnish any medical debt information to any consumer credit reporting agency. ECAs do not include a hospital lien on personal-injury judgment/settlement proceeds. For patients eligible for Charity/Discounted Care, Collection Agency may not use wage garnishments or file a lien against real property. Finance Officer must approve each individual legal action in writing (non-delegable); actions require 30 days prior notice. If debt sold to Debt Buyer: contractual return of accounts eligible for charity/incorrect balances, no resale, no interest/fees, buyer must be DFPI-licensed. Records kept 5 years. Extended Payment Plan may be declared inoperative after failure to make consecutive payments during 90-day period, with notice/renegotiation opportunity.",
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "waiting_period_days_before_ecas": 180
+      },
+      "scope": {
+        "covered_services": [
+          "Health care services provided at Adventist Health owned/operated California facilities (Appendix A)",
+          "Services rendered by practitioners listed as 'Covered Provider' in Appendix B documentation",
+          "Uninsured patient charges as well as patient liability for insured patients (coinsurance, copayment, deductible, and other liabilities for medically necessary hospital services)",
+          "Medi-Cal or Medicare Share of Cost may be waived or reduced as part of Charity Care/Discounted Care"
+        ],
+        "excluded_services": [
+          "Emergency room physicians in acute care facilities unless listed as Covered Provider in Appendix B (required by CA law to independently offer discounts to uninsured/High Medical Cost patients ≤400% FPL)",
+          "Medically Unnecessary Care with provider attestation",
+          "Purchases from hospital retail operations (gift shops, cafeteria)",
+          "Non-hospital services (e.g. physician services) not billed by hospital, except Covered Providers in Appendix B",
+          "Services that are not licensed hospital services"
+        ],
+        "notes": "Separate Rural Health Clinic Discount program (Policy 14739, Appendix F/Exhibit B) applies to RHC visits in addition to this FAP: sliding scale by family size/income only — <100% FPL Zero (Full Charity); 100-200% FPL 10% of nominal ($6.00); 200-400% FPL 100% of nominal ($60.00); >400% FPL No Discount. RHC excludes outside-purchased services (reference lab, drugs, x-ray interpretation by consulting radiologist)."
+      },
+      "contact": {
+        "phone": "(844) 827-5047",
+        "website": "Adventist Health Help Paying Your Bill"
+      },
+      "source_quotes": {
+        "agb": "The method used to calculate the AGB is the Look-Back Method based on claims allowed by Medicare fee-for-service that pay claims to the hospital facility during a 12-month period (as defined by Treasury Regulations under section 501(r)...). ... The AGB rate will be updated annually on January 1st of each year and implemented within 120 days of any AGB rate change.",
+        "discount_ceiling": "> 400% of the Federal Poverty Level | No Discount | No Discount",
+        "free_care": "200% or less of the Federal Poverty Level | Zero (Full Charity) [for Emergency Medical Care and Medically Necessary Care]"
+      },
+      "additional_provisions": [
+        "Financial Assistance approval is valid for 180 days after granted; applies to all eligible balances including those received before approval; new application needed for bills received after 180 days.",
+        "Refunds of overpayment (above amount determined owed) made within 30 days of eligibility determination, with interest per Code of Civil Procedure Section 685.010; but Adventist Health may decline reimbursement if patient would have qualified at first billing AND (i) 5+ years since last payment or (ii) debt sold before Jan 1 2022. Self-Pay policy sets a $5 de minimis (no refund if less than $5).",
+        "Non-covered/denied services and related services provided to Medicaid-eligible beneficiaries are treated as a form of Charity Care; Medicaid beneficiaries not responsible for liability besides Share of Cost unless waived/reduced.",
+        "Assets are NOT considered in determining Charity Care/Discounted Care eligibility (except monetary-asset documentation for Medi-Cal/Medicare Share of Cost reductions for Medicare bad debt).",
+        "Policy translated into each language spoken by lesser of 1,000 people or 5% of hospital service-area population; accessible formats for LEP/disabled individuals.",
+        "Patient must remit to Adventist Health any third-party reimbursement sent directly to them, and reimburse from any liable-third-party legal settlement/judgment/award up to amount reasonably awarded for health care.",
+        "Simultaneous application for other health coverage does not stop eligibility for either program; collections paused while applying for Medicaid/Medi-Cal.",
+        "No Surprise Billing / Good Faith Estimate provisions apply to self-pay/uninsured patients; $400-over-estimate dispute right; Notice and Consent for out-of-network balance billing.",
+        "Rural Health Clinic Discounts: eligibility based solely on family size and income (no asset testing, no requirement to apply to Medicaid/insurance); nominal charge $60.00 (or percentage) for patients >100% to ≤400% FPL, not a minimum fee or co-payment; RHC discount valid 12 months; RHC Application Period ends latter of 240th day after first post-discharge billing statement, 12 months after payment, or 30th day after written notice; self-declaration of income accepted; waiving of RHC charges requires Finance Officer approval and documentation.",
+        "Extended Payment Plans offered to uninsured patients and insured patients with High Medical Costs; all interest-free; may be declared inoperative after failure to make consecutive payments over 90-day period with notice/renegotiation opportunity; ECAs only after inoperative and 180+ days since initial billing.",
+        "Required pre-ECA notice must include dates of service, entity debt assigned/sold to, how to obtain itemized bill, health coverage name/plan type on record, FA application, and dates of prior FA notices/application/decision.",
+        "Incomplete FAP application: ECAs suspended and written notice given describing additional info needed; if later completed, considered.",
+        "Records retained 5 years; Collection Agencies must meet same standards, provide annual attestation; Debt Buyers must be DFPI-licensed, cannot charge interest/fees, cannot resell (with exceptions), and must return charity-eligible/incorrect-balance accounts.",
+        "Rural Health Clinic Family Members definition uses dependent children under 26 years (differs from FAP's under-21 definition)."
+      ],
+      "extraction_confidence": 0.9,
+      "extraction_notes": "Full-charity (free) care for uninsured is limited to Emergency/Medically Necessary care at ≤200% FPL; the same income band still pays 50% of AGB for care that is neither emergency nor medically necessary, so 200% is the free-care ceiling only for the emergency/necessary column. Discount ceiling is 400% FPL (above which no discount). Table 2 (insured with High Medical Costs) gives 'remaining AGB, if any' at ≤400% FPL — this can be effectively free when insurance already paid enough, but is not stated as guaranteed 100% free, so it is captured under high_medical_cost rather than free_care ceiling. AGB is facility-specific (no single percentage), so agb_percentage left null and per-facility values listed in notes. The Rural Health Clinic Discount is a separate additive program (Policy 14739) with its own nominal-fee sliding scale, captured in scope/additional_provisions. Note the RHC Exhibit B table header inconsistently references '2024 FPL' for the >400% column while others say 2025 FPL — likely a typo.\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 31920,
+      "2": 43280,
+      "3": 54640,
+      "4": 66000,
+      "5": 77360,
+      "6": 88720,
+      "7": 100080,
+      "8": 111440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 63840,
+      "2": 86560,
+      "3": 109280,
+      "4": 132000,
+      "5": 154720,
+      "6": 177440,
+      "7": 200160,
+      "8": 222880
+    },
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "hospital": "ALAMEDA HOSPITAL",
+    "oshpdid": "106010735",
+    "city": "ALAMEDA",
+    "county": "Alameda",
+    "zip": "94501",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/alameda-hospital/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=3a3e8e52-f249-491a-83be-2b93d27157ec",
+    "charity_effective_date": "05/29/2026",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=f3e94989-9579-474e-9983-3a21836531ee",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=63b3950d-560e-48ee-8c8d-a15efc09605c",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "7df9cdd60562a01e835ec7306b496f34f60039a4dda9d3a9267af919087ccbd7",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (Financial Assistance Policy + Self-Pay Discount Policy + Debt Collection Practices Policy)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 400,
+        "notes": "Full Charity Care = full write-off of all charges for Medically Necessary Care for Uninsured Patients with Family Income at or below 400% FPL. High Medical Cost Charity Care applies to Insured Patients at or below 400% FPL who are High Medical Cost Patients (OOP medical expenses exceed 10% of Family Income), granting a write-off of the Patient Responsibility amount. Charity Care is defined as 'free care for the patient.' Charity care approval good for one year and applies to eligible balances including those received before approval."
+      },
+      "discount_payment": {
+        "fpl_ceiling_pct": null,
+        "agb_method": null,
+        "agb_percentage": null,
+        "tiers": [],
+        "notes": "The Financial Assistance Policy itself does not use FPL-based sliding-scale discount tiers; it grants full charity care (100% write-off) to eligible patients. A separate Self-Pay Discount Policy offers a flat 50% discount off full charges to uninsured/underinsured patients who do not qualify for any other federal/state/county program AND do not qualify for charity care (not income/FPL based). A Prompt Pay Discount of 50% off full charges applies for self-pay-eligible patients who pay within 30 days of statement; if not paid in full per agreement, charges revert to the standard 50% discount. Self-pay discount applies to facility (inpatient, outpatient, ancillary) and AHS physician services including emergency physicians; excludes cosmetic/elective non-medically-necessary services. A Non-Contracted Payer Discount may reduce out-of-pocket to estimated in-network patient responsibility for patients with a non-contracted PPO payer. Expected deposits: Primary Care $150, Specialty Care Clinic $250, Emergency $400, Special Procedure/Elective/Interventional Radiology/Inpatient Elective = 50% of estimated discounted fee."
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "High Medical Cost Charity Care for Insured Patients: Family Income at or below 400% FPL AND total out-of-pocket medical expenses at AHS (incurred at AHS or other providers in past 12 months) exceed 10% of the patient's Family Income (current or prior 12 months). Benefit = write-off of the Patient Responsibility amount for Medically Necessary Services. Note: the eligibility table references expenses 'incurred at AHS or other providers,' while the High Medical Cost Patient definition specifies 'out-of-pocket medical expenses at AHS' — slight internal inconsistency."
+      },
+      "scope": {
+        "covered_services": [
+          "Emergency health care services",
+          "Other Medically Necessary Care provided at AHS owned or operated facilities"
+        ],
+        "excluded_services": [
+          "Emergency room physician fees (billed separately; ER physicians excluded from FAP but required by CA law to offer discounts to uninsured/High Medical Cost patients at or below 400% FPL)",
+          "Medi-Cal Share of Cost amounts",
+          "Not Medically Necessary Care (elective or cosmetic procedures)",
+          "Services where payer pays patient directly",
+          "Services where insured patient does not cooperate with third-party payer"
+        ],
+        "notes": "Separate policies govern FQHC discounts (Sliding Fee Discount Policy) and Self-Pay/Prompt Pay discounts. Non-covered/denied services and related services to Medicaid-eligible beneficiaries are treated as a form of Charity Care."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": 180,
+        "documentation_required": [
+          "Signed Financial Assistance and Charity Care Application (Attachment A)",
+          "Recent pay stubs from within 6 months before or after first billed (or in preservice when application submitted)",
+          "OR Copy of Federal Income Tax Return (Form 1040) for patient and spouse/domestic partner from the year first billed or 12 months prior",
+          "Reasonable effort to provide documentation of income and health benefits coverage"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "AHS may grant presumptive Charity Care based on other information or a prior determination. Life circumstances/financial factors: Deceased patients without insurance/estate/third-party coverage; Bankruptcy (open case or completed in past 3 months); Homelessness or care from clinic serving homeless (ER patients with no payment source/job/mailing address/residence considered homeless); Current qualification for public benefit programs (SSI, Unemployment Insurance Benefits, Medicaid, County Indigent Health, TANF, food stamps, WIC, free lunch, or low-income/subsidized housing). Director of Patient Financial Services or designee decides; decision must be documented.",
+        "notes": "Application may be submitted by email, mail, or online. Determination made within 30 days of receiving all requested info; notice in writing by mail. Failure to complete and return application and settle in good faith within 180 days of first post-discharge bill may result in collection actions. Charity Care approval valid one year; new application needed for bills received after one year. Appeal in writing to Director of Patient Financial Services or Director of Patient Access within 30 days of the decision letter; Director of Patient Financial Services is final level of appeal. Refunds over $5.00 within 30 days of eligibility determination, with interest per CCP Section 685.010."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "All payment plans shall be interest-free. Extended payment plan negotiated based on family income and essential living expenses; if no agreement, AHS extends a plan with monthly payment of not more than 10% of the patient's monthly Family Income after excluding Essential Living Expenses. A plan may be declared inoperative after patient fails to make all consecutive payments during a 90-day period; before doing so, AHS must attempt phone contact and give written notice 60 days after first missed bill, then allow 30 days to pay. If declared inoperative and at least 180 days since initial billing statement, collection activities may commence. Payment terms under Self-Pay Discount Policy negotiated with Patient Access or Patient Financial Services."
+      },
+      "debt_collection": {
+        "waiting_period_days_before_ecas": 180,
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "ecas_used": [
+          "Selling an individual's debt to another party",
+          "Reporting adverse information to consumer credit reporting agencies or credit bureaus (NO LONGER authorized effective January 1, 2025)",
+          "Deferring/denying or requiring payment before providing medically necessary care due to non-payment of prior bills covered under the FAP",
+          "Legal or judicial process including lien on primary residence, seizing bank account, causing arrest, or garnishing wages"
+        ],
+        "notes": "Referral to a debt collection agency is NOT considered an ECA. Effective January 1, 2025, the policy no longer authorizes reporting adverse information to credit bureaus. Accounts eligible for Collection Agency placement after at least 180 days since initial bill, if: patient applied and found ineligible for FA; patient did not respond to billing/FA offers; or 'Returned Mail' status after good-faith efforts exhausted. AHS attempts four patient statements; final 30-day notice included with fourth statement after at least 150 days since initial bill. For FA-eligible patients, Collection Agency may not use wage garnishment or lien on primary residence (but may pursue third-party settlements/tortfeasors). No collection while patient in good faith attempting to qualify/settle. Waits for pending coverage appeal determination before placement. Debt referred to Collection Agency recorded as bad debt. Required pre-ECA notices specified. Self-Pay Discount applied before turning account over to collections. Uninsured non-qualifying patients billed at charges less standard Self-Pay Discount."
+      },
+      "contact": {
+        "phone": "510-437-4961",
+        "website": "https://www.alamedahealthsystem.org/patients-visitors/"
+      },
+      "additional_provisions": [
+        "Family Income determined consistent with IRS definition of Modified Adjusted Gross Income for patient and all members of Patient's Family.",
+        "Patient's Family definitions: for patients 18+, includes spouse/domestic partner and dependent children under 21 (or any age if disabled); for under 18 or dependent 18-20, includes parent, caretaker relatives, and other children under 21 (or any age if disabled).",
+        "Full charity care amounts are less than the greater of the amount AHS would reasonably expect under Medicare and Medi-Cal.",
+        "Refunds over $5.00 made within 30 days of eligibility determination, including amounts paid to parties to whom the debt was referred or sold, with interest per CCP Section 685.010 (currently 10% annually).",
+        "If patient applies or has pending application for another coverage program (Medi-Cal, Health PAC, Victims of Crime, CCS, Covered California) simultaneously with FA, neither application precludes eligibility for the other.",
+        "Financial Counselors interview and screen uninsured patients in person at the hospital and screen for other government programs.",
+        "AHS may contract with outside organizations to assist patients in qualifying; patients incur no cost for these services.",
+        "Documents provided for the application used only for financial assistance determination, not for collection activities.",
+        "Medicaid beneficiaries not responsible for any patient financial liability besides Share of Cost; restricted Medicaid, Medicaid pending, denials, LOS-limit charges, no-payment claims treated as Charity Care.",
+        "If a self-pay-discount patient subsequently qualifies for charity care, the FA discount replaces the self-pay discount.",
+        "Self-pay discount may be applied retroactively if unavoidable delays in determining eligibility/cost sharing.",
+        "AHS defines prompt billing as within 12 months from payment from payer for insured patients (or from time of payment); amount not billable to patient after that period.",
+        "References: California Health and Safety Code Sections 127400-127446; California Code of Regulations Title 22 Sections 96051-96051.37.",
+        "Self-Pay Discount Policy enacted to satisfy Senate Bill No. 1276 (Sept 28, 2014)."
+      ],
+      "source_quotes": {
+        "free_care": "Full Charity Care — Patient is an Uninsured Patient with a Family Income at or below 400% of the most recent FPL — Full write-off of all charges for Medically Necessary Care",
+        "discount_ceiling": "AHS offers a 50% discount off full charges for patients that do not qualify for any other federal, state, or county programs, and do not qualify for charity care under AHS's Financial Assistance Policy.",
+        "agb": "The full charity care amounts described in the above table are less than the greater of the amount that AHS would reasonably expect under Medicare and Medi-Cal."
+      },
+      "extraction_confidence": 0.9,
+      "extraction_notes": "The Financial Assistance (Charity Care) Policy does not use FPL-based sliding-scale discount tiers — it grants 100% free care to both uninsured (≤400% FPL) and insured High Medical Cost patients (≤400% FPL with OOP >10% of income). The 'discount payment' provisions come from a SEPARATE Self-Pay Discount Policy offering a flat 50% discount (and 50% prompt-pay discount) NOT based on income/FPL, so discount_payment.fpl_ceiling_pct is null and tiers is empty. There is no stated AGB percentage; the policy only states charity amounts are less than the greater of Medicare/Medi-Cal expected amounts (a comparable-standard reference, not a stated AGB %). Minor internal inconsistency between the eligibility table ('incurred at AHS or other providers') and the High Medical Cost Patient definition ('out-of-pocket medical expenses at AHS') for the 10% threshold. Note the important credit-bureau change: effective Jan 1, 2025 the policy no longer authorizes reporting to credit bureaus, so reports_to_credit_bureaus set to false to reflect current state (it was previously listed as an authorized ECA).\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 63840,
+      "2": 86560,
+      "3": 109280,
+      "4": 132000,
+      "5": 154720,
+      "6": 177440,
+      "7": 200160,
+      "8": 222880
+    },
+    "discount_income_ceiling_by_household": {},
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "hospital": "BAKERSFIELD MEMORIAL HOSPITAL",
+    "oshpdid": "106150722",
+    "city": "BAKERSFIELD",
+    "county": "Kern",
+    "zip": "93301",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/bakersfield-memorial-hospital/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=03a877fc-a49f-4b34-8d85-9bf54a740baf",
+    "charity_effective_date": "07/02/2025",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=03a877fc-a49f-4b34-8d85-9bf54a740baf",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=11fa875d-e89b-435d-8e8d-6476d6cc95c0",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "afcc67bdc04480382603c8337049a5696fb4d79e4fe92661eaf7a7791638e297",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (California Addendum controls)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 250,
+        "notes": "Per California Addendum (G-003A-1), which controls over the base FAP: any patient whose Family Income is at or below 250% of FPL, including any Uninsured patient or Patient with High Medical Costs, is eligible for Charity Care equal to a 100% discount. NOTE: The base national FAP sets the free-care ceiling at 200% FPL, but the California Addendum expressly controls in the event of conflict, raising it to 250% for California facilities (Bakersfield Memorial Hospital)."
+      },
+      "discount_payment": {
+        "fpl_ceiling_pct": 500,
+        "agb_method": "look-back",
+        "agb_percentage": null,
+        "tiers": [
+          {
+            "fpl_low_pct": 0,
+            "fpl_high_pct": 250,
+            "benefit": "Charity Care equal to a 100% discount from account balance for eligible services (after third-party payment)",
+            "discount_basis": "full waiver (Charity Care)",
+            "patient_pays_pct": 0
+          },
+          {
+            "fpl_low_pct": 251,
+            "fpl_high_pct": 400,
+            "benefit": "Discounted Care limiting expected payment to no more than the greater of what the hospital would expect to receive from Medicare or Medi-Cal, and in all events no more than AGB; plus interest-free extended payment plan. Applies to Uninsured patients and Patients with High Medical Costs.",
+            "discount_basis": "greater of Medicare or Medi-Cal, capped at AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 401,
+            "fpl_high_pct": 500,
+            "benefit": "Additional Uninsured Discount: Uninsured patients only; limits amount patient is expected to pay to no more than the applicable AGB; interest-free extended payment plan over not more than 30 months.",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          }
+        ],
+        "notes": "California Addendum controls. Base national FAP tiers were: 0-200% FPL = 100% charity; 201-400% FPL = reduced to no more than AGB. California Addendum expands to three tiers (Charity to 250%, discount to 400% for uninsured/high-medical-cost, and an additional uninsured-only discount 401-500%). The 401-500% additional discount is available to Uninsured patients only. Patient with High Medical Costs = family income not exceeding 400% FPL with out-of-pocket costs exceeding 10% of family income. If a patient qualifies for more than one discount, they receive the largest single discount unless combination is expressly permitted."
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "A Patient with High Medical Costs is a patient whose family income does not exceed 400% of FPL, with High Medical Costs meaning either (i) annual out-of-pocket costs incurred at the hospital exceeding the lesser of 10% of current Family Income or Family Income in the prior 12 months, or (ii) annual out-of-pocket expenses exceeding 10% of Family Income if the patient provides documentation of medical expenses paid by the patient/family in the prior 12 months. Out-of-pocket = expenses for medical care not reimbursed by insurance/coverage (e.g., Medicare copays, Medi-Cal cost sharing)."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "Reasonable Payment Plan = extended payment plan in which monthly payments are not more than 10% of a patient's Family Income for a month, after excluding deductions for Essential Living Expenses. All extended payment plans are interest-free. For the 401-500% FPL additional uninsured discount, plan is over not more than 30 months. Hospital may take into account availability of a patient's health savings account. If the hospital and patient cannot agree on a plan, the hospital shall implement a Reasonable Payment Plan. References HSC 127400 series (Hospital Fair Pricing Policies)."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": null,
+        "documentation_required": [
+          "Bank or checking account statements evidencing available resources (base FAP)",
+          "At least one piece of supporting documentation verifying Family Income (base FAP): most recently filed federal income tax return, current Form W-2, current paystubs, or signed letter of support",
+          "For California Charity Care/Discounted Care eligibility: documentation limited to income tax returns or recent pay stubs; asset documentation may be accepted but not required",
+          "Documentation of Essential Living Expenses required only if the applicant requests an extended payment plan"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "Presumptive eligibility may be based on individual life circumstances including: recipient of state-funded prescription programs; homeless or received care from a homeless/free clinic; participation in WIC; food stamp eligibility; eligibility/referrals for other state or local assistance programs (e.g., Medicaid); low income/subsidized housing address; or patient deceased with no known spouse or estate. May also use a third-party healthcare industry predictive model based on public record databases. Medicaid patients receiving non-covered medically necessary services considered for presumptive assistance.",
+        "notes": "California Addendum: hospital shall NOT impose time limits for applying for Charity Care or Discounted Care, nor deny eligibility based on time of application; eligibility determined any time hospital is in receipt of income tax returns or recent pay stubs. If a patient has not submitted an FAA within 180 days after the first post-discharge billing notice, the hospital may engage in further collection activities. Base FAP Application Period expires the later of (i) 365 days from discharge/date of service or (ii) 240 days from initial post-discharge bill. Approved applicants receive assistance for eligible accounts 12 months prior to determination date and prospectively 6 months. Minimum account balance of $10 required (base FAP). Largest single discount applies if eligible for more than one. Hospital may waive documentation via Presumptive Eligibility Screening or Medi-Cal Eligibility Approval. Hospital must reimburse overpayments (>$5) with interest within 30 days. Hospital shall not require patient to apply for Medicare/Medi-Cal before being screened for or provided Discounted Care, though may require participation in Medi-Cal screening. Appeals/disputes: submit in writing within 3 months of decision; review available from Financial Counselor's Office or Customer Service Manager."
+      },
+      "scope": {
+        "covered_services": [
+          "Emergency Medical Care and Medically Necessary Care (EMCare) provided in a Hospital Facility",
+          "EMCare provided by a physician or advanced practice clinician employed by the Hospital Organization within a Hospital Facility",
+          "EMCare provided by a physician/APC employed by a Substantially-Related Entity occurring within a Hospital Facility",
+          "Non-covered Medically Necessary Care where the patient bears responsibility (e.g., days beyond a length-of-stay limit or exhausted benefits)"
+        ],
+        "excluded_services": [
+          "Care other than EMCare (Financial Assistance not available; patient responsible for no more than net charges)",
+          "Elective or cosmetic procedures only to improve aesthetic appeal of a normal/normally functioning body part"
+        ],
+        "notes": "California Addendum requires emergency physicians providing services at a CommonSpirit facility with an emergency care facility to provide discounts to Uninsured patients and Patients with High Medical Costs at or below 400% of FPL. A provider listing specifying which providers are/are not covered by the FAP is published on each facility's billing website. Residency in the CommonSpirit Entity Service Area normally required, but this residency requirement does NOT apply to visits at a California Hospital Facility (or urgent/emergent visits)."
+      },
+      "debt_collection": {
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "waiting_period_days_before_ecas": 120,
+        "ecas_used": [
+          "Selling an individual's debt to another party except as expressly provided by federal law",
+          "Reporting adverse information about the individual to consumer credit bureaus (prohibited in California per Addendum)"
+        ],
+        "notes": "Base FAP/Billing policy (G-004): ECAs limited to (1) selling debt and (2) reporting adverse info to credit bureaus. No ECA before 120 days from first post-discharge billing statement (Notification Period), and only after reasonable efforts including a Notification Letter sent at least 30 days prior. If no FAA within 30 days after Notification Letter, reasonable efforts satisfied. CALIFORNIA ADDENDUM CONTROLS and is more protective: No CommonSpirit Hospital Organization will report, or allow collection agencies to report, adverse information to consumer credit agencies. For Uninsured patients or Patients with High Medical Costs, no adverse credit reporting at any time prior to 180 days after initial billing. Debt shall NOT be sold to a debt buyer unless (a) patient found ineligible for Charity Care/Discount Care, or (b) patient has not responded to billing attempts or offers of Charity/Discounted Care for 180 days; sale must comply with HSC 127425. No wage garnishments or liens on primary residences for patients eligible under charity care/discount provisions. Collection efforts cease pending final FA eligibility determination. Cease all collection on Bankruptcy Discharge notice. Extensive written notice required before commencing collections or selling debt (Rosenthal Act, federal FDCPA summaries, etc.)."
+      },
+      "contact": {
+        "phone": "(661) 541-0026",
+        "website": "https://www.dignityhealth.org/central-california/locations/memorial-hospital/patients-and-visitors/for-patients/billing-information/payment-assistance"
+      },
+      "additional_provisions": [
+        "Additional Hardship Discount (California Addendum D): A patient who receives Discounted Care but (i) whose liability still exceeds 30% of Family Income and (ii) who does not have ability to pay, may receive an additional Hardship Discount reducing remaining liability to no more than 30% of Patient Family Income. Discounts/waivers also available if patient is homeless/transient or participates in a federal, state, or local managed indigent care program.",
+        "Self-Pay Discount (base FAP H): Automatic, non-means-tested self-pay discount may be applied to Uninsured patients who do not qualify for other financial assistance discounts.",
+        "Uninsured Patient Discount (base FAP G): Each facility calculates a discount from gross charges for uninsured/non-covered services; superseded by Financial Assistance if the latter further reduces the bill.",
+        "AGB calculated on a facility-by-facility basis using the lookback method (Medicare + private insurance claims); patients may obtain AGB percentage and calculation details from a financial counselor.",
+        "Restriction on gross charges: net amount charged to a Financial Assistance-eligible patient shall be less than gross charges (California HSC compliance).",
+        "No waiver of the right to apply for Financial Assistance will be accepted (oral or written).",
+        "Charity Care and Discounted Care do not reduce amounts a third party may be required to pay.",
+        "Emergency Medical Care provided to all without discrimination and regardless of ability to pay (EMTALA).",
+        "Family (California definition) includes spouse/domestic partner and dependent children under 21 (or any age if disabled); different definition for patients under 18.",
+        "Base national FAP applies 200% FPL for full charity and 201-400% FPL to AGB; California Addendum expressly controls and supersedes where in conflict.",
+        "California Addendum effective date December 25, 2024; base FAP effective July 1, 2023; Billing & Collections policy effective July 1, 2022.",
+        "Contact information addendum names Bakersfield Memorial Hospital (text inconsistently references 'Mercy General Hospital' in one line)."
+      ],
+      "source_quotes": {
+        "free_care": "A. Charity Care (Up to 250% of the FPL) Any patient whose Family Income is at or below 250% of the FPL, including, without limitation, any Uninsured patient or Patient with High Medical Costs, is eligible to receive Charity Care equal to a 100% discount from his or her account balance for eligible services provided to the patient after payment, if any, by any third party(ies).",
+        "discount_ceiling": "C. Additional Uninsured Discount (Greater than 400% and Less than or Equal to 500% of the FPL) Any Uninsured Patient who has a Family Income above 400% but at or below 500% of FPL is eligible to receive Discounted Care for eligible services received by the patient and an extended payment plan. The discount will limit the amount the patient is expected to pay to no more than the applicable AGB.",
+        "agb": "CommonSpirit calculates the AGB on a Facility-by-Facility basis using the \"lookback\" method by multiplying the \"Gross Charges\" for any EMCare that it provides by AGB percentages, which are based upon past claims allowed under Medicare and private insurance as set forth in federal law."
+      },
+      "extraction_confidence": 0.88,
+      "extraction_notes": "The document contains a national base FAP (G-003), a California Addendum (G-003A-1), and a Billing/Collections policy (G-004). The California Addendum expressly states it CONTROLS over the base FAP where in conflict, and applies to California facilities (the contact addendum names Bakersfield Memorial Hospital). I therefore reported the California figures as authoritative: free-care ceiling 250% FPL (vs. base 200%), discount ceiling 500% FPL (uninsured-only for 401-500%; base FAP only went to 400%). Key ambiguities: (1) The base FAP free ceiling is 200% and could be relevant if a specific facility is non-California, but the contact info is a California hospital, so 250% governs. (2) The 251-400% tier's exact patient_pays_pct is not a fixed percentage — it is capped at the greater of Medicare/Medi-Cal rate and at AGB — so patient_pays_pct left null. (3) AGB percentage is facility-specific and not numerically stated. (4) The contact addendum has an internal inconsistency, referring to both 'Bakersfield Memorial Hospital' and 'Mercy General Hospital.' (5) Debt collection: base policy permits credit bureau reporting as an ECA, but the California Addendum prohibits adverse credit reporting entirely — reported reports_to_credit_bureaus=false reflecting the controlling California rule. Waiting period before ECAs is 120 days under base policy but California extends key protections (no credit reporting before 180 days; no debt sale before 180 days of non-response).\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 39900,
+      "2": 54100,
+      "3": 68300,
+      "4": 82500,
+      "5": 96700,
+      "6": 110900,
+      "7": 125100,
+      "8": 139300
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 79800,
+      "2": 108200,
+      "3": 136600,
+      "4": 165000,
+      "5": 193400,
+      "6": 221800,
+      "7": 250200,
+      "8": 278600
+    },
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "hospital": "ADVENTIST HEALTH BAKERSFIELD",
+    "oshpdid": "106150788",
+    "city": "BAKERSFIELD",
+    "county": "Kern",
+    "zip": "93301",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-bakersfield/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=693e3d80-164c-4364-83c0-d7ff11aa347d",
+    "charity_effective_date": "04/25/2025",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=693e3d80-164c-4364-83c0-d7ff11aa347d",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=cca6fcfe-cc93-4c65-90d8-e9d660aff964",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "c96d7898664c1beceddd785b49a29ad5c964b97de4955bcff799e1075ebfacaf",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (Financial Assistance Policy for California-Based Hospitals)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 200,
+        "notes": "Uninsured patients at or below 200% FPL receive Zero (Full Charity) for Emergency Medical Care and Medically Necessary Care (Table 1). Insured patients with High Medical Costs at or below 400% FPL owe only remaining AGB, if any, after insurance (Table 2) — this is not necessarily fully free. Presumptive 100% charity applies to Medicaid-eligible/active-Medicaid patients. Note: for uninsured non-emergency/non-medically-necessary care, patients ≤200% FPL still pay 50% of AGB (a discount, not free)."
+      },
+      "discount_payment": {
+        "agb_method": "look-back (Medicare fee-for-service claims over 12-month period per Treasury Regs under IRC 501(r)); updated annually January 1st, implemented within 120 days of change",
+        "agb_percentage": null,
+        "fpl_ceiling_pct": 400,
+        "notes": "AGB varies by facility (see Appendix C): e.g. Bakersfield 15%, Clear Lake 36%, Delano 20%, Glendale 15%, Hanford 19%, Howard Memorial 30%, Lodi Memorial 7%, Mendocino Coast 66%, Reedley 19%, Rideout 22%, Sierra Vista 9%, Simi Valley 16%, Sonora 17%, St. Helena 15%, Tehachapi Valley 27%, Twin Cities 7%, Tulare 19%, Ukiah Valley 20%, White Memorial 18%, Physician Network 34%, Home Care 60%. Charges limited to what hospital would expect from Medicare or Medi-Cal, whichever is greater, if lower than table amounts. Discount tiers below are for UNINSURED patients (Table 1). Tiers differ by whether care is Emergency/Medically Necessary vs. neither.",
+        "tiers": [
+          {
+            "fpl_low_pct": 0,
+            "fpl_high_pct": 200,
+            "benefit": "Emergency/Medically Necessary: Zero (Full Charity). Care that is neither: 50% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 201,
+            "fpl_high_pct": 300,
+            "benefit": "Emergency/Medically Necessary: 50% of the AGB (Discount). Care that is neither: 75% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 301,
+            "fpl_high_pct": 350,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 351,
+            "fpl_high_pct": 400,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          }
+        ]
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "High Medical Costs = annual Out-of-Pocket Costs incurred at an Adventist Health hospital exceeding the lesser of 10% of patient's current Household Income or Household Income in prior 12 months; OR annual OOP more than 10% of Household Income if patient documents medical expenses paid in prior 12 months. Table 2: Insured patients with High Medical Costs at ≤400% FPL owe remaining AGB, if any, after applying insurance payment; >400% FPL no discount, patient liable for remaining cost sharing."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": null,
+        "documentation_required": [
+          "Recent pay stubs from within 6 months before or after first billed (or in preservice when application submitted)",
+          "Copy of Federal Income Tax Return (Form 1040) for patient and spouse/domestic partner from year first billed or 12 months prior to first billed",
+          "Documentation of monetary assets may be required if seeking reduction of Medi-Cal/Medicare Share of Cost (for Medicare bad debt reimbursement); assets NOT considered in determining Charity Care/Discounted Care eligibility"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "100% Charity Care presumptive determination if: patient has active Medicaid plan, is eligible for Medicaid, or has current active Medicaid coverage even if not on date of service. Other presumptive factors (socio-economic): FA granted within last 180 days; homeless per medical record; patient expired with no known estate or spouse; currently incarcerated; qualifies for public benefit program (SSDI, Unemployment, Medicaid, County Indigent Health, TANF, Food Stamps, WIC); or meets another similar public benefit program's requirements. Electronic credit-based eligibility tool estimates income; data supporting ≤200% FPL applied only to past patient balances.",
+        "notes": "Application may be completed with assistance of PFS staff; must be signed by patient/legal representative; submitted by email, mail or online. Determination notified in writing by mail. Appeals in writing to facility Finance Officer within 30 days of decision letter; Finance Officer is final level of appeal."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "If eligible for Discounted Care, patient may enter an extended payment plan. Terms negotiated considering Household Income, Essential Living Expenses, and availability of health savings account. If no agreement, hospital creates plan where monthly payments do not exceed 10% of monthly Household Income, excluding deductions for Essential Living Expenses. All Extended Payment Plans are interest-free (per Self-Pay Billing & Collection Policy). Reasonable Payment Plan references HSC-style standard."
+      },
+      "debt_collection": {
+        "ecas_used": [
+          "Selling an individual's debt to another party (with exceptions)",
+          "Deferring or denying, or requiring payment before providing, Medically Necessary care (excluding emergency care) due to nonpayment",
+          "Legal/judicial actions: certain liens, foreclosures on real estate, attachments/seizures, commencing a civil action, writ of attachment, wage garnishment"
+        ],
+        "notes": "ECAs do NOT include reporting/furnishing medical debt info to credit bureaus; Adventist Health shall NOT furnish any medical debt information to any consumer credit reporting agency. ECAs do not include a hospital lien on personal-injury judgment/settlement proceeds. For patients eligible for Charity/Discounted Care, Collection Agency may not use wage garnishments or file a lien against real property. Finance Officer must approve each individual legal action in writing (non-delegable); actions require 30 days prior notice. If debt sold to Debt Buyer: contractual return of accounts eligible for charity/incorrect balances, no resale, no interest/fees, buyer must be DFPI-licensed. Records kept 5 years. Extended Payment Plan may be declared inoperative after failure to make consecutive payments during 90-day period, with notice/renegotiation opportunity.",
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "waiting_period_days_before_ecas": 180
+      },
+      "scope": {
+        "covered_services": [
+          "Health care services provided at Adventist Health owned/operated California facilities (Appendix A)",
+          "Services rendered by practitioners listed as 'Covered Provider' in Appendix B documentation",
+          "Uninsured patient charges as well as patient liability for insured patients (coinsurance, copayment, deductible, and other liabilities for medically necessary hospital services)",
+          "Medi-Cal or Medicare Share of Cost may be waived or reduced as part of Charity Care/Discounted Care"
+        ],
+        "excluded_services": [
+          "Emergency room physicians in acute care facilities unless listed as Covered Provider in Appendix B (required by CA law to independently offer discounts to uninsured/High Medical Cost patients ≤400% FPL)",
+          "Medically Unnecessary Care with provider attestation",
+          "Purchases from hospital retail operations (gift shops, cafeteria)",
+          "Non-hospital services (e.g. physician services) not billed by hospital, except Covered Providers in Appendix B",
+          "Services that are not licensed hospital services"
+        ],
+        "notes": "Separate Rural Health Clinic Discount program (Policy 14739, Appendix F/Exhibit B) applies to RHC visits in addition to this FAP: sliding scale by family size/income only — <100% FPL Zero (Full Charity); 100-200% FPL 10% of nominal ($6.00); 200-400% FPL 100% of nominal ($60.00); >400% FPL No Discount. RHC excludes outside-purchased services (reference lab, drugs, x-ray interpretation by consulting radiologist)."
+      },
+      "contact": {
+        "phone": "(844) 827-5047",
+        "website": "Adventist Health Help Paying Your Bill"
+      },
+      "source_quotes": {
+        "agb": "The method used to calculate the AGB is the Look-Back Method based on claims allowed by Medicare fee-for-service that pay claims to the hospital facility during a 12-month period (as defined by Treasury Regulations under section 501(r)...). ... The AGB rate will be updated annually on January 1st of each year and implemented within 120 days of any AGB rate change.",
+        "discount_ceiling": "> 400% of the Federal Poverty Level | No Discount | No Discount",
+        "free_care": "200% or less of the Federal Poverty Level | Zero (Full Charity) [for Emergency Medical Care and Medically Necessary Care]"
+      },
+      "additional_provisions": [
+        "Financial Assistance approval is valid for 180 days after granted; applies to all eligible balances including those received before approval; new application needed for bills received after 180 days.",
+        "Refunds of overpayment (above amount determined owed) made within 30 days of eligibility determination, with interest per Code of Civil Procedure Section 685.010; but Adventist Health may decline reimbursement if patient would have qualified at first billing AND (i) 5+ years since last payment or (ii) debt sold before Jan 1 2022. Self-Pay policy sets a $5 de minimis (no refund if less than $5).",
+        "Non-covered/denied services and related services provided to Medicaid-eligible beneficiaries are treated as a form of Charity Care; Medicaid beneficiaries not responsible for liability besides Share of Cost unless waived/reduced.",
+        "Assets are NOT considered in determining Charity Care/Discounted Care eligibility (except monetary-asset documentation for Medi-Cal/Medicare Share of Cost reductions for Medicare bad debt).",
+        "Policy translated into each language spoken by lesser of 1,000 people or 5% of hospital service-area population; accessible formats for LEP/disabled individuals.",
+        "Patient must remit to Adventist Health any third-party reimbursement sent directly to them, and reimburse from any liable-third-party legal settlement/judgment/award up to amount reasonably awarded for health care.",
+        "Simultaneous application for other health coverage does not stop eligibility for either program; collections paused while applying for Medicaid/Medi-Cal.",
+        "No Surprise Billing / Good Faith Estimate provisions apply to self-pay/uninsured patients; $400-over-estimate dispute right; Notice and Consent for out-of-network balance billing.",
+        "Rural Health Clinic Discounts: eligibility based solely on family size and income (no asset testing, no requirement to apply to Medicaid/insurance); nominal charge $60.00 (or percentage) for patients >100% to ≤400% FPL, not a minimum fee or co-payment; RHC discount valid 12 months; RHC Application Period ends latter of 240th day after first post-discharge billing statement, 12 months after payment, or 30th day after written notice; self-declaration of income accepted; waiving of RHC charges requires Finance Officer approval and documentation.",
+        "Extended Payment Plans offered to uninsured patients and insured patients with High Medical Costs; all interest-free; may be declared inoperative after failure to make consecutive payments over 90-day period with notice/renegotiation opportunity; ECAs only after inoperative and 180+ days since initial billing.",
+        "Required pre-ECA notice must include dates of service, entity debt assigned/sold to, how to obtain itemized bill, health coverage name/plan type on record, FA application, and dates of prior FA notices/application/decision.",
+        "Incomplete FAP application: ECAs suspended and written notice given describing additional info needed; if later completed, considered.",
+        "Records retained 5 years; Collection Agencies must meet same standards, provide annual attestation; Debt Buyers must be DFPI-licensed, cannot charge interest/fees, cannot resell (with exceptions), and must return charity-eligible/incorrect-balance accounts.",
+        "Rural Health Clinic Family Members definition uses dependent children under 26 years (differs from FAP's under-21 definition)."
+      ],
+      "extraction_confidence": 0.9,
+      "extraction_notes": "Full-charity (free) care for uninsured is limited to Emergency/Medically Necessary care at ≤200% FPL; the same income band still pays 50% of AGB for care that is neither emergency nor medically necessary, so 200% is the free-care ceiling only for the emergency/necessary column. Discount ceiling is 400% FPL (above which no discount). Table 2 (insured with High Medical Costs) gives 'remaining AGB, if any' at ≤400% FPL — this can be effectively free when insurance already paid enough, but is not stated as guaranteed 100% free, so it is captured under high_medical_cost rather than free_care ceiling. AGB is facility-specific (no single percentage), so agb_percentage left null and per-facility values listed in notes. The Rural Health Clinic Discount is a separate additive program (Policy 14739) with its own nominal-fee sliding scale, captured in scope/additional_provisions. Note the RHC Exhibit B table header inconsistently references '2024 FPL' for the >400% column while others say 2025 FPL — likely a typo.\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 31920,
+      "2": 43280,
+      "3": 54640,
+      "4": 66000,
+      "5": 77360,
+      "6": 88720,
+      "7": 100080,
+      "8": 111440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 63840,
+      "2": 86560,
+      "3": 109280,
+      "4": 132000,
+      "5": 154720,
+      "6": 177440,
+      "7": 200160,
+      "8": 222880
+    },
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "hospital": "ADVENTIST HEALTH CLEARLAKE",
+    "oshpdid": "106171049",
+    "city": "CLEARLAKE",
+    "county": "Lake",
+    "zip": "95422",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-clearlake/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=6193785e-bbb0-49c0-a899-0532f66bf7ac",
+    "charity_effective_date": "04/25/2025",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=6193785e-bbb0-49c0-a899-0532f66bf7ac",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=4f286582-5716-4fc5-bae0-b7607595fc17",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "c96d7898664c1beceddd785b49a29ad5c964b97de4955bcff799e1075ebfacaf",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (Financial Assistance Policy for California-Based Hospitals)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 200,
+        "notes": "Uninsured patients at or below 200% FPL receive Zero (Full Charity) for Emergency Medical Care and Medically Necessary Care (Table 1). Insured patients with High Medical Costs at or below 400% FPL owe only remaining AGB, if any, after insurance (Table 2) — this is not necessarily fully free. Presumptive 100% charity applies to Medicaid-eligible/active-Medicaid patients. Note: for uninsured non-emergency/non-medically-necessary care, patients ≤200% FPL still pay 50% of AGB (a discount, not free)."
+      },
+      "discount_payment": {
+        "agb_method": "look-back (Medicare fee-for-service claims over 12-month period per Treasury Regs under IRC 501(r)); updated annually January 1st, implemented within 120 days of change",
+        "agb_percentage": null,
+        "fpl_ceiling_pct": 400,
+        "notes": "AGB varies by facility (see Appendix C): e.g. Bakersfield 15%, Clear Lake 36%, Delano 20%, Glendale 15%, Hanford 19%, Howard Memorial 30%, Lodi Memorial 7%, Mendocino Coast 66%, Reedley 19%, Rideout 22%, Sierra Vista 9%, Simi Valley 16%, Sonora 17%, St. Helena 15%, Tehachapi Valley 27%, Twin Cities 7%, Tulare 19%, Ukiah Valley 20%, White Memorial 18%, Physician Network 34%, Home Care 60%. Charges limited to what hospital would expect from Medicare or Medi-Cal, whichever is greater, if lower than table amounts. Discount tiers below are for UNINSURED patients (Table 1). Tiers differ by whether care is Emergency/Medically Necessary vs. neither.",
+        "tiers": [
+          {
+            "fpl_low_pct": 0,
+            "fpl_high_pct": 200,
+            "benefit": "Emergency/Medically Necessary: Zero (Full Charity). Care that is neither: 50% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 201,
+            "fpl_high_pct": 300,
+            "benefit": "Emergency/Medically Necessary: 50% of the AGB (Discount). Care that is neither: 75% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 301,
+            "fpl_high_pct": 350,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 351,
+            "fpl_high_pct": 400,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          }
+        ]
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "High Medical Costs = annual Out-of-Pocket Costs incurred at an Adventist Health hospital exceeding the lesser of 10% of patient's current Household Income or Household Income in prior 12 months; OR annual OOP more than 10% of Household Income if patient documents medical expenses paid in prior 12 months. Table 2: Insured patients with High Medical Costs at ≤400% FPL owe remaining AGB, if any, after applying insurance payment; >400% FPL no discount, patient liable for remaining cost sharing."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": null,
+        "documentation_required": [
+          "Recent pay stubs from within 6 months before or after first billed (or in preservice when application submitted)",
+          "Copy of Federal Income Tax Return (Form 1040) for patient and spouse/domestic partner from year first billed or 12 months prior to first billed",
+          "Documentation of monetary assets may be required if seeking reduction of Medi-Cal/Medicare Share of Cost (for Medicare bad debt reimbursement); assets NOT considered in determining Charity Care/Discounted Care eligibility"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "100% Charity Care presumptive determination if: patient has active Medicaid plan, is eligible for Medicaid, or has current active Medicaid coverage even if not on date of service. Other presumptive factors (socio-economic): FA granted within last 180 days; homeless per medical record; patient expired with no known estate or spouse; currently incarcerated; qualifies for public benefit program (SSDI, Unemployment, Medicaid, County Indigent Health, TANF, Food Stamps, WIC); or meets another similar public benefit program's requirements. Electronic credit-based eligibility tool estimates income; data supporting ≤200% FPL applied only to past patient balances.",
+        "notes": "Application may be completed with assistance of PFS staff; must be signed by patient/legal representative; submitted by email, mail or online. Determination notified in writing by mail. Appeals in writing to facility Finance Officer within 30 days of decision letter; Finance Officer is final level of appeal."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "If eligible for Discounted Care, patient may enter an extended payment plan. Terms negotiated considering Household Income, Essential Living Expenses, and availability of health savings account. If no agreement, hospital creates plan where monthly payments do not exceed 10% of monthly Household Income, excluding deductions for Essential Living Expenses. All Extended Payment Plans are interest-free (per Self-Pay Billing & Collection Policy). Reasonable Payment Plan references HSC-style standard."
+      },
+      "debt_collection": {
+        "ecas_used": [
+          "Selling an individual's debt to another party (with exceptions)",
+          "Deferring or denying, or requiring payment before providing, Medically Necessary care (excluding emergency care) due to nonpayment",
+          "Legal/judicial actions: certain liens, foreclosures on real estate, attachments/seizures, commencing a civil action, writ of attachment, wage garnishment"
+        ],
+        "notes": "ECAs do NOT include reporting/furnishing medical debt info to credit bureaus; Adventist Health shall NOT furnish any medical debt information to any consumer credit reporting agency. ECAs do not include a hospital lien on personal-injury judgment/settlement proceeds. For patients eligible for Charity/Discounted Care, Collection Agency may not use wage garnishments or file a lien against real property. Finance Officer must approve each individual legal action in writing (non-delegable); actions require 30 days prior notice. If debt sold to Debt Buyer: contractual return of accounts eligible for charity/incorrect balances, no resale, no interest/fees, buyer must be DFPI-licensed. Records kept 5 years. Extended Payment Plan may be declared inoperative after failure to make consecutive payments during 90-day period, with notice/renegotiation opportunity.",
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "waiting_period_days_before_ecas": 180
+      },
+      "scope": {
+        "covered_services": [
+          "Health care services provided at Adventist Health owned/operated California facilities (Appendix A)",
+          "Services rendered by practitioners listed as 'Covered Provider' in Appendix B documentation",
+          "Uninsured patient charges as well as patient liability for insured patients (coinsurance, copayment, deductible, and other liabilities for medically necessary hospital services)",
+          "Medi-Cal or Medicare Share of Cost may be waived or reduced as part of Charity Care/Discounted Care"
+        ],
+        "excluded_services": [
+          "Emergency room physicians in acute care facilities unless listed as Covered Provider in Appendix B (required by CA law to independently offer discounts to uninsured/High Medical Cost patients ≤400% FPL)",
+          "Medically Unnecessary Care with provider attestation",
+          "Purchases from hospital retail operations (gift shops, cafeteria)",
+          "Non-hospital services (e.g. physician services) not billed by hospital, except Covered Providers in Appendix B",
+          "Services that are not licensed hospital services"
+        ],
+        "notes": "Separate Rural Health Clinic Discount program (Policy 14739, Appendix F/Exhibit B) applies to RHC visits in addition to this FAP: sliding scale by family size/income only — <100% FPL Zero (Full Charity); 100-200% FPL 10% of nominal ($6.00); 200-400% FPL 100% of nominal ($60.00); >400% FPL No Discount. RHC excludes outside-purchased services (reference lab, drugs, x-ray interpretation by consulting radiologist)."
+      },
+      "contact": {
+        "phone": "(844) 827-5047",
+        "website": "Adventist Health Help Paying Your Bill"
+      },
+      "source_quotes": {
+        "agb": "The method used to calculate the AGB is the Look-Back Method based on claims allowed by Medicare fee-for-service that pay claims to the hospital facility during a 12-month period (as defined by Treasury Regulations under section 501(r)...). ... The AGB rate will be updated annually on January 1st of each year and implemented within 120 days of any AGB rate change.",
+        "discount_ceiling": "> 400% of the Federal Poverty Level | No Discount | No Discount",
+        "free_care": "200% or less of the Federal Poverty Level | Zero (Full Charity) [for Emergency Medical Care and Medically Necessary Care]"
+      },
+      "additional_provisions": [
+        "Financial Assistance approval is valid for 180 days after granted; applies to all eligible balances including those received before approval; new application needed for bills received after 180 days.",
+        "Refunds of overpayment (above amount determined owed) made within 30 days of eligibility determination, with interest per Code of Civil Procedure Section 685.010; but Adventist Health may decline reimbursement if patient would have qualified at first billing AND (i) 5+ years since last payment or (ii) debt sold before Jan 1 2022. Self-Pay policy sets a $5 de minimis (no refund if less than $5).",
+        "Non-covered/denied services and related services provided to Medicaid-eligible beneficiaries are treated as a form of Charity Care; Medicaid beneficiaries not responsible for liability besides Share of Cost unless waived/reduced.",
+        "Assets are NOT considered in determining Charity Care/Discounted Care eligibility (except monetary-asset documentation for Medi-Cal/Medicare Share of Cost reductions for Medicare bad debt).",
+        "Policy translated into each language spoken by lesser of 1,000 people or 5% of hospital service-area population; accessible formats for LEP/disabled individuals.",
+        "Patient must remit to Adventist Health any third-party reimbursement sent directly to them, and reimburse from any liable-third-party legal settlement/judgment/award up to amount reasonably awarded for health care.",
+        "Simultaneous application for other health coverage does not stop eligibility for either program; collections paused while applying for Medicaid/Medi-Cal.",
+        "No Surprise Billing / Good Faith Estimate provisions apply to self-pay/uninsured patients; $400-over-estimate dispute right; Notice and Consent for out-of-network balance billing.",
+        "Rural Health Clinic Discounts: eligibility based solely on family size and income (no asset testing, no requirement to apply to Medicaid/insurance); nominal charge $60.00 (or percentage) for patients >100% to ≤400% FPL, not a minimum fee or co-payment; RHC discount valid 12 months; RHC Application Period ends latter of 240th day after first post-discharge billing statement, 12 months after payment, or 30th day after written notice; self-declaration of income accepted; waiving of RHC charges requires Finance Officer approval and documentation.",
+        "Extended Payment Plans offered to uninsured patients and insured patients with High Medical Costs; all interest-free; may be declared inoperative after failure to make consecutive payments over 90-day period with notice/renegotiation opportunity; ECAs only after inoperative and 180+ days since initial billing.",
+        "Required pre-ECA notice must include dates of service, entity debt assigned/sold to, how to obtain itemized bill, health coverage name/plan type on record, FA application, and dates of prior FA notices/application/decision.",
+        "Incomplete FAP application: ECAs suspended and written notice given describing additional info needed; if later completed, considered.",
+        "Records retained 5 years; Collection Agencies must meet same standards, provide annual attestation; Debt Buyers must be DFPI-licensed, cannot charge interest/fees, cannot resell (with exceptions), and must return charity-eligible/incorrect-balance accounts.",
+        "Rural Health Clinic Family Members definition uses dependent children under 26 years (differs from FAP's under-21 definition)."
+      ],
+      "extraction_confidence": 0.9,
+      "extraction_notes": "Full-charity (free) care for uninsured is limited to Emergency/Medically Necessary care at ≤200% FPL; the same income band still pays 50% of AGB for care that is neither emergency nor medically necessary, so 200% is the free-care ceiling only for the emergency/necessary column. Discount ceiling is 400% FPL (above which no discount). Table 2 (insured with High Medical Costs) gives 'remaining AGB, if any' at ≤400% FPL — this can be effectively free when insurance already paid enough, but is not stated as guaranteed 100% free, so it is captured under high_medical_cost rather than free_care ceiling. AGB is facility-specific (no single percentage), so agb_percentage left null and per-facility values listed in notes. The Rural Health Clinic Discount is a separate additive program (Policy 14739) with its own nominal-fee sliding scale, captured in scope/additional_provisions. Note the RHC Exhibit B table header inconsistently references '2024 FPL' for the >400% column while others say 2025 FPL — likely a typo.\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 31920,
+      "2": 43280,
+      "3": 54640,
+      "4": 66000,
+      "5": 77360,
+      "6": 88720,
+      "7": 100080,
+      "8": 111440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 63840,
+      "2": 86560,
+      "3": 109280,
+      "4": 132000,
+      "5": 154720,
+      "6": 177440,
+      "7": 200160,
+      "8": 222880
+    },
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "hospital": "ADVENTIST HEALTH DELANO",
+    "oshpdid": "106150706",
+    "city": "DELANO",
+    "county": "Kern",
+    "zip": "93215",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-delano/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=c2122732-4af8-491f-89ef-9c2dc18e62b0",
+    "charity_effective_date": "04/25/2025",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=c2122732-4af8-491f-89ef-9c2dc18e62b0",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=f51f566c-5e73-4562-8c4c-49b450091e4d",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "c96d7898664c1beceddd785b49a29ad5c964b97de4955bcff799e1075ebfacaf",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (Financial Assistance Policy for California-Based Hospitals)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 200,
+        "notes": "Uninsured patients at or below 200% FPL receive Zero (Full Charity) for Emergency Medical Care and Medically Necessary Care (Table 1). Insured patients with High Medical Costs at or below 400% FPL owe only remaining AGB, if any, after insurance (Table 2) — this is not necessarily fully free. Presumptive 100% charity applies to Medicaid-eligible/active-Medicaid patients. Note: for uninsured non-emergency/non-medically-necessary care, patients ≤200% FPL still pay 50% of AGB (a discount, not free)."
+      },
+      "discount_payment": {
+        "agb_method": "look-back (Medicare fee-for-service claims over 12-month period per Treasury Regs under IRC 501(r)); updated annually January 1st, implemented within 120 days of change",
+        "agb_percentage": null,
+        "fpl_ceiling_pct": 400,
+        "notes": "AGB varies by facility (see Appendix C): e.g. Bakersfield 15%, Clear Lake 36%, Delano 20%, Glendale 15%, Hanford 19%, Howard Memorial 30%, Lodi Memorial 7%, Mendocino Coast 66%, Reedley 19%, Rideout 22%, Sierra Vista 9%, Simi Valley 16%, Sonora 17%, St. Helena 15%, Tehachapi Valley 27%, Twin Cities 7%, Tulare 19%, Ukiah Valley 20%, White Memorial 18%, Physician Network 34%, Home Care 60%. Charges limited to what hospital would expect from Medicare or Medi-Cal, whichever is greater, if lower than table amounts. Discount tiers below are for UNINSURED patients (Table 1). Tiers differ by whether care is Emergency/Medically Necessary vs. neither.",
+        "tiers": [
+          {
+            "fpl_low_pct": 0,
+            "fpl_high_pct": 200,
+            "benefit": "Emergency/Medically Necessary: Zero (Full Charity). Care that is neither: 50% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 201,
+            "fpl_high_pct": 300,
+            "benefit": "Emergency/Medically Necessary: 50% of the AGB (Discount). Care that is neither: 75% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 301,
+            "fpl_high_pct": 350,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 351,
+            "fpl_high_pct": 400,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          }
+        ]
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "High Medical Costs = annual Out-of-Pocket Costs incurred at an Adventist Health hospital exceeding the lesser of 10% of patient's current Household Income or Household Income in prior 12 months; OR annual OOP more than 10% of Household Income if patient documents medical expenses paid in prior 12 months. Table 2: Insured patients with High Medical Costs at ≤400% FPL owe remaining AGB, if any, after applying insurance payment; >400% FPL no discount, patient liable for remaining cost sharing."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": null,
+        "documentation_required": [
+          "Recent pay stubs from within 6 months before or after first billed (or in preservice when application submitted)",
+          "Copy of Federal Income Tax Return (Form 1040) for patient and spouse/domestic partner from year first billed or 12 months prior to first billed",
+          "Documentation of monetary assets may be required if seeking reduction of Medi-Cal/Medicare Share of Cost (for Medicare bad debt reimbursement); assets NOT considered in determining Charity Care/Discounted Care eligibility"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "100% Charity Care presumptive determination if: patient has active Medicaid plan, is eligible for Medicaid, or has current active Medicaid coverage even if not on date of service. Other presumptive factors (socio-economic): FA granted within last 180 days; homeless per medical record; patient expired with no known estate or spouse; currently incarcerated; qualifies for public benefit program (SSDI, Unemployment, Medicaid, County Indigent Health, TANF, Food Stamps, WIC); or meets another similar public benefit program's requirements. Electronic credit-based eligibility tool estimates income; data supporting ≤200% FPL applied only to past patient balances.",
+        "notes": "Application may be completed with assistance of PFS staff; must be signed by patient/legal representative; submitted by email, mail or online. Determination notified in writing by mail. Appeals in writing to facility Finance Officer within 30 days of decision letter; Finance Officer is final level of appeal."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "If eligible for Discounted Care, patient may enter an extended payment plan. Terms negotiated considering Household Income, Essential Living Expenses, and availability of health savings account. If no agreement, hospital creates plan where monthly payments do not exceed 10% of monthly Household Income, excluding deductions for Essential Living Expenses. All Extended Payment Plans are interest-free (per Self-Pay Billing & Collection Policy). Reasonable Payment Plan references HSC-style standard."
+      },
+      "debt_collection": {
+        "ecas_used": [
+          "Selling an individual's debt to another party (with exceptions)",
+          "Deferring or denying, or requiring payment before providing, Medically Necessary care (excluding emergency care) due to nonpayment",
+          "Legal/judicial actions: certain liens, foreclosures on real estate, attachments/seizures, commencing a civil action, writ of attachment, wage garnishment"
+        ],
+        "notes": "ECAs do NOT include reporting/furnishing medical debt info to credit bureaus; Adventist Health shall NOT furnish any medical debt information to any consumer credit reporting agency. ECAs do not include a hospital lien on personal-injury judgment/settlement proceeds. For patients eligible for Charity/Discounted Care, Collection Agency may not use wage garnishments or file a lien against real property. Finance Officer must approve each individual legal action in writing (non-delegable); actions require 30 days prior notice. If debt sold to Debt Buyer: contractual return of accounts eligible for charity/incorrect balances, no resale, no interest/fees, buyer must be DFPI-licensed. Records kept 5 years. Extended Payment Plan may be declared inoperative after failure to make consecutive payments during 90-day period, with notice/renegotiation opportunity.",
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "waiting_period_days_before_ecas": 180
+      },
+      "scope": {
+        "covered_services": [
+          "Health care services provided at Adventist Health owned/operated California facilities (Appendix A)",
+          "Services rendered by practitioners listed as 'Covered Provider' in Appendix B documentation",
+          "Uninsured patient charges as well as patient liability for insured patients (coinsurance, copayment, deductible, and other liabilities for medically necessary hospital services)",
+          "Medi-Cal or Medicare Share of Cost may be waived or reduced as part of Charity Care/Discounted Care"
+        ],
+        "excluded_services": [
+          "Emergency room physicians in acute care facilities unless listed as Covered Provider in Appendix B (required by CA law to independently offer discounts to uninsured/High Medical Cost patients ≤400% FPL)",
+          "Medically Unnecessary Care with provider attestation",
+          "Purchases from hospital retail operations (gift shops, cafeteria)",
+          "Non-hospital services (e.g. physician services) not billed by hospital, except Covered Providers in Appendix B",
+          "Services that are not licensed hospital services"
+        ],
+        "notes": "Separate Rural Health Clinic Discount program (Policy 14739, Appendix F/Exhibit B) applies to RHC visits in addition to this FAP: sliding scale by family size/income only — <100% FPL Zero (Full Charity); 100-200% FPL 10% of nominal ($6.00); 200-400% FPL 100% of nominal ($60.00); >400% FPL No Discount. RHC excludes outside-purchased services (reference lab, drugs, x-ray interpretation by consulting radiologist)."
+      },
+      "contact": {
+        "phone": "(844) 827-5047",
+        "website": "Adventist Health Help Paying Your Bill"
+      },
+      "source_quotes": {
+        "agb": "The method used to calculate the AGB is the Look-Back Method based on claims allowed by Medicare fee-for-service that pay claims to the hospital facility during a 12-month period (as defined by Treasury Regulations under section 501(r)...). ... The AGB rate will be updated annually on January 1st of each year and implemented within 120 days of any AGB rate change.",
+        "discount_ceiling": "> 400% of the Federal Poverty Level | No Discount | No Discount",
+        "free_care": "200% or less of the Federal Poverty Level | Zero (Full Charity) [for Emergency Medical Care and Medically Necessary Care]"
+      },
+      "additional_provisions": [
+        "Financial Assistance approval is valid for 180 days after granted; applies to all eligible balances including those received before approval; new application needed for bills received after 180 days.",
+        "Refunds of overpayment (above amount determined owed) made within 30 days of eligibility determination, with interest per Code of Civil Procedure Section 685.010; but Adventist Health may decline reimbursement if patient would have qualified at first billing AND (i) 5+ years since last payment or (ii) debt sold before Jan 1 2022. Self-Pay policy sets a $5 de minimis (no refund if less than $5).",
+        "Non-covered/denied services and related services provided to Medicaid-eligible beneficiaries are treated as a form of Charity Care; Medicaid beneficiaries not responsible for liability besides Share of Cost unless waived/reduced.",
+        "Assets are NOT considered in determining Charity Care/Discounted Care eligibility (except monetary-asset documentation for Medi-Cal/Medicare Share of Cost reductions for Medicare bad debt).",
+        "Policy translated into each language spoken by lesser of 1,000 people or 5% of hospital service-area population; accessible formats for LEP/disabled individuals.",
+        "Patient must remit to Adventist Health any third-party reimbursement sent directly to them, and reimburse from any liable-third-party legal settlement/judgment/award up to amount reasonably awarded for health care.",
+        "Simultaneous application for other health coverage does not stop eligibility for either program; collections paused while applying for Medicaid/Medi-Cal.",
+        "No Surprise Billing / Good Faith Estimate provisions apply to self-pay/uninsured patients; $400-over-estimate dispute right; Notice and Consent for out-of-network balance billing.",
+        "Rural Health Clinic Discounts: eligibility based solely on family size and income (no asset testing, no requirement to apply to Medicaid/insurance); nominal charge $60.00 (or percentage) for patients >100% to ≤400% FPL, not a minimum fee or co-payment; RHC discount valid 12 months; RHC Application Period ends latter of 240th day after first post-discharge billing statement, 12 months after payment, or 30th day after written notice; self-declaration of income accepted; waiving of RHC charges requires Finance Officer approval and documentation.",
+        "Extended Payment Plans offered to uninsured patients and insured patients with High Medical Costs; all interest-free; may be declared inoperative after failure to make consecutive payments over 90-day period with notice/renegotiation opportunity; ECAs only after inoperative and 180+ days since initial billing.",
+        "Required pre-ECA notice must include dates of service, entity debt assigned/sold to, how to obtain itemized bill, health coverage name/plan type on record, FA application, and dates of prior FA notices/application/decision.",
+        "Incomplete FAP application: ECAs suspended and written notice given describing additional info needed; if later completed, considered.",
+        "Records retained 5 years; Collection Agencies must meet same standards, provide annual attestation; Debt Buyers must be DFPI-licensed, cannot charge interest/fees, cannot resell (with exceptions), and must return charity-eligible/incorrect-balance accounts.",
+        "Rural Health Clinic Family Members definition uses dependent children under 26 years (differs from FAP's under-21 definition)."
+      ],
+      "extraction_confidence": 0.9,
+      "extraction_notes": "Full-charity (free) care for uninsured is limited to Emergency/Medically Necessary care at ≤200% FPL; the same income band still pays 50% of AGB for care that is neither emergency nor medically necessary, so 200% is the free-care ceiling only for the emergency/necessary column. Discount ceiling is 400% FPL (above which no discount). Table 2 (insured with High Medical Costs) gives 'remaining AGB, if any' at ≤400% FPL — this can be effectively free when insurance already paid enough, but is not stated as guaranteed 100% free, so it is captured under high_medical_cost rather than free_care ceiling. AGB is facility-specific (no single percentage), so agb_percentage left null and per-facility values listed in notes. The Rural Health Clinic Discount is a separate additive program (Policy 14739) with its own nominal-fee sliding scale, captured in scope/additional_provisions. Note the RHC Exhibit B table header inconsistently references '2024 FPL' for the >400% column while others say 2025 FPL — likely a typo.\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 31920,
+      "2": 43280,
+      "3": 54640,
+      "4": 66000,
+      "5": 77360,
+      "6": 88720,
+      "7": 100080,
+      "8": 111440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 63840,
+      "2": 86560,
+      "3": 109280,
+      "4": 132000,
+      "5": 154720,
+      "6": 177440,
+      "7": 200160,
+      "8": 222880
+    },
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "hospital": "ADVENTIST HEALTH GLENDALE",
+    "oshpdid": "106190323",
+    "city": "GLENDALE",
+    "county": "Los Angeles",
+    "zip": "91206",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-glendale/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=45f37df7-3a02-4e5e-bd36-829a9cfff5a1",
+    "charity_effective_date": "04/25/2025",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=45f37df7-3a02-4e5e-bd36-829a9cfff5a1",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=1973a2c4-ccf3-4c9b-83a3-5d697cae13e6",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "c96d7898664c1beceddd785b49a29ad5c964b97de4955bcff799e1075ebfacaf",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (Financial Assistance Policy for California-Based Hospitals)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 200,
+        "notes": "Uninsured patients at or below 200% FPL receive Zero (Full Charity) for Emergency Medical Care and Medically Necessary Care (Table 1). Insured patients with High Medical Costs at or below 400% FPL owe only remaining AGB, if any, after insurance (Table 2) — this is not necessarily fully free. Presumptive 100% charity applies to Medicaid-eligible/active-Medicaid patients. Note: for uninsured non-emergency/non-medically-necessary care, patients ≤200% FPL still pay 50% of AGB (a discount, not free)."
+      },
+      "discount_payment": {
+        "agb_method": "look-back (Medicare fee-for-service claims over 12-month period per Treasury Regs under IRC 501(r)); updated annually January 1st, implemented within 120 days of change",
+        "agb_percentage": null,
+        "fpl_ceiling_pct": 400,
+        "notes": "AGB varies by facility (see Appendix C): e.g. Bakersfield 15%, Clear Lake 36%, Delano 20%, Glendale 15%, Hanford 19%, Howard Memorial 30%, Lodi Memorial 7%, Mendocino Coast 66%, Reedley 19%, Rideout 22%, Sierra Vista 9%, Simi Valley 16%, Sonora 17%, St. Helena 15%, Tehachapi Valley 27%, Twin Cities 7%, Tulare 19%, Ukiah Valley 20%, White Memorial 18%, Physician Network 34%, Home Care 60%. Charges limited to what hospital would expect from Medicare or Medi-Cal, whichever is greater, if lower than table amounts. Discount tiers below are for UNINSURED patients (Table 1). Tiers differ by whether care is Emergency/Medically Necessary vs. neither.",
+        "tiers": [
+          {
+            "fpl_low_pct": 0,
+            "fpl_high_pct": 200,
+            "benefit": "Emergency/Medically Necessary: Zero (Full Charity). Care that is neither: 50% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 201,
+            "fpl_high_pct": 300,
+            "benefit": "Emergency/Medically Necessary: 50% of the AGB (Discount). Care that is neither: 75% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 301,
+            "fpl_high_pct": 350,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 351,
+            "fpl_high_pct": 400,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          }
+        ]
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "High Medical Costs = annual Out-of-Pocket Costs incurred at an Adventist Health hospital exceeding the lesser of 10% of patient's current Household Income or Household Income in prior 12 months; OR annual OOP more than 10% of Household Income if patient documents medical expenses paid in prior 12 months. Table 2: Insured patients with High Medical Costs at ≤400% FPL owe remaining AGB, if any, after applying insurance payment; >400% FPL no discount, patient liable for remaining cost sharing."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": null,
+        "documentation_required": [
+          "Recent pay stubs from within 6 months before or after first billed (or in preservice when application submitted)",
+          "Copy of Federal Income Tax Return (Form 1040) for patient and spouse/domestic partner from year first billed or 12 months prior to first billed",
+          "Documentation of monetary assets may be required if seeking reduction of Medi-Cal/Medicare Share of Cost (for Medicare bad debt reimbursement); assets NOT considered in determining Charity Care/Discounted Care eligibility"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "100% Charity Care presumptive determination if: patient has active Medicaid plan, is eligible for Medicaid, or has current active Medicaid coverage even if not on date of service. Other presumptive factors (socio-economic): FA granted within last 180 days; homeless per medical record; patient expired with no known estate or spouse; currently incarcerated; qualifies for public benefit program (SSDI, Unemployment, Medicaid, County Indigent Health, TANF, Food Stamps, WIC); or meets another similar public benefit program's requirements. Electronic credit-based eligibility tool estimates income; data supporting ≤200% FPL applied only to past patient balances.",
+        "notes": "Application may be completed with assistance of PFS staff; must be signed by patient/legal representative; submitted by email, mail or online. Determination notified in writing by mail. Appeals in writing to facility Finance Officer within 30 days of decision letter; Finance Officer is final level of appeal."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "If eligible for Discounted Care, patient may enter an extended payment plan. Terms negotiated considering Household Income, Essential Living Expenses, and availability of health savings account. If no agreement, hospital creates plan where monthly payments do not exceed 10% of monthly Household Income, excluding deductions for Essential Living Expenses. All Extended Payment Plans are interest-free (per Self-Pay Billing & Collection Policy). Reasonable Payment Plan references HSC-style standard."
+      },
+      "debt_collection": {
+        "ecas_used": [
+          "Selling an individual's debt to another party (with exceptions)",
+          "Deferring or denying, or requiring payment before providing, Medically Necessary care (excluding emergency care) due to nonpayment",
+          "Legal/judicial actions: certain liens, foreclosures on real estate, attachments/seizures, commencing a civil action, writ of attachment, wage garnishment"
+        ],
+        "notes": "ECAs do NOT include reporting/furnishing medical debt info to credit bureaus; Adventist Health shall NOT furnish any medical debt information to any consumer credit reporting agency. ECAs do not include a hospital lien on personal-injury judgment/settlement proceeds. For patients eligible for Charity/Discounted Care, Collection Agency may not use wage garnishments or file a lien against real property. Finance Officer must approve each individual legal action in writing (non-delegable); actions require 30 days prior notice. If debt sold to Debt Buyer: contractual return of accounts eligible for charity/incorrect balances, no resale, no interest/fees, buyer must be DFPI-licensed. Records kept 5 years. Extended Payment Plan may be declared inoperative after failure to make consecutive payments during 90-day period, with notice/renegotiation opportunity.",
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "waiting_period_days_before_ecas": 180
+      },
+      "scope": {
+        "covered_services": [
+          "Health care services provided at Adventist Health owned/operated California facilities (Appendix A)",
+          "Services rendered by practitioners listed as 'Covered Provider' in Appendix B documentation",
+          "Uninsured patient charges as well as patient liability for insured patients (coinsurance, copayment, deductible, and other liabilities for medically necessary hospital services)",
+          "Medi-Cal or Medicare Share of Cost may be waived or reduced as part of Charity Care/Discounted Care"
+        ],
+        "excluded_services": [
+          "Emergency room physicians in acute care facilities unless listed as Covered Provider in Appendix B (required by CA law to independently offer discounts to uninsured/High Medical Cost patients ≤400% FPL)",
+          "Medically Unnecessary Care with provider attestation",
+          "Purchases from hospital retail operations (gift shops, cafeteria)",
+          "Non-hospital services (e.g. physician services) not billed by hospital, except Covered Providers in Appendix B",
+          "Services that are not licensed hospital services"
+        ],
+        "notes": "Separate Rural Health Clinic Discount program (Policy 14739, Appendix F/Exhibit B) applies to RHC visits in addition to this FAP: sliding scale by family size/income only — <100% FPL Zero (Full Charity); 100-200% FPL 10% of nominal ($6.00); 200-400% FPL 100% of nominal ($60.00); >400% FPL No Discount. RHC excludes outside-purchased services (reference lab, drugs, x-ray interpretation by consulting radiologist)."
+      },
+      "contact": {
+        "phone": "(844) 827-5047",
+        "website": "Adventist Health Help Paying Your Bill"
+      },
+      "source_quotes": {
+        "agb": "The method used to calculate the AGB is the Look-Back Method based on claims allowed by Medicare fee-for-service that pay claims to the hospital facility during a 12-month period (as defined by Treasury Regulations under section 501(r)...). ... The AGB rate will be updated annually on January 1st of each year and implemented within 120 days of any AGB rate change.",
+        "discount_ceiling": "> 400% of the Federal Poverty Level | No Discount | No Discount",
+        "free_care": "200% or less of the Federal Poverty Level | Zero (Full Charity) [for Emergency Medical Care and Medically Necessary Care]"
+      },
+      "additional_provisions": [
+        "Financial Assistance approval is valid for 180 days after granted; applies to all eligible balances including those received before approval; new application needed for bills received after 180 days.",
+        "Refunds of overpayment (above amount determined owed) made within 30 days of eligibility determination, with interest per Code of Civil Procedure Section 685.010; but Adventist Health may decline reimbursement if patient would have qualified at first billing AND (i) 5+ years since last payment or (ii) debt sold before Jan 1 2022. Self-Pay policy sets a $5 de minimis (no refund if less than $5).",
+        "Non-covered/denied services and related services provided to Medicaid-eligible beneficiaries are treated as a form of Charity Care; Medicaid beneficiaries not responsible for liability besides Share of Cost unless waived/reduced.",
+        "Assets are NOT considered in determining Charity Care/Discounted Care eligibility (except monetary-asset documentation for Medi-Cal/Medicare Share of Cost reductions for Medicare bad debt).",
+        "Policy translated into each language spoken by lesser of 1,000 people or 5% of hospital service-area population; accessible formats for LEP/disabled individuals.",
+        "Patient must remit to Adventist Health any third-party reimbursement sent directly to them, and reimburse from any liable-third-party legal settlement/judgment/award up to amount reasonably awarded for health care.",
+        "Simultaneous application for other health coverage does not stop eligibility for either program; collections paused while applying for Medicaid/Medi-Cal.",
+        "No Surprise Billing / Good Faith Estimate provisions apply to self-pay/uninsured patients; $400-over-estimate dispute right; Notice and Consent for out-of-network balance billing.",
+        "Rural Health Clinic Discounts: eligibility based solely on family size and income (no asset testing, no requirement to apply to Medicaid/insurance); nominal charge $60.00 (or percentage) for patients >100% to ≤400% FPL, not a minimum fee or co-payment; RHC discount valid 12 months; RHC Application Period ends latter of 240th day after first post-discharge billing statement, 12 months after payment, or 30th day after written notice; self-declaration of income accepted; waiving of RHC charges requires Finance Officer approval and documentation.",
+        "Extended Payment Plans offered to uninsured patients and insured patients with High Medical Costs; all interest-free; may be declared inoperative after failure to make consecutive payments over 90-day period with notice/renegotiation opportunity; ECAs only after inoperative and 180+ days since initial billing.",
+        "Required pre-ECA notice must include dates of service, entity debt assigned/sold to, how to obtain itemized bill, health coverage name/plan type on record, FA application, and dates of prior FA notices/application/decision.",
+        "Incomplete FAP application: ECAs suspended and written notice given describing additional info needed; if later completed, considered.",
+        "Records retained 5 years; Collection Agencies must meet same standards, provide annual attestation; Debt Buyers must be DFPI-licensed, cannot charge interest/fees, cannot resell (with exceptions), and must return charity-eligible/incorrect-balance accounts.",
+        "Rural Health Clinic Family Members definition uses dependent children under 26 years (differs from FAP's under-21 definition)."
+      ],
+      "extraction_confidence": 0.9,
+      "extraction_notes": "Full-charity (free) care for uninsured is limited to Emergency/Medically Necessary care at ≤200% FPL; the same income band still pays 50% of AGB for care that is neither emergency nor medically necessary, so 200% is the free-care ceiling only for the emergency/necessary column. Discount ceiling is 400% FPL (above which no discount). Table 2 (insured with High Medical Costs) gives 'remaining AGB, if any' at ≤400% FPL — this can be effectively free when insurance already paid enough, but is not stated as guaranteed 100% free, so it is captured under high_medical_cost rather than free_care ceiling. AGB is facility-specific (no single percentage), so agb_percentage left null and per-facility values listed in notes. The Rural Health Clinic Discount is a separate additive program (Policy 14739) with its own nominal-fee sliding scale, captured in scope/additional_provisions. Note the RHC Exhibit B table header inconsistently references '2024 FPL' for the >400% column while others say 2025 FPL — likely a typo.\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 31920,
+      "2": 43280,
+      "3": 54640,
+      "4": 66000,
+      "5": 77360,
+      "6": 88720,
+      "7": 100080,
+      "8": 111440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 63840,
+      "2": 86560,
+      "3": 109280,
+      "4": 132000,
+      "5": 154720,
+      "6": 177440,
+      "7": 200160,
+      "8": 222880
+    },
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "hospital": "ADVENTIST HEALTH HANFORD",
+    "oshpdid": "106164029",
+    "city": "HANFORD",
+    "county": "Kings",
+    "zip": "93230",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-hanford/",
+    "charity_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=fedc5a82-6ea1-4935-a495-abc84697da47",
+    "charity_effective_date": "04/25/2025",
+    "discount_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=fedc5a82-6ea1-4935-a495-abc84697da47",
+    "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=0efd8998-731d-44dc-a1a8-6191cf8ebd67",
+    "extracted_at": null,
+    "model": "claude-opus-4-8",
+    "source_sha256": "c96d7898664c1beceddd785b49a29ad5c964b97de4955bcff799e1075ebfacaf",
+    "status": "extracted",
+    "policy": {
+      "policy_type": "Combined Charity Care & Discount Payment (Financial Assistance Policy for California-Based Hospitals)",
+      "free_care": {
+        "applies_to": "both",
+        "fpl_ceiling_pct": 200,
+        "notes": "Uninsured patients at or below 200% FPL receive Zero (Full Charity) for Emergency Medical Care and Medically Necessary Care (Table 1). Insured patients with High Medical Costs at or below 400% FPL owe only remaining AGB, if any, after insurance (Table 2) — this is not necessarily fully free. Presumptive 100% charity applies to Medicaid-eligible/active-Medicaid patients. Note: for uninsured non-emergency/non-medically-necessary care, patients ≤200% FPL still pay 50% of AGB (a discount, not free)."
+      },
+      "discount_payment": {
+        "agb_method": "look-back (Medicare fee-for-service claims over 12-month period per Treasury Regs under IRC 501(r)); updated annually January 1st, implemented within 120 days of change",
+        "agb_percentage": null,
+        "fpl_ceiling_pct": 400,
+        "notes": "AGB varies by facility (see Appendix C): e.g. Bakersfield 15%, Clear Lake 36%, Delano 20%, Glendale 15%, Hanford 19%, Howard Memorial 30%, Lodi Memorial 7%, Mendocino Coast 66%, Reedley 19%, Rideout 22%, Sierra Vista 9%, Simi Valley 16%, Sonora 17%, St. Helena 15%, Tehachapi Valley 27%, Twin Cities 7%, Tulare 19%, Ukiah Valley 20%, White Memorial 18%, Physician Network 34%, Home Care 60%. Charges limited to what hospital would expect from Medicare or Medi-Cal, whichever is greater, if lower than table amounts. Discount tiers below are for UNINSURED patients (Table 1). Tiers differ by whether care is Emergency/Medically Necessary vs. neither.",
+        "tiers": [
+          {
+            "fpl_low_pct": 0,
+            "fpl_high_pct": 200,
+            "benefit": "Emergency/Medically Necessary: Zero (Full Charity). Care that is neither: 50% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 201,
+            "fpl_high_pct": 300,
+            "benefit": "Emergency/Medically Necessary: 50% of the AGB (Discount). Care that is neither: 75% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 301,
+            "fpl_high_pct": 350,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          },
+          {
+            "fpl_low_pct": 351,
+            "fpl_high_pct": 400,
+            "benefit": "Emergency/Medically Necessary: 75% of the AGB (Discount). Care that is neither: 100% of the AGB (Discount)",
+            "discount_basis": "AGB",
+            "patient_pays_pct": null
+          }
+        ]
+      },
+      "high_medical_cost": {
+        "fpl_ceiling_pct": 400,
+        "oop_threshold_pct_of_income": 10,
+        "notes": "High Medical Costs = annual Out-of-Pocket Costs incurred at an Adventist Health hospital exceeding the lesser of 10% of patient's current Household Income or Household Income in prior 12 months; OR annual OOP more than 10% of Household Income if patient documents medical expenses paid in prior 12 months. Table 2: Insured patients with High Medical Costs at ≤400% FPL owe remaining AGB, if any, after applying insurance payment; >400% FPL no discount, patient liable for remaining cost sharing."
+      },
+      "eligibility_process": {
+        "application_required": true,
+        "application_window_days": null,
+        "documentation_required": [
+          "Recent pay stubs from within 6 months before or after first billed (or in preservice when application submitted)",
+          "Copy of Federal Income Tax Return (Form 1040) for patient and spouse/domestic partner from year first billed or 12 months prior to first billed",
+          "Documentation of monetary assets may be required if seeking reduction of Medi-Cal/Medicare Share of Cost (for Medicare bad debt reimbursement); assets NOT considered in determining Charity Care/Discounted Care eligibility"
+        ],
+        "presumptive_eligibility": true,
+        "presumptive_criteria": "100% Charity Care presumptive determination if: patient has active Medicaid plan, is eligible for Medicaid, or has current active Medicaid coverage even if not on date of service. Other presumptive factors (socio-economic): FA granted within last 180 days; homeless per medical record; patient expired with no known estate or spouse; currently incarcerated; qualifies for public benefit program (SSDI, Unemployment, Medicaid, County Indigent Health, TANF, Food Stamps, WIC); or meets another similar public benefit program's requirements. Electronic credit-based eligibility tool estimates income; data supporting ≤200% FPL applied only to past patient balances.",
+        "notes": "Application may be completed with assistance of PFS staff; must be signed by patient/legal representative; submitted by email, mail or online. Determination notified in writing by mail. Appeals in writing to facility Finance Officer within 30 days of decision letter; Finance Officer is final level of appeal."
+      },
+      "payment_plans": {
+        "interest_free": true,
+        "max_monthly_pct_of_income": 10,
+        "reasonable_payment_plan": true,
+        "notes": "If eligible for Discounted Care, patient may enter an extended payment plan. Terms negotiated considering Household Income, Essential Living Expenses, and availability of health savings account. If no agreement, hospital creates plan where monthly payments do not exceed 10% of monthly Household Income, excluding deductions for Essential Living Expenses. All Extended Payment Plans are interest-free (per Self-Pay Billing & Collection Policy). Reasonable Payment Plan references HSC-style standard."
+      },
+      "debt_collection": {
+        "ecas_used": [
+          "Selling an individual's debt to another party (with exceptions)",
+          "Deferring or denying, or requiring payment before providing, Medically Necessary care (excluding emergency care) due to nonpayment",
+          "Legal/judicial actions: certain liens, foreclosures on real estate, attachments/seizures, commencing a civil action, writ of attachment, wage garnishment"
+        ],
+        "notes": "ECAs do NOT include reporting/furnishing medical debt info to credit bureaus; Adventist Health shall NOT furnish any medical debt information to any consumer credit reporting agency. ECAs do not include a hospital lien on personal-injury judgment/settlement proceeds. For patients eligible for Charity/Discounted Care, Collection Agency may not use wage garnishments or file a lien against real property. Finance Officer must approve each individual legal action in writing (non-delegable); actions require 30 days prior notice. If debt sold to Debt Buyer: contractual return of accounts eligible for charity/incorrect balances, no resale, no interest/fees, buyer must be DFPI-licensed. Records kept 5 years. Extended Payment Plan may be declared inoperative after failure to make consecutive payments during 90-day period, with notice/renegotiation opportunity.",
+        "reports_to_credit_bureaus": false,
+        "sells_debt": true,
+        "waiting_period_days_before_ecas": 180
+      },
+      "scope": {
+        "covered_services": [
+          "Health care services provided at Adventist Health owned/operated California facilities (Appendix A)",
+          "Services rendered by practitioners listed as 'Covered Provider' in Appendix B documentation",
+          "Uninsured patient charges as well as patient liability for insured patients (coinsurance, copayment, deductible, and other liabilities for medically necessary hospital services)",
+          "Medi-Cal or Medicare Share of Cost may be waived or reduced as part of Charity Care/Discounted Care"
+        ],
+        "excluded_services": [
+          "Emergency room physicians in acute care facilities unless listed as Covered Provider in Appendix B (required by CA law to independently offer discounts to uninsured/High Medical Cost patients ≤400% FPL)",
+          "Medically Unnecessary Care with provider attestation",
+          "Purchases from hospital retail operations (gift shops, cafeteria)",
+          "Non-hospital services (e.g. physician services) not billed by hospital, except Covered Providers in Appendix B",
+          "Services that are not licensed hospital services"
+        ],
+        "notes": "Separate Rural Health Clinic Discount program (Policy 14739, Appendix F/Exhibit B) applies to RHC visits in addition to this FAP: sliding scale by family size/income only — <100% FPL Zero (Full Charity); 100-200% FPL 10% of nominal ($6.00); 200-400% FPL 100% of nominal ($60.00); >400% FPL No Discount. RHC excludes outside-purchased services (reference lab, drugs, x-ray interpretation by consulting radiologist)."
+      },
+      "contact": {
+        "phone": "(844) 827-5047",
+        "website": "Adventist Health Help Paying Your Bill"
+      },
+      "source_quotes": {
+        "agb": "The method used to calculate the AGB is the Look-Back Method based on claims allowed by Medicare fee-for-service that pay claims to the hospital facility during a 12-month period (as defined by Treasury Regulations under section 501(r)...). ... The AGB rate will be updated annually on January 1st of each year and implemented within 120 days of any AGB rate change.",
+        "discount_ceiling": "> 400% of the Federal Poverty Level | No Discount | No Discount",
+        "free_care": "200% or less of the Federal Poverty Level | Zero (Full Charity) [for Emergency Medical Care and Medically Necessary Care]"
+      },
+      "additional_provisions": [
+        "Financial Assistance approval is valid for 180 days after granted; applies to all eligible balances including those received before approval; new application needed for bills received after 180 days.",
+        "Refunds of overpayment (above amount determined owed) made within 30 days of eligibility determination, with interest per Code of Civil Procedure Section 685.010; but Adventist Health may decline reimbursement if patient would have qualified at first billing AND (i) 5+ years since last payment or (ii) debt sold before Jan 1 2022. Self-Pay policy sets a $5 de minimis (no refund if less than $5).",
+        "Non-covered/denied services and related services provided to Medicaid-eligible beneficiaries are treated as a form of Charity Care; Medicaid beneficiaries not responsible for liability besides Share of Cost unless waived/reduced.",
+        "Assets are NOT considered in determining Charity Care/Discounted Care eligibility (except monetary-asset documentation for Medi-Cal/Medicare Share of Cost reductions for Medicare bad debt).",
+        "Policy translated into each language spoken by lesser of 1,000 people or 5% of hospital service-area population; accessible formats for LEP/disabled individuals.",
+        "Patient must remit to Adventist Health any third-party reimbursement sent directly to them, and reimburse from any liable-third-party legal settlement/judgment/award up to amount reasonably awarded for health care.",
+        "Simultaneous application for other health coverage does not stop eligibility for either program; collections paused while applying for Medicaid/Medi-Cal.",
+        "No Surprise Billing / Good Faith Estimate provisions apply to self-pay/uninsured patients; $400-over-estimate dispute right; Notice and Consent for out-of-network balance billing.",
+        "Rural Health Clinic Discounts: eligibility based solely on family size and income (no asset testing, no requirement to apply to Medicaid/insurance); nominal charge $60.00 (or percentage) for patients >100% to ≤400% FPL, not a minimum fee or co-payment; RHC discount valid 12 months; RHC Application Period ends latter of 240th day after first post-discharge billing statement, 12 months after payment, or 30th day after written notice; self-declaration of income accepted; waiving of RHC charges requires Finance Officer approval and documentation.",
+        "Extended Payment Plans offered to uninsured patients and insured patients with High Medical Costs; all interest-free; may be declared inoperative after failure to make consecutive payments over 90-day period with notice/renegotiation opportunity; ECAs only after inoperative and 180+ days since initial billing.",
+        "Required pre-ECA notice must include dates of service, entity debt assigned/sold to, how to obtain itemized bill, health coverage name/plan type on record, FA application, and dates of prior FA notices/application/decision.",
+        "Incomplete FAP application: ECAs suspended and written notice given describing additional info needed; if later completed, considered.",
+        "Records retained 5 years; Collection Agencies must meet same standards, provide annual attestation; Debt Buyers must be DFPI-licensed, cannot charge interest/fees, cannot resell (with exceptions), and must return charity-eligible/incorrect-balance accounts.",
+        "Rural Health Clinic Family Members definition uses dependent children under 26 years (differs from FAP's under-21 definition)."
+      ],
+      "extraction_confidence": 0.9,
+      "extraction_notes": "Full-charity (free) care for uninsured is limited to Emergency/Medically Necessary care at ≤200% FPL; the same income band still pays 50% of AGB for care that is neither emergency nor medically necessary, so 200% is the free-care ceiling only for the emergency/necessary column. Discount ceiling is 400% FPL (above which no discount). Table 2 (insured with High Medical Costs) gives 'remaining AGB, if any' at ≤400% FPL — this can be effectively free when insurance already paid enough, but is not stated as guaranteed 100% free, so it is captured under high_medical_cost rather than free_care ceiling. AGB is facility-specific (no single percentage), so agb_percentage left null and per-facility values listed in notes. The Rural Health Clinic Discount is a separate additive program (Policy 14739) with its own nominal-fee sliding scale, captured in scope/additional_provisions. Note the RHC Exhibit B table header inconsistently references '2024 FPL' for the >400% column while others say 2025 FPL — likely a typo.\"",
+      "_truncated": false
+    },
+    "free_care_income_ceiling_by_household": {
+      "1": 31920,
+      "2": 43280,
+      "3": 54640,
+      "4": 66000,
+      "5": 77360,
+      "6": 88720,
+      "7": 100080,
+      "8": 111440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 63840,
+      "2": 86560,
+      "3": 109280,
+      "4": 132000,
+      "5": 154720,
+      "6": 177440,
+      "7": 200160,
+      "8": 222880
+    },
+    "needs_review": false,
+    "review_reasons": []
+  }
+]

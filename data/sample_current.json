@@ -1,0 +1,184 @@
+[
+  {
+    "post_title": "ADVENTIST HEALTH AND RIDEOUT",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-and-rideout/",
+    "city": "MARYSVILLE",
+    "zip": "95901",
+    "county": "Yuba",
+    "archive_oshpdid": "106580996",
+    "policies": {
+      "charity_care": {
+        "current_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=bfb734fe-4e7f-484a-bd20-da3e6db76885",
+        "current_effective_date": "05/13/2025",
+        "archived_policies": [
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=89832149-65b6-4920-b0c3-ba2d77dbfd85",
+            "effective_date": "05/13/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=a5aa4c32-b042-4831-b4a1-5db38fdb50c1",
+            "effective_date": "04/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=cd151a0b-dd59-463a-af36-7f1b7138831b",
+            "effective_date": "02/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=9f3caaf1-e893-4ea6-9aee-495bc33eaab1",
+            "effective_date": "11/20/2024"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=0aca96a7-ce6e-4617-9c5e-53f03bb0f78c",
+            "effective_date": "05/04/2023"
+          }
+        ],
+        "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=47d17dfe-cc85-4461-b272-44d1680766bb",
+        "application_effective_date": "11/20/2024",
+        "archive_oshpdid": "106580996"
+      },
+      "discount_payment": {
+        "current_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=bfb734fe-4e7f-484a-bd20-da3e6db76885",
+        "current_effective_date": "05/13/2025",
+        "archived_policies": [
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=89832149-65b6-4920-b0c3-ba2d77dbfd85",
+            "effective_date": "05/13/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=a5aa4c32-b042-4831-b4a1-5db38fdb50c1",
+            "effective_date": "04/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=cd151a0b-dd59-463a-af36-7f1b7138831b",
+            "effective_date": "02/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=9f3caaf1-e893-4ea6-9aee-495bc33eaab1",
+            "effective_date": "11/20/2024"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=f52d5b51-a0c1-47e3-98d7-ed587ca12a74",
+            "effective_date": "03/31/2023"
+          }
+        ],
+        "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=47d17dfe-cc85-4461-b272-44d1680766bb",
+        "application_effective_date": "11/20/2024",
+        "archive_oshpdid": "106580996"
+      },
+      "debt_collection": {
+        "current_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=58189e9c-5459-460d-a995-fb2aaf3d67cd",
+        "current_effective_date": "05/25/2025",
+        "archived_policies": [
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=099d28fb-b63b-48cd-a6f4-013e03cb2412",
+            "effective_date": "05/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=739faeb6-4226-4008-bc76-5aacaeedb53d",
+            "effective_date": "04/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=e1a4526f-b363-481e-9c57-a94d7904209d",
+            "effective_date": "02/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=c36955a5-405c-419d-9c01-70ca6887ac0c",
+            "effective_date": "11/20/2024"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=2f7496cd-d4ab-4354-b96d-d22320ad0b9a",
+            "effective_date": "03/31/2023"
+          }
+        ],
+        "application_url": null,
+        "application_effective_date": null,
+        "archive_oshpdid": "106580996"
+      }
+    }
+  },
+  {
+    "post_title": "ADVENTIST HEALTH BAKERSFIELD",
+    "permalink": "https://hcai.ca.gov/affordability/hospital-billing-policies/adventist-health-bakersfield/",
+    "city": "BAKERSFIELD",
+    "zip": "93301",
+    "county": "Kern",
+    "archive_oshpdid": "106150788",
+    "policies": {
+      "charity_care": {
+        "current_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=693e3d80-164c-4364-83c0-d7ff11aa347d",
+        "current_effective_date": "04/25/2025",
+        "archived_policies": [
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=6016ef25-0891-4f60-b26e-6ed791fa26d3",
+            "effective_date": "04/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=11f30174-341f-4228-a8e3-41df5d5dbf0d",
+            "effective_date": "02/26/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=75e79fbb-1c79-442d-bf88-11415b983d26",
+            "effective_date": "11/20/2024"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=7eea3a00-c7c8-4623-bd7d-fd59ec27380c",
+            "effective_date": "05/04/2023"
+          }
+        ],
+        "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=cca6fcfe-cc93-4c65-90d8-e9d660aff964",
+        "application_effective_date": "11/20/2024",
+        "archive_oshpdid": "106150788"
+      },
+      "discount_payment": {
+        "current_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=693e3d80-164c-4364-83c0-d7ff11aa347d",
+        "current_effective_date": "04/25/2025",
+        "archived_policies": [
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=6016ef25-0891-4f60-b26e-6ed791fa26d3",
+            "effective_date": "04/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=11f30174-341f-4228-a8e3-41df5d5dbf0d",
+            "effective_date": "02/26/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=75e79fbb-1c79-442d-bf88-11415b983d26",
+            "effective_date": "11/20/2024"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=c7a054f9-cc87-4f20-97b9-5a22fdb77973",
+            "effective_date": "03/31/2023"
+          }
+        ],
+        "application_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=cca6fcfe-cc93-4c65-90d8-e9d660aff964",
+        "application_effective_date": "11/20/2024",
+        "archive_oshpdid": "106150788"
+      },
+      "debt_collection": {
+        "current_policy_url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=17a3f272-446b-4498-9491-9ac75b335f86",
+        "current_effective_date": "04/25/2025",
+        "archived_policies": [
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=f13580a9-fa1a-4f2f-af40-2397eec49b96",
+            "effective_date": "04/25/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=79634a1e-b870-4d8e-81a9-61a7f23f9435",
+            "effective_date": "02/26/2025"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=6c7d8bb4-6bd5-41aa-b788-5ff3bc69fd49",
+            "effective_date": "11/20/2024"
+          },
+          {
+            "url": "https://api.hdc.hcai.ca.gov/Public/Extract/Attachment?id=13c5fb64-d95d-4879-bea4-a78749e355b5",
+            "effective_date": "03/31/2023"
+          }
+        ],
+        "application_url": null,
+        "application_effective_date": null,
+        "archive_oshpdid": "106150788"
+      }
+    }
+  }
+]

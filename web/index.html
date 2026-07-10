@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cobijo Health — help with your medical bills</title>
+<style>
+  :root{
+    --ink:#1a2e28; --sand:#f6f1e7; --card:#fffdf8; --teal:#1f6f54; --teal-d:#155540;
+    --gold:#c79a3c; --line:#e3dccb; --muted:#5c6b63;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sand);color:var(--ink);
+    font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
+  header{padding:34px 0 22px;display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .brand span{color:var(--teal)}
+  .tag{color:var(--muted);margin-top:2px}
+  .langtoggle{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+  .langtoggle button{border:0;background:transparent;padding:11px 18px;min-height:44px;font:inherit;font-weight:600;cursor:pointer;color:var(--muted)}
+  .langtoggle button.on{background:var(--teal);color:#fff}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;
+    box-shadow:0 1px 0 rgba(0,0,0,.02),0 12px 32px -20px rgba(31,111,84,.35)}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 22px}
+  label{display:block;font-weight:600;margin:16px 0 6px;font-size:15px}
+  input,select{width:100%;padding:12px 13px;font:inherit;border:1.5px solid var(--line);
+    border-radius:10px;background:#fff;color:var(--ink)}
+  input:focus,select:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+  :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .check{display:flex;align-items:center;gap:10px;margin-top:18px;font-weight:600}
+  .check input{width:auto}
+  button.go{margin-top:24px;width:100%;background:var(--teal);color:#fff;border:0;border-radius:12px;
+    padding:15px;font:inherit;font-weight:700;font-size:18px;cursor:pointer;transition:background .15s}
+  button.go:hover{background:var(--teal-d)}
+  button.go:disabled{opacity:.6;cursor:progress}
+  .out{margin-top:26px;display:none}
+  .plan{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;
+    padding:20px 22px;white-space:pre-wrap;font-size:16px}
+  .plan strong{color:var(--teal-d)}
+  details{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px 18px}
+  summary{cursor:pointer;font-weight:700;padding:12px 0}
+  .letter{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;
+    background:var(--sand);border-radius:8px;padding:16px;margin:6px 0 14px;overflow:auto}
+  .copy{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;margin-bottom:14px}
+  .err{color:#a12a1e;font-weight:600;margin-top:14px}
+  .foot{color:var(--muted);font-size:13.5px;margin-top:26px;text-align:center}
+  /* --- structured result --- */
+  .hero{border-radius:16px;padding:22px 24px;color:#fff;margin-bottom:16px;
+    box-shadow:0 12px 32px -20px rgba(0,0,0,.5)}
+  .hero.free{background:linear-gradient(135deg,#1f6f54,#15503d)}
+  .hero.discount{background:linear-gradient(135deg,#9a7020,#7e5a17)}
+  .hero.high_cost{background:linear-gradient(135deg,#2f6f8f,#245a74)}
+  .hero.over{background:linear-gradient(135deg,#5c6b63,#454f49)}
+  .hero .badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+    border-radius:50%;background:rgba(255,255,255,.22);font-size:20px;font-weight:800;margin-bottom:10px}
+  .hero .head{font-size:23px;font-weight:800;line-height:1.25;margin:0}
+  .hero .hsub{margin-top:8px;font-size:14.5px;opacity:.95}
+  .hero .hsub b{font-weight:800}
+  .chip{display:inline-block;margin-top:12px;background:rgba(0,0,0,.2);border-radius:999px;
+    padding:5px 12px;font-size:12.5px;font-weight:600}
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+  .rcard.soft{background:#fbf8f1;border-style:dashed}
+  .rcard-h{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--teal-d);font-size:16px;margin-bottom:8px}
+  .rcard-h .n{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+    border-radius:50%;background:var(--teal);color:#fff;font-size:14px;flex:none}
+  .rcard p{margin:6px 0}
+  .rcard strong{color:var(--teal-d)}
+  .ceiling{background:#eef6f1;border:1px solid #cfe6da;border-radius:10px;padding:12px 14px;margin:10px 0;
+    font-size:15px}
+  .ceiling b{color:var(--teal-d);font-size:19px}
+  .subh{font-weight:700;font-size:13.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:14px 0 6px}
+  ul.checks,ul.bul{list-style:none;padding:0;margin:0}
+  ul.checks li,ul.bul li{position:relative;padding:5px 0 5px 26px;font-size:15px}
+  ul.checks li:before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:800}
+  ul.bul li:before{content:"•";position:absolute;left:6px;color:var(--gold);font-weight:800}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}
+  .actions button{background:var(--teal);color:#fff;border:0;border-radius:10px;padding:11px 16px;
+    font:inherit;font-weight:700;cursor:pointer}
+  .actions button.alt{background:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">Cobijo<span> Health</span></div>
+      <div class="tag" data-t="tag">Free help finding financial assistance for your medical bills.</div>
+    </div>
+    <div class="langtoggle" role="group" aria-label="Language">
+      <button id="en" class="on" aria-pressed="true" onclick="setLang('en')">English</button>
+      <button id="es" aria-pressed="false" onclick="setLang('es')">Español</button>
+    </div>
+  </header>
+
+  <div class="card">
+    <h1 data-t="title">Let's find help for your bill</h1>
+    <p class="sub" data-t="sub">Answer a few questions. Nothing is saved, and it's completely free.</p>
+    <form id="f" onsubmit="return submitForm(event)">
+      <label for="hospital" data-t="hospital">Which hospital sent the bill?</label>
+      <input id="hospital" list="hospitals" autocomplete="off" required placeholder="Start typing the hospital name…">
+      <datalist id="hospitals"></datalist>
+
+      <div class="row">
+        <div>
+          <label for="income" data-t="income">Yearly household income ($)</label>
+          <input id="income" type="number" min="0" inputmode="numeric" required placeholder="30000">
+        </div>
+        <div>
+          <label for="household" data-t="household">People in your household</label>
+          <input id="household" type="number" min="1" inputmode="numeric" value="1" required>
+        </div>
+      </div>
+
+      <label for="insurance" data-t="insurance">Do you have health insurance?</label>
+      <select id="insurance">
+        <option value="uninsured" data-t="ins_no">No — I'm uninsured / self-pay</option>
+        <option value="insured" data-t="ins_yes">Yes — I have insurance</option>
+      </select>
+
+      <label class="check"><input id="collections" type="checkbox"> <span data-t="collections">This bill is already in collections</span></label>
+
+      <button class="go" id="go" type="submit" data-t="go">Get my plan</button>
+      <div class="err" id="err" role="alert" aria-live="assertive"></div>
+    </form>
+  </div>
+
+  <div class="out" id="out" tabindex="-1" aria-live="polite">
+    <div id="result"></div>
+    <details id="letterbox">
+      <summary data-t="letter_summary">Your ready-to-send request letter (English)</summary>
+      <button class="copy" onclick="copyLetter()" data-t="copy">Copy letter</button>
+      <div class="letter" id="letter"></div>
+    </details>
+    <div class="actions">
+      <button onclick="window.print()" data-t="print">Print / save my plan</button>
+      <button class="alt" onclick="restart()" data-t="restart">Start over</button>
+    </div>
+  </div>
+
+  <div class="foot" data-t="foot">Cobijo Health · California nonprofit (in formation) · not legal or medical advice</div>
+</div>
+
+<script>
+const UI = {
+  en:{tag:"Free help finding financial assistance for your medical bills.",
+     title:"Let's find help for your bill", sub:"Answer a few questions. Nothing is saved, and it's completely free.",
+     hospital:"Which hospital sent the bill?", income:"Yearly household income ($)",
+     household:"People in your household", insurance:"Do you have health insurance?",
+     ins_no:"No — I'm uninsured / self-pay", ins_yes:"Yes — I have insurance",
+     collections:"This bill is already in collections", go:"Get my plan",
+     letter_summary:"Your ready-to-send request letter (English)", copy:"Copy letter",
+     foot:"Cobijo Health · California nonprofit (in formation) · not legal or medical advice",
+     err_hospital:"We couldn't find that hospital — try selecting it from the list.",
+     hh:"household of", peryear:"/yr", fpl:"of the Federal Poverty Level",
+     sec_charity:"Hospital charity care", sec_apply:"How to apply",
+     sec_coverage:"Coverage you may qualify for", sec_debt:"Protecting you from the debt",
+     ceiling_pre:"Likely free for your household earning up to about",
+     review_label:"This hospital's data is being verified — a strong lead, not final",
+     effective_pre:"Based on this hospital's policy effective",
+     print:"Print / save my plan", restart:"Start over"},
+  es:{tag:"Ayuda gratuita para encontrar asistencia financiera para sus facturas médicas.",
+     title:"Encontremos ayuda para su factura", sub:"Responda unas preguntas. No guardamos nada y es totalmente gratis.",
+     hospital:"¿Qué hospital le envió la factura?", income:"Ingreso anual del hogar ($)",
+     household:"Personas en su hogar", insurance:"¿Tiene seguro médico?",
+     ins_no:"No — no tengo seguro / pago propio", ins_yes:"Sí — tengo seguro",
+     collections:"Esta factura ya está en cobranza", go:"Obtener mi plan",
+     letter_summary:"Su carta de solicitud lista para enviar (en inglés)", copy:"Copiar carta",
+     foot:"Cobijo Health · organización sin fines de lucro de California (en formación) · no es asesoría legal ni médica",
+     err_hospital:"No encontramos ese hospital — intente seleccionarlo de la lista.",
+     hh:"hogar de", peryear:"/año", fpl:"del Nivel Federal de Pobreza",
+     sec_charity:"Atención caritativa del hospital", sec_apply:"Cómo solicitar",
+     sec_coverage:"Cobertura para la que podría calificar", sec_debt:"Cómo protegerlo de la deuda",
+     ceiling_pre:"Probablemente gratis para su hogar que gane hasta aproximadamente",
+     review_label:"Los datos de este hospital se están verificando — una pista sólida, no definitiva",
+     effective_pre:"Según la política de este hospital vigente desde",
+     print:"Imprimir / guardar mi plan", restart:"Empezar de nuevo"}
+};
+let lang="en", lastReq=null, lastResult=null;
+function setLang(l){
+  lang=l; document.documentElement.lang=l;
+  const en=document.getElementById("en"), es=document.getElementById("es");
+  en.classList.toggle("on",l==="en"); es.classList.toggle("on",l==="es");
+  en.setAttribute("aria-pressed",l==="en"); es.setAttribute("aria-pressed",l==="es");
+  document.querySelectorAll("[data-t]").forEach(el=>{const v=UI[l][el.getAttribute("data-t")]; if(v) el.textContent=v;});
+  // if a plan is already on screen, re-fetch it in the new language (live for the demo)
+  if(lastReq && document.getElementById("out").style.display==="block") rerun();
+}
+fetch("/hospitals").then(r=>r.json()).then(list=>{
+  document.getElementById("hospitals").innerHTML=list.map(h=>`<option value="${h.replace(/"/g,'&quot;')}">`).join("");
+});
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function render(text){return esc(text).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");}
+let lastLetter="";
+function buildReq(){
+  return {hospital:document.getElementById("hospital").value,
+    income:document.getElementById("income").value,
+    household:document.getElementById("household").value,
+    insurance:document.getElementById("insurance").value,
+    in_collections:document.getElementById("collections").checked};
+}
+async function runPlan(){
+  const go=document.getElementById("go"), err=document.getElementById("err"), out=document.getElementById("out");
+  err.textContent=""; go.disabled=true; go.textContent="…";
+  try{
+    const res=await fetch("/plan",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(Object.assign({},lastReq,{lang}))});
+    if(!res.ok){ err.textContent=UI[lang].err_hospital; out.style.display="none"; return; }
+    const d=await res.json();
+    lastResult=d.result; lastLetter=d.letter;
+    renderResult(d.result);
+    document.getElementById("letter").textContent=d.letter;
+    out.style.display="block";
+    out.focus({preventScroll:true});     // move SR focus to the result so it's announced (aria-live can miss display flips)
+  }catch(_){ err.textContent="Something went wrong. Please try again."; }
+  finally{ go.disabled=false; go.textContent=UI[lang].go; }
+}
+function submitForm(e){
+  e.preventDefault(); lastReq=buildReq();
+  runPlan().then(()=>{ const out=document.getElementById("out");
+    if(out.style.display==="block") out.scrollIntoView({behavior:"smooth",block:"start"}); });
+  return false;
+}
+function rerun(){ if(lastReq) runPlan(); }
+function restart(){
+  document.getElementById("out").style.display="none"; lastReq=null;
+  document.getElementById("f").reset(); window.scrollTo({top:0,behavior:"smooth"});
+}
+const ICON={free:"✓",discount:"%",high_cost:"+",over:"☑"};
+function renderResult(r){
+  const U=UI[lang], h=r.hospital;
+  let html=`<div class="hero ${r.tier}">
+    <div class="badge" aria-hidden="true">${ICON[r.tier]||"✓"}</div>
+    <div class="head">${esc(r.headline)}</div>
+    <div class="hsub"><b>${esc(h.name)}</b> · ${U.hh} ${r.patient.household}, $${Number(r.patient.income).toLocaleString()}${U.peryear} ≈ ${Math.round(r.fpl_pct)}% ${U.fpl}</div>
+    ${h.needs_review?`<div class="chip">⚠ ${esc(U.review_label)}</div>`:""}
+  </div>`;
+  let n=1;   // number cards dynamically so an omitted section leaves no gap
+  html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_charity)}</div>
+    <p>${render(r.charity.message)}</p>`;
+  if(r.charity.income_ceiling)
+    html+=`<div class="ceiling">${esc(U.ceiling_pre)} <b>$${Number(r.charity.income_ceiling).toLocaleString()}${U.peryear}</b></div>`;
+  html+=`<div class="subh">${esc(U.sec_apply)}</div><ul class="checks">`+
+    r.charity.apply.map(a=>`<li>${render(a)}</li>`).join("")+`</ul>`;
+  if(h.effective_date) html+=`<p class="tag" style="font-size:13px;margin-top:10px">${esc(U.effective_pre)} ${esc(h.effective_date)}.</p>`;
+  html+=`</div>`;
+  if(r.benefits&&r.benefits.length)
+    html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_coverage)}</div><ul class="bul">`+
+      r.benefits.map(b=>`<li>${render(b)}</li>`).join("")+`</ul></div>`;
+  if(r.debt&&r.debt.length)
+    html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_debt)}</div><ul class="bul">`+
+      r.debt.map(d=>`<li>${render(d)}</li>`).join("")+`</ul></div>`;
+  html+=`<div class="rcard soft">${render(r.closing)}</div>`;
+  if(r.lang_note) html+=`<p class="foot" style="text-align:left;margin-top:8px">${esc(r.lang_note)}</p>`;
+  document.getElementById("result").innerHTML=html;
+}
+function copyLetter(){ navigator.clipboard.writeText(lastLetter); }
+</script>
+</body>
+</html>

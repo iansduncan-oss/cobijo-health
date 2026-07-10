@@ -1,0 +1,252 @@
+[
+  {
+    "oshpdid": "106010735",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=106010735",
+    "hospital": "ALAMEDA HOSPITAL",
+    "total_beds": "101",
+    "emergency_room": "Yes",
+    "website": "http://www.alamedahealthsystem.org",
+    "free_care_fpl_pct": 200.0,
+    "discount_tiers": [
+      {
+        "fpl_low_pct": 201.0,
+        "fpl_high_pct": 350.0
+      }
+    ],
+    "discount_payment_basis": "Medicare",
+    "policy_effective_date": "1/1/2012",
+    "discount_effective_date": "3/3/2008",
+    "application_effective_date": "6/14/2022",
+    "business_office_phone": "(510) 814-4386",
+    "free_care_income_ceiling_by_household": {
+      "1": 30120,
+      "2": 40880,
+      "3": 51640,
+      "4": 62400,
+      "5": 73160,
+      "6": 83920,
+      "7": 94680,
+      "8": 105440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 52710,
+      "2": 71540,
+      "3": 90370,
+      "4": 109200,
+      "5": 128030,
+      "6": 146860,
+      "7": 165690,
+      "8": 184520
+    }
+  },
+  {
+    "oshpdid": "206010956",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=206010956",
+    "hospital": "ALAMEDA HOSPITAL-SOUTH SHORE CONVALESCENT HOSPITAL",
+    "total_beds": "26",
+    "emergency_room": "Yes",
+    "website": "http://www.alamedahealthsystem.org",
+    "free_care_fpl_pct": 200.0,
+    "discount_tiers": [
+      {
+        "fpl_low_pct": 201.0,
+        "fpl_high_pct": 350.0
+      }
+    ],
+    "discount_payment_basis": "Medicare",
+    "policy_effective_date": "1/1/2012",
+    "discount_effective_date": "3/3/2008",
+    "application_effective_date": "6/14/2022",
+    "business_office_phone": "(510) 814-4386",
+    "free_care_income_ceiling_by_household": {
+      "1": 30120,
+      "2": 40880,
+      "3": 51640,
+      "4": 62400,
+      "5": 73160,
+      "6": 83920,
+      "7": 94680,
+      "8": 105440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 52710,
+      "2": 71540,
+      "3": 90370,
+      "4": 109200,
+      "5": 128030,
+      "6": 146860,
+      "7": 165690,
+      "8": 184520
+    }
+  },
+  {
+    "oshpdid": "106010937",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=106010937",
+    "hospital": "ALTA BATES SUMMIT MEDICAL CENTER",
+    "total_beds": "403",
+    "emergency_room": "Yes",
+    "website": "https://www.sutterhealth.org/absmc",
+    "free_care_fpl_pct": 400.0,
+    "discount_tiers": [],
+    "discount_payment_basis": null,
+    "policy_effective_date": "10/1/1990",
+    "discount_effective_date": "1/1/2016",
+    "application_effective_date": "1/1/2016",
+    "business_office_phone": "(916) 503-6978",
+    "free_care_income_ceiling_by_household": {
+      "1": 60240,
+      "2": 81760,
+      "3": 103280,
+      "4": 124800,
+      "5": 146320,
+      "6": 167840,
+      "7": 189360,
+      "8": 210880
+    },
+    "discount_income_ceiling_by_household": {}
+  },
+  {
+    "oshpdid": "106013626",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=106013626",
+    "hospital": "ALTA BATES SUMMIT MEDICAL CENTER - SUMMIT CAMPUS",
+    "total_beds": "58",
+    "emergency_room": "Yes",
+    "website": "https://www.sutterhealth.org/absmc",
+    "free_care_fpl_pct": 400.0,
+    "discount_tiers": [],
+    "discount_payment_basis": null,
+    "policy_effective_date": "10/1/1990",
+    "discount_effective_date": "1/1/2016",
+    "application_effective_date": "1/1/2016",
+    "business_office_phone": "(916) 503-6978",
+    "free_care_income_ceiling_by_household": {
+      "1": 60240,
+      "2": 81760,
+      "3": 103280,
+      "4": 124800,
+      "5": 146320,
+      "6": 167840,
+      "7": 189360,
+      "8": 210880
+    },
+    "discount_income_ceiling_by_household": {}
+  },
+  {
+    "oshpdid": "106010739",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=106010739",
+    "hospital": "ALTA BATES SUMMIT MEDICAL CENTER-ALTA BATES CAMPUS",
+    "total_beds": "339",
+    "emergency_room": "Yes",
+    "website": "https://www.sutterhealth.org/absmc",
+    "free_care_fpl_pct": 400.0,
+    "discount_tiers": [],
+    "discount_payment_basis": null,
+    "policy_effective_date": "10/1/1990",
+    "discount_effective_date": "1/1/2016",
+    "application_effective_date": "1/1/2016",
+    "business_office_phone": "(916) 503-6978",
+    "free_care_income_ceiling_by_household": {
+      "1": 60240,
+      "2": 81760,
+      "3": 103280,
+      "4": 124800,
+      "5": 146320,
+      "6": 167840,
+      "7": 189360,
+      "8": 210880
+    },
+    "discount_income_ceiling_by_household": {}
+  },
+  {
+    "oshpdid": "106010844",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=106010844",
+    "hospital": "ALTA BATES SUMMIT MEDICAL CENTER-HERRICK CAMPUS",
+    "total_beds": "68",
+    "emergency_room": "Yes",
+    "website": "https://www.sutterhealth.org/absmc",
+    "free_care_fpl_pct": 400.0,
+    "discount_tiers": [],
+    "discount_payment_basis": null,
+    "policy_effective_date": "10/1/1990",
+    "discount_effective_date": "1/1/2016",
+    "application_effective_date": "1/1/2016",
+    "business_office_phone": "(916) 503-6978",
+    "free_care_income_ceiling_by_household": {
+      "1": 60240,
+      "2": 81760,
+      "3": 103280,
+      "4": 124800,
+      "5": 146320,
+      "6": 167840,
+      "7": 189360,
+      "8": 210880
+    },
+    "discount_income_ceiling_by_household": {}
+  },
+  {
+    "oshpdid": "106014233",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=106014233",
+    "hospital": "EDEN MEDICAL CENTER",
+    "total_beds": "130",
+    "emergency_room": "Yes",
+    "website": "https://www.sutterhealth.org/eden",
+    "free_care_fpl_pct": 400.0,
+    "discount_tiers": [],
+    "discount_payment_basis": null,
+    "policy_effective_date": "10/1/1990",
+    "discount_effective_date": "1/1/2016",
+    "application_effective_date": "1/1/2016",
+    "business_office_phone": "(916) 503-6978",
+    "free_care_income_ceiling_by_household": {
+      "1": 60240,
+      "2": 81760,
+      "3": 103280,
+      "4": 124800,
+      "5": 146320,
+      "6": 167840,
+      "7": 189360,
+      "8": 210880
+    },
+    "discount_income_ceiling_by_household": {}
+  },
+  {
+    "oshpdid": "106010811",
+    "source_url": "https://syfphr.hcai.ca.gov/SearchDetail.aspx?oshpdid=106010811",
+    "hospital": "FAIRMONT HOSPITAL",
+    "total_beds": "159",
+    "emergency_room": "Yes",
+    "website": "http://www.acmedctr.org",
+    "free_care_fpl_pct": 200.0,
+    "discount_tiers": [
+      {
+        "fpl_low_pct": 201.0,
+        "fpl_high_pct": 350.0
+      }
+    ],
+    "discount_payment_basis": "Other",
+    "policy_effective_date": "3/1/2004",
+    "discount_effective_date": "3/1/2004",
+    "application_effective_date": "3/1/2008",
+    "business_office_phone": "(510) 437-4721",
+    "free_care_income_ceiling_by_household": {
+      "1": 30120,
+      "2": 40880,
+      "3": 51640,
+      "4": 62400,
+      "5": 73160,
+      "6": 83920,
+      "7": 94680,
+      "8": 105440
+    },
+    "discount_income_ceiling_by_household": {
+      "1": 52710,
+      "2": 71540,
+      "3": 90370,
+      "4": 109200,
+      "5": 128030,
+      "6": 146860,
+      "7": 165690,
+      "8": 184520
+    }
+  }
+]

@@ -1,0 +1,95 @@
+{
+  "policy_type": "Combined Charity Care & Discount Payment",
+  "free_care": {
+    "fpl_ceiling_pct": 200,
+    "applies_to": "uninsured",
+    "notes": "Uninsured family income ≤200% FPL at first billing qualifies for full charity care."
+  },
+  "high_medical_cost": {
+    "oop_threshold_pct_of_income": null,
+    "fpl_ceiling_pct": 400,
+    "notes": "Insured patients 0–400% FPL pay a sliding-scale share of the patient portion (Table 2): <200%=40%, 201–250%=60%, 251–400%=80%; combined payments capped at greater of Medicare/Medi-Cal."
+  },
+  "discount_payment": {
+    "fpl_ceiling_pct": 400,
+    "tiers": [
+      {
+        "fpl_low_pct": 201,
+        "fpl_high_pct": 225,
+        "benefit": "pays 20% of Medicare amount",
+        "discount_basis": "Medicare",
+        "patient_pays_pct": 20
+      },
+      {
+        "fpl_low_pct": 226,
+        "fpl_high_pct": 250,
+        "benefit": "pays 40% of Medicare amount",
+        "discount_basis": "Medicare",
+        "patient_pays_pct": 40
+      },
+      {
+        "fpl_low_pct": 251,
+        "fpl_high_pct": 275,
+        "benefit": "pays 60% of Medicare amount",
+        "discount_basis": "Medicare",
+        "patient_pays_pct": 60
+      },
+      {
+        "fpl_low_pct": 276,
+        "fpl_high_pct": 400,
+        "benefit": "pays 80% of Medicare amount",
+        "discount_basis": "Medicare",
+        "patient_pays_pct": 80
+      }
+    ],
+    "agb_percentage": null,
+    "agb_method": null,
+    "notes": "Uninsured 201–400% FPL pay a % of what Medicare would have paid (Table 1 sliding scale)."
+  },
+  "payment_plans": {
+    "interest_free": true,
+    "reasonable_payment_plan": true,
+    "max_monthly_pct_of_income": null,
+    "notes": "Qualified Payment Plan carries no interest; falls back to HSC §127400(i) 'reasonable payment plan' if no agreement."
+  },
+  "eligibility_process": {
+    "application_required": true,
+    "documentation_required": [],
+    "application_window_days": null,
+    "presumptive_eligibility": true,
+    "presumptive_criteria": "Homeless patients; deceased without third-party coverage/estate/probate; certain declared categories qualify presumptively.",
+    "notes": null
+  },
+  "scope": {
+    "covered_services": [
+      "Medically necessary inpatient services",
+      "Medically necessary outpatient services"
+    ],
+    "excluded_services": [
+      "Separately-billed physician fees (e.g. ER physicians, radiologists)"
+    ],
+    "notes": "ER physician services to uninsured/high-medical-cost patients ≤400% FPL are discounted per state law, billed separately."
+  },
+  "debt_collection": {
+    "waiting_period_days_before_ecas": null,
+    "reports_to_credit_bureaus": null,
+    "sells_debt": null,
+    "ecas_used": [],
+    "notes": "Debt-collection terms in separate policy."
+  },
+  "contact": {
+    "phone": null,
+    "website": null
+  },
+  "additional_provisions": [
+    "Patients >400% FPL with a catastrophic medical event may qualify at hospital management's discretion, based on liability at billed charges plus income/assets.",
+    "Patient 'family' defined per age (spouse/domestic partner/dependent children <21, or parent/caretaker for minors)."
+  ],
+  "source_quotes": {
+    "free_care": "If an uninsured patient's family income is 200% or less of the FPL ... the patient qualifies for full charity care.",
+    "discount_ceiling": "If an uninsured patient's family income is between 201% and 400% of the FPL ...",
+    "agb": null
+  },
+  "extraction_confidence": 0.95,
+  "extraction_notes": "Two distinct sliding scales: uninsured (Table 1, % of Medicare) vs insured patient-portion (Table 2). Both captured."
+}
