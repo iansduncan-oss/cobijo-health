@@ -34,8 +34,6 @@ PE_MAX_HOUSEHOLD = 15
 
 
 def policyengine_benefits(annual_income, household_size, state="CA", year=None, timeout=8):
-    if year is None:
-        year = BENEFIT_YEAR                 # current eligibility year, not a hardcoded 2026
     """Compute Medicaid + ACA PTC for a household via the PolicyEngine US API.
 
     Member 0 = the adult earner (carries all income). If size >= 2, member 1 is a second
@@ -45,6 +43,8 @@ def policyengine_benefits(annual_income, household_size, state="CA", year=None, 
         {"medicaid_eligible": bool, "medicaid_value": float, "aca_ptc": float, "raw": dict}
     Raises urllib/JSON/KeyError on failure — caller decides the fallback.
     """
+    if year is None:
+        year = BENEFIT_YEAR                 # current eligibility year, not a hardcoded 2026
     y = str(year)
     household_size = max(1, min(int(household_size), PE_MAX_HOUSEHOLD))
     members = [f"person_{i}" for i in range(household_size)]
