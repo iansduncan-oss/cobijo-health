@@ -490,5 +490,29 @@
     "cta_p": "Cobijo te evalúa para Medi-Cal y la ayuda financiera de tu hospital, y redacta tu carta — gratis, en tu idioma, sin guardar nada.",
     "cta_btn": "Ver si califico →",
     "nav_label": "Medi-Cal vs. ayuda financiera del hospital"
+  },
+  "guide_errors": {
+    "title": "Cómo revisar su cuenta del hospital en busca de errores en California | Cobijo Health",
+    "meta": "La mayoría de las cuentas de hospital tienen errores — y muchas veces le envían solo un resumen, no el detalle completo. Aquí le explicamos cómo obtener la cuenta detallada en California, encontrar cobros incorrectos y disputarlos antes de pagar.",
+    "h1": "Cómo revisar su cuenta del hospital en busca de errores",
+    "lead": "Antes de pagar una cuenta del hospital — o de aceptar un plan de pagos — vale la pena asegurarse de que la cuenta sea correcta. Las cuentas médicas tienen errores con mucha frecuencia, y el resumen que le manda el hospital al principio casi nunca tiene el detalle que usted necesita para detectarlos. Aquí le explicamos cómo obtener la cuenta detallada real y revisarla.",
+    "s1_h": "Primero, pida la cuenta detallada (itemized bill)",
+    "s1_p": "La cuenta que el hospital le envía por correo casi siempre es un resumen — unos pocos totales grandes. La cuenta detallada lista cada cargo por separado: cada medicamento, material, examen y día de habitación. Necesita ese detalle para encontrar errores. Usted tiene el derecho de pedir una cuenta completamente detallada: la ley federal No Surprises Act (Ley de No Sorpresas) obliga al hospital a proporcionársela si la pide, sin ningún costo para usted; y la Ley de Precios Justos Hospitalarios de California, reforzada por AB 1020, exige que el hospital le explique cómo obtener la cuenta detallada completa antes de poder enviar su deuda a cobranzas. Llame al departamento de facturación o use el portal de pacientes y pida una cuenta completamente detallada con los códigos de facturación.",
+    "s2_h": "Qué errores buscar",
+    "s2_p": "Revise línea por línea y compare la cuenta con lo que realmente ocurrió. Preste atención a: cargos duplicados (el mismo artículo cobrado dos veces), cargos por servicios, exámenes o medicamentos que usted nunca recibió, cantidades incorrectas — como que le cobren más días, pastillas o materiales de los que realmente tuvo, un procedimiento cancelado o reprogramado que de todas formas le cobraron, y cargos que deberían ir juntos pero que le facturaron por separado a un precio más alto. Si una línea tiene solo un código y un precio, pregúntele al departamento de facturación qué significa.",
+    "s3_h": "Compárela con sus registros personales",
+    "s3_p": "Si tiene seguro médico, compare la cuenta detallada con su Explanation of Benefits (EOB) — el resumen que le manda su seguro — para verificar que los montos y los servicios coincidan. Compruebe que su seguro fue facturado correctamente y que no le estén cobrando algo que el seguro ya pagó. Anote las fechas en que ingresó y salió del hospital, y cualquier procedimiento que recuerde; un día de habitación o un servicio fuera de esas fechas es una señal de alarma. Lleve su propio registro sencillo de fechas y tratamientos — es su herramienta más poderosa para detectar errores.",
+    "s4_h": "Dispute los errores por escrito",
+    "s4_p": "Si encuentra un error, no lo pague todavía — puede pedirle al hospital que corrija o revise ese cargo. Ponga su disputa por escrito (una carta breve o un mensaje por el portal), liste los cargos específicos y explique por qué están mal, y pida una cuenta corregida. Primero hay que corregir los errores; una vez que la cuenta sea correcta, todavía puede solicitar ayuda económica o un descuento por lo que realmente deba. Cobijo puede ayudarle a redactar esa solicitud.",
+    "list_h": "Cómo revisar su cuenta",
+    "li1": "Pida al departamento de facturación una cuenta completamente detallada (es su derecho en California).",
+    "li2": "Revise línea por línea: busque cargos duplicados y artículos que nunca recibió.",
+    "li3": "Verifique las cantidades y las fechas con sus fechas de ingreso y alta.",
+    "li4": "Compárela con el Explanation of Benefits (EOB) de su seguro, si tiene uno.",
+    "li5": "Dispute cualquier error por escrito antes de pagar y pida una cuenta corregida.",
+    "cta_h": "¿La cuenta sigue siendo muy alta después de corregir los errores?",
+    "cta_p": "Una vez que su cuenta esté correcta, Cobijo verifica si usted califica para ayuda económica o un descuento y redacta su carta de solicitud — sin costo, en su idioma, sin guardar ningún dato.",
+    "cta_btn": "Vea si califica →",
+    "nav_label": "Revise su cuenta en busca de errores"
   }
 }

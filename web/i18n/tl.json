@@ -490,5 +490,29 @@
     "cta_p": "Sinusuri ka ng Cobijo para sa Medi-Cal at sa charity care ng iyong ospital, pagkatapos ay isinusulat ang iyong liham — libre, sa iyong wika, walang nase-save.",
     "cta_btn": "Tingnan kung kwalipikado ka →",
     "nav_label": "Medi-Cal kumpara sa charity care"
+  },
+  "guide_errors": {
+    "title": "Paano Suriin ang Iyong Hospital Bill para sa mga Mali sa California | Cobijo Health",
+    "meta": "Maraming hospital bill ang may mali — at madalas, ang unang sinusulan sa inyo ay buod lamang, hindi ang detalyadong listahan ng bawat singil. Alamin kung paano makuha ang inyong itemized bill sa California, makilala ang karaniwang labis na singil, at paano ito itutol bago magbayad.",
+    "h1": "Paano suriin ang inyong hospital bill para sa mga mali",
+    "lead": "Bago kayo magbayad ng hospital bill — o pumayag sa payment plan — sulit na tiyakin muna kung tama ba ang bill. Madalas na may mali ang medical bills, at ang buod na unang ipinapadala ng ospital ay bihirang magpakita ng sapat na detalye para makita ang mga pagkakamali. Narito kung paano makuha ang tunay na itemized bill at suriin ito.",
+    "s1_h": "Una, humingi ng itemized bill",
+    "s1_p": "Ang bill na ipinapadala ng ospital sa inyo ay karaniwang buod lamang — ilang malalaking kabuuang halaga. Ang itemized bill ay naglilista ng bawat singil nang isa-isa: bawat gamot, kagamitan, pagsusuri, at araw na nasa silid. Kailangan ninyo ang detalyeng iyon para mahanap ang mga mali. May karapatan kayo na humingi ng kumpletong itemized bill: sa ilalim ng pederal na No Surprises Act, obligado ang ospital na ibigay ito kapag hiniling, nang walang bayad. Bukod doon, sa ilalim ng Hospital Fair Pricing Act ng California na pinalalakas ng AB 1020, dapat ipaalam ng ospital kung paano makuha ang kumpletong itemized bill bago pa nito ipadala ang inyong bill sa koleksyon. Tumawag sa billing department o gamitin ang inyong patient portal at humingi ng kumpletong itemized bill na may mga billing code.",
+    "s2_h": "Anong mga mali ang dapat hanapin",
+    "s2_p": "Suriin ang bawat linya at ihambing sa kung ano talaga ang nangyari. Abangan ang mga paulit-ulit na singil (ang parehong bagay na siningil nang dalawang beses), mga singil para sa serbisyo, pagsusuri, o gamot na hindi kayo natanggap, maling dami — tulad ng pagiging siningil para sa mas maraming araw, tableta, o kagamitan kaysa sa natanggap ninyo, isang pamamaraang nakansela o muling iskedyul na siningil pa rin, at mga singil na dapat sana ay sama-sama na siningil bilang magkakahiwalay na mahal na item. Kung may linya na may code lang at presyo, itanong sa billing kung ano ang ibig sabihin nito.",
+    "s3_h": "Ihambing sa inyong mga rekord",
+    "s3_p": "Kung mayroon kayong insurance, ihambing ang itemized bill sa inyong Explanation of Benefits (EOB) — dapat magkatugma ang mga halaga at serbisyo. Tiyakin na tama ang pagsingil sa inyong insurance at hindi kayo sinisingil para sa isang bagay na binayaran na nito. Tandaan ang inyong mga petsa ng pagpasok at paglabas sa ospital at ang mga pamamaraang natatandaan ninyo; ang isang araw sa silid o serbisyong wala sa mga petsang iyon ay babala. Panatilihin ang inyong sariling simpleng talaan ng mga petsa at paggamot — ito ang inyong pinakamalakas na kasangkapan para mahuli ang mga pagkakamali.",
+    "s4_h": "Itutol ang mga mali sa pamamagitan ng sulat",
+    "s4_p": "Kung nakahanap kayo ng pagkakamali, huwag muna magbayad — maaari ninyong hilingin sa ospital na itama o muling suriin ang singil. Isulat ang inyong tutol (maikling liham o mensahe sa portal), ilista ang mga tiyak na linya at kung bakit mali ang mga ito, at humingi ng itinamang itemized bill. Ang pagtatama ng mga mali ang una; kapag tama na ang bill, maaari pa rin kayong mag-apply para sa charity care o diskwento sa kung ano talaga ang utang ninyo. Maaaring tulungan kayo ni Cobijo na sumulat ng kahilingang iyon.",
+    "list_h": "Paano suriin ang inyong bill",
+    "li1": "Humingi sa billing department ng kumpletong itemized bill (karapatan ninyo ito sa California).",
+    "li2": "Suriin ang bawat linya: hanapin ang mga paulit-ulit na singil at mga item na hindi ninyo natanggap.",
+    "li3": "Ihambing ang mga dami at petsa sa inyong mga petsa ng pagpasok at paglabas.",
+    "li4": "Ihambing sa inyong Explanation of Benefits (EOB) ng insurance kung mayroon kayo.",
+    "li5": "Itutol ang anumang mali sa pamamagitan ng sulat bago magbayad, at humingi ng itinamang bill.",
+    "cta_h": "Mataas pa rin ang bill pagkatapos itama ang mga mali?",
+    "cta_p": "Kapag tama na ang inyong bill, sinusuri ni Cobijo kung kwalipikado kayo para sa charity care o diskwento at isinusulat ang inyong kahilingan — libre, sa inyong wika, walang nai-ipon.",
+    "cta_btn": "Tingnan kung kwalipikado kayo →",
+    "nav_label": "Suriin ang inyong bill para sa mga mali"
   }
 }

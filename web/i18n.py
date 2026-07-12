@@ -159,6 +159,7 @@ GUIDES = {
     "surprise-medical-bill-california": "guide_surprise",
     "hospital-presumptive-eligibility-california": "guide_pe",
     "medi-cal-vs-charity-care-california": "guide_medical",
+    "hospital-bill-errors-california": "guide_errors",
 }
 
 

@@ -490,5 +490,29 @@
     "cta_p": "Cobijo xem xét điều kiện của bạn cho cả Medi-Cal và chương trình hỗ trợ từ thiện của bệnh viện, rồi viết thư yêu cầu cho bạn — miễn phí, bằng ngôn ngữ của bạn, không lưu thông tin.",
     "cta_btn": "Kiểm tra xem bạn có đủ điều kiện không →",
     "nav_label": "Medi-Cal và hỗ trợ từ thiện bệnh viện"
+  },
+  "guide_errors": {
+    "title": "Cách kiểm tra hóa đơn bệnh viện có sai sót ở California | Cobijo Health",
+    "meta": "Hầu hết các hóa đơn bệnh viện đều có sai sót — và thường bạn chỉ nhận được bản tóm tắt, không phải danh sách chi tiết từng khoản. Đây là cách lấy hóa đơn chi tiết ở California, nhận ra các khoản tính quá, và khiếu nại trước khi thanh toán.",
+    "h1": "Cách kiểm tra hóa đơn bệnh viện để tìm sai sót",
+    "lead": "Trước khi trả tiền cho hóa đơn bệnh viện — hoặc đồng ý với kế hoạch thanh toán — hãy chắc chắn rằng hóa đơn đó là chính xác. Hóa đơn y tế thường có sai sót, và bản tóm tắt mà bệnh viện gửi ban đầu hiếm khi có đủ chi tiết để bạn phát hiện lỗi. Đây là cách lấy hóa đơn thực sự chi tiết và xem xét kỹ từng khoản.",
+    "s1_h": "Bước đầu tiên: yêu cầu hóa đơn chi tiết",
+    "s1_p": "Hóa đơn bệnh viện gửi cho bạn thường chỉ là bản tóm tắt — một vài con số lớn. Hóa đơn chi tiết liệt kê từng khoản riêng lẻ: mỗi loại thuốc, vật tư, xét nghiệm, và từng ngày nằm viện. Bạn cần có bản chi tiết đó mới có thể tìm ra sai sót. Bạn có quyền yêu cầu hóa đơn chi tiết đầy đủ: theo luật liên bang No Surprises Act (Luật Không Bất Ngờ), bệnh viện phải cung cấp hóa đơn chi tiết khi bạn yêu cầu, hoàn toàn miễn phí. Theo Luật Định Giá Công Bằng của California (được tăng cường bởi AB 1020), bệnh viện phải hướng dẫn bạn cách lấy hóa đơn chi tiết đầy đủ trước khi chuyển nợ sang công ty thu hồi nợ. Hãy gọi cho bộ phận kế toán hoặc dùng cổng thông tin bệnh nhân và yêu cầu hóa đơn chi tiết đầy đủ kèm mã thanh toán.",
+    "s2_h": "Tìm những loại sai sót nào",
+    "s2_p": "Đọc từng dòng và so sánh hóa đơn với những gì thực sự đã xảy ra. Hãy chú ý đến: các khoản tính trùng (cùng một mục bị tính hai lần), các khoản dịch vụ, xét nghiệm hoặc thuốc mà bạn chưa từng nhận, số lượng sai — như bị tính nhiều ngày, nhiều viên thuốc hoặc nhiều vật tư hơn thực tế, một thủ thuật đã bị hủy hoặc đổi lịch nhưng vẫn bị tính tiền, và các khoản lẽ ra được gộp chung nhưng lại bị tính riêng với giá cao hơn. Nếu một dòng chỉ có mã số và giá tiền, hãy hỏi bộ phận kế toán đó là gì.",
+    "s3_h": "So sánh với hồ sơ của bạn",
+    "s3_p": "Nếu bạn có bảo hiểm, hãy so sánh hóa đơn chi tiết với Giải Thích Quyền Lợi (Explanation of Benefits — EOB) — số tiền và dịch vụ phải khớp nhau. Kiểm tra xem bảo hiểm của bạn có được tính đúng không và bạn có bị tính tiền cho những khoản mà bảo hiểm đã chi trả không. Ghi lại ngày nhập viện, ngày xuất viện và các thủ thuật bạn nhớ được; nếu có khoản tính ngoài những ngày đó thì đó là dấu hiệu đáng ngờ. Hãy tự ghi chép đơn giản về ngày điều trị — đó là công cụ mạnh nhất giúp bạn phát hiện sai sót.",
+    "s4_h": "Khiếu nại sai sót bằng văn bản",
+    "s4_p": "Nếu bạn phát hiện sai sót, đừng trả tiền vội — bạn có thể yêu cầu bệnh viện sửa lại hoặc xem xét lại khoản đó. Hãy làm bằng văn bản (một lá thư ngắn hoặc tin nhắn qua cổng thông tin), liệt kê cụ thể từng khoản có vấn đề và lý do tại sao, rồi yêu cầu hóa đơn chi tiết đã được sửa. Sửa sai sót trước đã; sau khi hóa đơn chính xác rồi, bạn vẫn có thể xin hỗ trợ từ thiện hoặc giảm giá cho phần thực sự còn nợ. Cobijo có thể giúp bạn viết yêu cầu đó.",
+    "list_h": "Cách kiểm tra hóa đơn của bạn",
+    "li1": "Yêu cầu bộ phận kế toán cung cấp hóa đơn chi tiết đầy đủ (đây là quyền của bạn ở California).",
+    "li2": "Đọc từng dòng: tìm các khoản tính trùng và những mục bạn chưa từng nhận.",
+    "li3": "Kiểm tra số lượng và ngày tháng so với ngày nhập viện và xuất viện của bạn.",
+    "li4": "So sánh với Giải Thích Quyền Lợi bảo hiểm (EOB) nếu bạn có.",
+    "li5": "Khiếu nại bất kỳ sai sót nào bằng văn bản trước khi thanh toán, và yêu cầu hóa đơn đã được sửa lại.",
+    "cta_h": "Hóa đơn vẫn còn quá cao sau khi sửa sai sót?",
+    "cta_p": "Khi hóa đơn của bạn đã chính xác, Cobijo sẽ kiểm tra xem bạn có đủ điều kiện nhận hỗ trợ từ thiện hoặc giảm giá không, và viết thư yêu cầu thay bạn — hoàn toàn miễn phí, bằng ngôn ngữ của bạn, không lưu lại thông tin.",
+    "cta_btn": "Kiểm tra xem bạn có đủ điều kiện không →",
+    "nav_label": "Kiểm tra hóa đơn để tìm sai sót"
   }
 }

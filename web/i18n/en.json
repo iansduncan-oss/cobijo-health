@@ -490,5 +490,29 @@
     "cta_p": "Cobijo screens you for Medi-Cal and your hospital's charity care, then writes your letter — free, in your language, nothing saved.",
     "cta_btn": "Check if you qualify →",
     "nav_label": "Medi-Cal vs charity care"
+  },
+  "guide_errors": {
+    "title": "How to Check Your Hospital Bill for Errors in California | Cobijo Health",
+    "meta": "Most hospital bills contain errors — and you're often billed from a summary, not the itemized list. Here's how to get your itemized bill in California, spot common overcharges, and dispute them before you pay.",
+    "h1": "How to check your hospital bill for errors",
+    "lead": "Before you pay a hospital bill — or agree to a payment plan — it's worth making sure the bill is even correct. Medical bills are frequently wrong, and the summary a hospital first sends rarely shows the detail you need to catch mistakes. Here's how to get the real itemized bill and review it.",
+    "s1_h": "First, ask for an itemized bill",
+    "s1_p": "The bill a hospital mails you is usually a summary — a few big totals. The itemized bill lists every single charge: each medication, supply, test, and day in a room. You need that detail to find errors. You have the right to ask for a fully itemized bill: under the federal No Surprises Act a hospital must provide one on request at no charge, and under California's Hospital Fair Pricing Act (strengthened by AB 1020) a hospital must tell you how to get a complete itemized bill before it can send your bill to collections. Call the billing department or use your patient portal and ask for a fully itemized bill with billing codes.",
+    "s2_h": "What errors to look for",
+    "s2_p": "Go line by line and compare the bill against what actually happened. Watch for duplicate charges (the same item billed twice), charges for services, tests, or medications you never received, wrong quantities — like being billed for more days, pills, or supplies than you got, a canceled or rescheduled procedure that was still billed, and charges that should be grouped together billed as expensive separate items. If a line has only a code and a price, ask billing what it means.",
+    "s3_h": "Compare it to your records",
+    "s3_p": "If you have insurance, compare the itemized bill to your Explanation of Benefits (EOB) — the amounts and services should match. Check that your insurance was billed correctly and that you're not being charged for something it already paid. Note your admission and discharge dates and any procedures you remember; a room-day or service outside those dates is a red flag. Keep your own simple record of dates and treatments — it's your strongest tool for catching mistakes.",
+    "s4_h": "Dispute errors in writing",
+    "s4_p": "If you find a mistake, don't pay it yet — you can ask the hospital to correct or re-review the charge. Put your dispute in writing (a short letter or portal message), list the specific line items and why they're wrong, and ask for a corrected itemized bill. Fixing errors comes first; once the bill is accurate, you can still apply for charity care or a discount on whatever you genuinely owe. Cobijo can help you write that request.",
+    "list_h": "How to check your bill",
+    "li1": "Ask the billing department for a fully itemized bill (your right in California).",
+    "li2": "Go line by line: look for duplicate charges and items you never received.",
+    "li3": "Check quantities and dates against your admission and discharge.",
+    "li4": "Compare it to your insurance Explanation of Benefits (EOB) if you have one.",
+    "li5": "Dispute any errors in writing before you pay, and ask for a corrected bill.",
+    "cta_h": "Bill still too high after fixing errors?",
+    "cta_p": "Once your bill is correct, Cobijo checks whether you qualify for charity care or a discount and writes your request letter — free, in your language, nothing saved.",
+    "cta_btn": "Check if you qualify →",
+    "nav_label": "Check your bill for errors"
   }
 }
