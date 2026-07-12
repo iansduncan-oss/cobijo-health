@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Cobijo Health">
 <meta property="og:title" content="{{title}}">
 <meta property="og:description" content="{{meta}}">
-<meta property="og:image" content="https://cobijohealth.org/og/guide.png">
+<meta property="og:image" content="{{OG_IMAGE}}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <script defer data-domain="cobijohealth.org" src="https://analytics.aviontechs.com/js/script.outbound-links.js"></script>
 {{JSONLD}}
@@ -52,7 +52,21 @@
   footer a{color:var(--muted)}
   .fnav{display:flex;flex-wrap:wrap;gap:10px 18px;margin-bottom:14px}.fnav a{font-weight:600}
   .disc{font-size:13px;line-height:1.5}
+  .gshare{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 4px}
+  .gbtn{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:14.5px;border-radius:10px;padding:10px 15px;min-height:44px;background:var(--teal);color:#fff;border:1.5px solid var(--teal);cursor:pointer;font-family:inherit}
+  .gbtn.alt{background:#fff;color:var(--teal-d);border-color:var(--line)}
+  .copied{color:var(--teal-d);font-weight:700;font-size:14px}
+  .print-qr{display:none}
   @media(max-width:600px){h1{font-size:27px}}
+  @media print{
+    nav,.cta-card,.related,.mtnote,.fnav,.gshare{display:none!important}
+    body{background:#fff}.card{break-inside:avoid}
+    a[href]:after{content:""}
+    .print-qr{display:flex;gap:16px;align-items:center;margin:22px 0;padding:14px 16px;border:1px solid #ccc;border-radius:12px}
+    .print-qr img{width:132px;height:132px;flex:none}
+    .print-qr strong{font-size:15px}.print-qr span{color:#444;font-size:13.5px}
+  }
+  [dir=rtl] .print-qr{flex-direction:row-reverse}
 </style>
 </head>
 <body>
@@ -65,6 +79,12 @@
   <p class="crumb"><a href="{{HOME}}">{{h_home}}</a> › {{h1}}</p>
   <h1>{{h1}}</h1>
   <p class="lead">{{lead}}</p>
+  <div class="gshare">
+    <button type="button" class="gbtn" onclick="cobShare()">🔗 {{h_share}}</button>
+    <button type="button" class="gbtn alt" onclick="cobCopy(this)">📋 {{h_copy}}</button>
+    <button type="button" class="gbtn alt" onclick="window.print()">🖨 {{h_print}}</button>
+    <span class="copied" id="copied"></span>
+  </div>
 
   <h2>{{s1_h}}</h2><p>{{s1_p}}</p>
   <h2>{{s2_h}}</h2><p>{{s2_p}}</p>
@@ -87,6 +107,7 @@
   </div>
 
   <div class="card"><p style="margin:0">{{disc_card}}</p></div>
+  {{PRINT_QR}}
   <p class="mtnote">{{mt_note}}</p>
 </main>
 
@@ -98,5 +119,9 @@
   </div>
   <p class="disc">{{foot1}}</p>
 </div></footer>
+<script>
+function cobCopy(){var u=location.href;var d=function(){var c=document.getElementById('copied');if(c)c.textContent=' {{h_copied}}';window.plausible&&plausible('guide_link_copied');};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(d).catch(function(){});}}
+function cobShare(){var u=location.href,t=document.title;if(navigator.share){navigator.share({title:t,url:u}).then(function(){window.plausible&&plausible('guide_shared');}).catch(function(){});}else{cobCopy();}}
+</script>
 </body>
 </html>

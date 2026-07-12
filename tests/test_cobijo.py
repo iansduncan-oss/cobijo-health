@@ -508,6 +508,27 @@ class TestValidateGate(unittest.TestCase):
         self.assertTrue(any("benefit" in r for r in validate(pol)))
 
 
+class TestNoTruncation(unittest.TestCase):
+    """T2.2 regression guard. A `_truncated` extraction means the policy corpus was clipped at
+    extract_llm.MAX_CHARS, silently dropping any sliding-scale tiers / discount ceiling on the later
+    PDF pages. All 72 formerly-truncated rows were re-extracted at MAX_CHARS=200_000 (covers the
+    observed max corpus, 184,555 chars). Two invariants keep it that way: the served dataset must
+    carry NO truncated row, and the cap must not be lowered below the observed max. If either fails,
+    re-extract before shipping — see scripts/reextract_truncated.py."""
+
+    def test_served_dataset_has_no_truncated_rows(self):
+        rows = navigator.load_dataset()[0]["rows"]
+        truncated = [r.get("hospital") for r in rows if (r.get("policy") or {}).get("_truncated")]
+        self.assertEqual(truncated, [], f"{len(truncated)} truncated row(s) in the served dataset — "
+                         f"re-extract via scripts/reextract_truncated.py: {truncated[:5]}")
+
+    def test_max_chars_covers_observed_max_corpus(self):
+        import extract_llm
+        self.assertGreaterEqual(extract_llm.MAX_CHARS, 200_000,
+                                "MAX_CHARS lowered below the observed max corpus (184,555) — would "
+                                "silently re-truncate policies. Raise it back + re-extract.")
+
+
 class TestEffectiveDate(unittest.TestCase):
     def test_future_flagged(self):
         self.assertIn("future", effective_date_issue("01/01/2099"))
@@ -718,9 +739,84 @@ class TestOgImages(unittest.TestCase):
                     if not os.path.isfile(os.path.join(self._OG, "county", c + ".png"))]
         self.assertEqual(missing, [], f"missing OG cards (re-run scripts/gen_og_images.py): {missing[:5]}")
 
-    def test_guide_card_exists(self):
-        self.assertTrue(os.path.isfile(os.path.join(self._OG, "guide.png")))
-        self.assertIn("/og/guide.png", web_i18n.render_guide("cant-afford-hospital-bill-california", "en"))
+    def test_guide_cards_exist(self):
+        # Per-guide OG cards: each guide shares with its OWN title card; render must point at it.
+        for slug in web_i18n.GUIDES:
+            self.assertTrue(os.path.isfile(os.path.join(self._OG, "guide", slug + ".png")),
+                            f"missing guide OG card (re-run scripts/gen_og_images.py): {slug}")
+            self.assertIn(f"/og/guide/{slug}.png", web_i18n.render_guide(slug, "en"))
+        self.assertTrue(os.path.isfile(os.path.join(self._OG, "guide.png")))  # shared fallback kept
+
+
+class TestQrCodes(unittest.TestCase):
+    """Print-handout QR codes (scripts/gen_qr_codes.py): every hospital/county/guide print view
+    references a QR that exists on disk, the server serves it as SVG, and the static handler is
+    contained to web/qr/ (a crafted ../ can't escape to another file)."""
+    if _WEB not in sys.path:
+        sys.path.insert(0, _WEB)
+    import hospital_pages as _hp
+    _QR = os.path.join(_WEB, "qr")
+
+    def test_every_slug_has_a_qr(self):
+        ds = navigator.load_dataset()[0]
+        idx, _ = self._hp.build_index(ds["rows"])
+        missing = [f"hospital/{s}" for s in idx
+                   if not os.path.isfile(os.path.join(self._QR, "hospital", s + ".svg"))]
+        missing += [f"county/{c}" for c in self._hp.county_index(idx)
+                    if not os.path.isfile(os.path.join(self._QR, "county", c + ".svg"))]
+        missing += [f"guide/{g}" for g in web_i18n.GUIDES
+                    if not os.path.isfile(os.path.join(self._QR, "guide", g + ".svg"))]
+        self.assertEqual(missing, [], f"missing QR codes (re-run scripts/gen_qr_codes.py): {missing[:5]}")
+
+    def test_pages_reference_their_qr(self):
+        ds = navigator.load_dataset()[0]
+        idx, _ = self._hp.build_index(ds["rows"])
+        slug = next(iter(idx))
+        self.assertIn(f"/qr/hospital/{slug}.svg", self._hp.render_hospital(idx[slug], slug, idx, "en"))
+        cslug, county = next(iter(self._hp.county_index(idx).items()))
+        self.assertIn(f"/qr/county/{cslug}.svg", self._hp.render_county(county, idx, "en"))
+        g = next(iter(web_i18n.GUIDES))
+        self.assertIn(f"/qr/guide/{g}.svg", web_i18n.render_guide(g, "en"))
+
+    def test_server_serves_qr_and_blocks_traversal(self):
+        import http.server
+        import threading
+        import server as _srv
+        httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _srv.Handler)
+        port = httpd.server_address[1]
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+        try:
+            slug = next(iter(self._hp.build_index(navigator.load_dataset()[0]["rows"])[0]))
+            status, ctype, body = self._raw(port, f"/qr/hospital/{slug}.svg")
+            self.assertEqual(status, 200)
+            self.assertIn("image/svg+xml", ctype)
+            self.assertIn(b"<svg", body)
+            self.assertEqual(self._raw(port, "/qr/does-not-exist.svg")[0], 404)
+            # ../favicon.svg is a REAL file OUTSIDE web/qr/ — containment must refuse to serve it.
+            self.assertEqual(self._raw(port, "/qr/../favicon.svg")[0], 404,
+                             "path traversal escaped web/qr/!")
+        finally:
+            httpd.shutdown()
+
+    @staticmethod
+    def _raw(port, path):
+        # Raw socket so the literal '..' in the request line isn't normalized by an HTTP client.
+        import socket
+        s = socket.create_connection(("127.0.0.1", port), timeout=5)
+        s.sendall(f"GET {path} HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n".encode())
+        buf = b""
+        while True:
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            buf += chunk
+        s.close()
+        head, _, body = buf.partition(b"\r\n\r\n")
+        lines = head.decode("latin1").split("\r\n")
+        status = int(lines[0].split()[1])
+        ctype = next((ln.split(":", 1)[1].strip() for ln in lines[1:]
+                      if ln.lower().startswith("content-type")), "")
+        return status, ctype, body
 
 
 class TestCountyHubs(unittest.TestCase):

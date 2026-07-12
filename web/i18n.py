@@ -157,6 +157,8 @@ GUIDES = {
     "how-to-negotiate-a-hospital-bill-california": "guide_negotiate",
     "emergency-room-bill-no-insurance-california": "guide_er",
     "surprise-medical-bill-california": "guide_surprise",
+    "hospital-presumptive-eligibility-california": "guide_pe",
+    "medi-cal-vs-charity-care-california": "guide_medical",
 }
 
 
@@ -225,6 +227,12 @@ def render_guide(slug, lang):
               + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False).replace("</", "<\\/")
               + "</script>")
 
+    # Print-only QR (scripts/gen_qr_codes.py) — turns the printed guide handout back into a tap.
+    # Caption reuses the already-translated `h_share_h` (from the merged hospital section) so this
+    # adds no new i18n keys. Shown only under @media print (see guide.html).
+    print_qr = (f'<div class="print-qr"><img src="/qr/guide/{slug}.svg" width="132" height="132" alt="">'
+                f'<div><strong>{s.get("h_share_h", "")}</strong><br><span>cobijohealth.org</span></div></div>')
+
     tpl = open(os.path.join(TPL_DIR, "guide.html"), encoding="utf-8").read()
     repl = {
         "{{LANG}}": lang, "{{DIR}}": LANGS[lang][1],
@@ -235,6 +243,8 @@ def render_guide(slug, lang):
         "{{P_ABOUT}}": p("about"), "{{P_FAQ}}": p("faq"), "{{P_PRIV}}": p("privacy"),
         "{{P_DIR}}": "/california-hospitals" if lang == DEFAULT else f"/{lang}/california-hospitals",
         "{{LIST}}": items, "{{RELATED}}": rel,
+        "{{OG_IMAGE}}": f"{SITE}/og/guide/{slug}.png",
+        "{{PRINT_QR}}": print_qr,
     }
     if lang == DEFAULT:
         s = {**s, "mt_note": ""}
