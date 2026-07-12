@@ -153,6 +153,10 @@ GUIDES = {
     "cant-afford-hospital-bill-california": "guide_afford",
     "how-to-apply-for-charity-care": "guide_apply",
     "medical-bill-in-collections": "guide_collections",
+    "undocumented-immigrant-hospital-bill-california": "guide_undoc",
+    "how-to-negotiate-a-hospital-bill-california": "guide_negotiate",
+    "emergency-room-bill-no-insurance-california": "guide_er",
+    "surprise-medical-bill-california": "guide_surprise",
 }
 
 

@@ -686,6 +686,43 @@ class TestHospitalPagesI18n(unittest.TestCase):
                 json.loads(b)                # raises on the malformed double-quoted URL regression
 
 
+class TestOgImages(unittest.TestCase):
+    """Per-page OG share cards (T3.4): pages must reference a card that actually exists on disk, and
+    the generated set must cover every hospital + county slug (a missing PNG = a broken social preview)."""
+    if _WEB not in sys.path:
+        sys.path.insert(0, _WEB)
+    import hospital_pages as _hp
+    _OG = os.path.join(_WEB, "og")
+
+    def test_hospital_og_points_to_existing_card(self):
+        ds = navigator.load_dataset()[0]
+        idx, _ = self._hp.build_index(ds["rows"])
+        slug = next(iter(idx))
+        html = self._hp.render_hospital(idx[slug], slug, idx, "en")
+        self.assertIn(f'og:image" content="{self._hp.BASE}/og/hospital/{slug}.png"', html)
+        self.assertTrue(os.path.isfile(os.path.join(self._OG, "hospital", slug + ".png")))
+
+    def test_county_og_points_to_existing_card(self):
+        ds = navigator.load_dataset()[0]
+        idx, _ = self._hp.build_index(ds["rows"])
+        cslug, county = next(iter(self._hp.county_index(idx).items()))
+        html = self._hp.render_county(county, idx, "en")
+        self.assertIn(f'og:image" content="{self._hp.BASE}/og/county/{cslug}.png"', html)
+        self.assertTrue(os.path.isfile(os.path.join(self._OG, "county", cslug + ".png")))
+
+    def test_every_hospital_and_county_slug_has_a_card(self):
+        ds = navigator.load_dataset()[0]
+        idx, _ = self._hp.build_index(ds["rows"])
+        missing = [s for s in idx if not os.path.isfile(os.path.join(self._OG, "hospital", s + ".png"))]
+        missing += ["county:" + c for c in self._hp.county_index(idx)
+                    if not os.path.isfile(os.path.join(self._OG, "county", c + ".png"))]
+        self.assertEqual(missing, [], f"missing OG cards (re-run scripts/gen_og_images.py): {missing[:5]}")
+
+    def test_guide_card_exists(self):
+        self.assertTrue(os.path.isfile(os.path.join(self._OG, "guide.png")))
+        self.assertIn("/og/guide.png", web_i18n.render_guide("cant-afford-hospital-bill-california", "en"))
+
+
 class TestCountyHubs(unittest.TestCase):
     """Per-county hub pages (T3.3): localized in every language, valid JSON-LD, correct <html lang>/dir,
     and they list every hospital in the county (the additive crawl surface + internal links)."""
