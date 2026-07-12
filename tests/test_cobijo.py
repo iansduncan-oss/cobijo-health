@@ -686,5 +686,82 @@ class TestHospitalPagesI18n(unittest.TestCase):
                 json.loads(b)                # raises on the malformed double-quoted URL regression
 
 
+class TestCountyHubs(unittest.TestCase):
+    """Per-county hub pages (T3.3): localized in every language, valid JSON-LD, correct <html lang>/dir,
+    and they list every hospital in the county (the additive crawl surface + internal links)."""
+    import re as _re
+    if _WEB not in sys.path:
+        sys.path.insert(0, _WEB)
+    import hospital_pages as _hp
+
+    def _rows(self):
+        a = make_row(); a["hospital"] = "Alpha Regional Medical Center"; a["city"] = "Fresno"
+        a["county"] = "Fresno"; a["oshpdid"] = "1"
+        b = make_row(); b["hospital"] = "Beta Community Hospital"; b["city"] = "Clovis"
+        b["county"] = "Fresno"; b["oshpdid"] = "2"
+        return [a, b]
+
+    def test_county_index_and_paths(self):
+        idx, _ = self._hp.build_index(self._rows())
+        ci = self._hp.county_index(idx)
+        self.assertEqual(set(ci), {"fresno"})
+        self.assertEqual(ci["fresno"], "Fresno")
+        self.assertEqual(len(self._hp.county_paths(idx)), len(ci) * len(web_i18n.LANGS))
+
+    def test_renders_all_langs_lists_hospitals(self):
+        idx, _ = self._hp.build_index(self._rows())
+        for lang, (_, direction) in web_i18n.LANGS.items():
+            html = self._hp.render_county("Fresno", idx, lang)
+            self.assertIn(f'lang="{lang}"', html)
+            self.assertIn(f'dir="{direction}"', html)
+            self.assertEqual(self._re.findall(r"\{county\}", html), [], f"{lang}: unfilled {{county}}")
+            self.assertIn(f'hreflang="{lang}"', html)
+            self.assertIn("Alpha Regional Medical Center", html)   # every hospital in the county is linked
+            self.assertIn("Beta Community Hospital", html)
+
+    def test_jsonld_is_valid_json(self):
+        import json, re
+        idx, _ = self._hp.build_index(self._rows())
+        for lang in web_i18n.LANGS:
+            html = self._hp.render_county("Fresno", idx, lang)
+            blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+            self.assertTrue(blocks, f"{lang}: no JSON-LD emitted")
+            for b in blocks:
+                json.loads(b)
+
+
+class TestGuides(unittest.TestCase):
+    """Evergreen explainer guides (T3.3): render in every language with no unfilled {{placeholder}},
+    valid JSON-LD, reciprocal hreflang, and an unknown slug is a clean miss (404-able)."""
+    import re as _re
+
+    def test_renders_all_langs_no_placeholders(self):
+        for slug in web_i18n.GUIDES:
+            for lang, (_, direction) in web_i18n.LANGS.items():
+                html = web_i18n.render_guide(slug, lang)
+                self.assertIsNotNone(html, f"{slug}/{lang} returned None")
+                self.assertIn(f'lang="{lang}"', html)
+                self.assertIn(f'dir="{direction}"', html)
+                left = self._re.findall(r"\{\{[A-Za-z_]+\}\}", html)
+                self.assertEqual(left, [], f"{slug}/{lang} leftover placeholders: {set(left)}")
+                self.assertIn(f'hreflang="{lang}"', html)
+
+    def test_jsonld_is_valid_json(self):
+        import json, re
+        for slug in web_i18n.GUIDES:
+            for lang in web_i18n.LANGS:
+                html = web_i18n.render_guide(slug, lang)
+                blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+                self.assertTrue(blocks, f"{slug}/{lang}: no JSON-LD emitted")
+                for b in blocks:
+                    json.loads(b)
+
+    def test_unknown_guide_returns_none(self):
+        self.assertIsNone(web_i18n.render_guide("does-not-exist", "en"))
+
+    def test_guide_paths_count(self):
+        self.assertEqual(len(web_i18n.guide_paths()), len(web_i18n.GUIDES) * len(web_i18n.LANGS))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

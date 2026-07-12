@@ -36,6 +36,8 @@ DS, SRC = navigator.load_dataset()
 HOSPITALS = sorted({r.get("_display") or r["hospital"].title() for r in DS["rows"]})
 # Per-hospital SEO pages: slug -> row (built once at startup)
 HOSPITAL_INDEX, OSHPDID_TO_SLUG = hospital_pages.build_index(DS["rows"])
+# Per-county hub pages: county-slug -> canonical county name (built once at startup)
+COUNTY_INDEX = hospital_pages.county_index(HOSPITAL_INDEX)
 
 # --- Security headers applied to every response (defense-in-depth; also set at the CF edge) ---
 SECURITY_HEADERS = {
@@ -63,8 +65,9 @@ STATIC = {
     "/og-image.png": ("og-image.png", "image/png"),
 }
 ROBOTS = "User-agent: *\nAllow: /\nSitemap: https://cobijohealth.org/sitemap.xml\n"
-_SITEMAP_URLS = (i18n.sitemap_paths()                         # home + landing + about/privacy/faq × 10 languages
-                 + hospital_pages.hospital_paths(HOSPITAL_INDEX))
+_SITEMAP_URLS = (i18n.sitemap_paths()                         # home + landing + about/privacy/faq + guides × 10 languages
+                 + hospital_pages.hospital_paths(HOSPITAL_INDEX)
+                 + hospital_pages.county_paths(HOSPITAL_INDEX))   # 56 county hubs × 10 languages
 SITEMAP = (
     '<?xml version="1.0" encoding="UTF-8"?>\n'
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -168,7 +171,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, i18n.render("home", lang), "text/html; charset=utf-8")
         if len(rest) == 1 and rest[0] in ("landing", "about", "privacy", "faq"):
             return self._send(200, i18n.render(rest[0], lang), "text/html; charset=utf-8")
-        # Localized SEO pages: /<lang>/california-hospitals and /<lang>/hospital/<slug>.
+        # Localized SEO pages (this block also serves English, since /guides/… and /hospitals/… fall
+        # through to here with lang="en"): the directory, per-hospital, per-county hubs, and guides.
         if rest == ["california-hospitals"]:
             return self._send(200, hospital_pages.render_directory(HOSPITAL_INDEX, lang), "text/html; charset=utf-8")
         if len(rest) == 2 and rest[0] == "hospital":
@@ -177,6 +181,17 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, hospital_pages.render_hospital(row, rest[1], HOSPITAL_INDEX, lang),
                                   "text/html; charset=utf-8")
             return self._send(404, json.dumps({"error": "hospital not found"}))
+        if len(rest) == 2 and rest[0] == "hospitals":     # per-county hub: /hospitals/<county>
+            county = COUNTY_INDEX.get(rest[1])
+            if county:
+                return self._send(200, hospital_pages.render_county(county, HOSPITAL_INDEX, lang),
+                                  "text/html; charset=utf-8")
+            return self._send(404, json.dumps({"error": "county not found"}))
+        if len(rest) == 2 and rest[0] == "guides":        # evergreen explainer: /guides/<slug>
+            page = i18n.render_guide(rest[1], lang)
+            if page:
+                return self._send(200, page, "text/html; charset=utf-8")
+            return self._send(404, json.dumps({"error": "guide not found"}))
         self._send(404, json.dumps({"error": "not found"}))
 
     def do_POST(self):

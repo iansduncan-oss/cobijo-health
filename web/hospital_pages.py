@@ -71,26 +71,32 @@ def _fill(s, **kw):
 
 
 # --- localized URL + hreflang + switcher helpers ------------------------------------------------- #
-def _path(lang, slug=None):
-    """Relative path for a hospital page (slug given) or the directory (slug None), per language."""
-    seg = f"hospital/{slug}" if slug else "california-hospitals"
+def _path(lang, slug=None, kind="hospital"):
+    """Relative path per language. kind='hospital' + slug -> a hospital page; kind='hospital' + no slug
+    -> the statewide directory; kind='county' + slug -> a per-county hub (/hospitals/<county>)."""
+    if kind == "county":
+        seg = f"hospitals/{slug}"
+    elif slug:
+        seg = f"hospital/{slug}"
+    else:
+        seg = "california-hospitals"
     return f"/{seg}" if lang == "en" else f"/{lang}/{seg}"
 
 
-def _url(lang, slug=None):
-    return BASE + _path(lang, slug)
+def _url(lang, slug=None, kind="hospital"):
+    return BASE + _path(lang, slug, kind)
 
 
-def _head_links(cur, slug=None):
+def _head_links(cur, slug=None, kind="hospital"):
     """Reciprocal hreflang alternates + x-default + a self canonical, mirroring web/i18n.py."""
-    out = [f'<link rel="alternate" hreflang="{c}" href="{_url(c, slug)}">' for c in i18n.LANGS]
-    out.append(f'<link rel="alternate" hreflang="x-default" href="{_url("en", slug)}">')
-    out.append(f'<link rel="canonical" href="{_url(cur, slug)}">')
+    out = [f'<link rel="alternate" hreflang="{c}" href="{_url(c, slug, kind)}">' for c in i18n.LANGS]
+    out.append(f'<link rel="alternate" hreflang="x-default" href="{_url("en", slug, kind)}">')
+    out.append(f'<link rel="canonical" href="{_url(cur, slug, kind)}">')
     return "\n".join(out)
 
 
-def _lang_switch(cur, slug=None):
-    opts = "".join(f'<option value="{_path(code, slug)}"{" selected" if code == cur else ""}>{name}</option>'
+def _lang_switch(cur, slug=None, kind="hospital"):
+    opts = "".join(f'<option value="{_path(code, slug, kind)}"{" selected" if code == cur else ""}>{name}</option>'
                    for code, (name, _) in i18n.LANGS.items())
     return ('<select class="langsel" aria-label="Language" onchange="location.href=this.value">'
             + opts + "</select>")
@@ -141,13 +147,13 @@ footer a{color:var(--muted)}
 """
 
 
-def _head(title, desc, canonical, lang, slug=None, jsonld=""):
+def _head(title, desc, canonical, lang, slug=None, jsonld="", kind="hospital"):
     d = i18n.LANGS.get(lang, ("", "ltr"))[1]
     return f"""<!DOCTYPE html><html lang="{lang}" dir="{d}"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{_e(title)}</title>
 <meta name="description" content="{_e(desc)}">
-{_head_links(lang, slug)}
+{_head_links(lang, slug, kind)}
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#1f6f54">
 <meta property="og:type" content="article"><meta property="og:title" content="{_e(title)}">
@@ -159,10 +165,10 @@ def _head(title, desc, canonical, lang, slug=None, jsonld=""):
 <style>{_CSS}</style></head><body><div class="wrap">"""
 
 
-def _header(lang, nav_cta, slug=None):
+def _header(lang, nav_cta, slug=None, kind="hospital"):
     return (f'<header><a class="brand" href="{"/" if lang == "en" else "/" + lang + "/"}">Cobijo<span>Health</span></a>'
             f'<div class="hnav"><a href="{"/" if lang == "en" else "/" + lang + "/"}" style="font-weight:700;text-decoration:none">{_e(nav_cta)}</a>'
-            f'{_lang_switch(lang, slug)}</div></header>')
+            f'{_lang_switch(lang, slug, kind)}</div></header>')
 
 
 def _foot(S, lang):
@@ -315,7 +321,10 @@ def render_hospital(row, slug, index, lang="en"):
     if county:
         same = [(s, r) for s, r in index.items() if r.get("county") == county and s != slug][:10]
         if same:
-            out.append(f'<div class="card nearby"><h2>{_e(_fill(S["h_nearby"], county=county))}</h2><p class="nearby">'
+            # Heading links up to the county hub — gives every hospital page a crawl path to /hospitals/<county>.
+            out.append(f'<div class="card nearby"><h2>'
+                       f'<a href="{_path(lang, slugify(county), "county")}">{_e(_fill(S["h_nearby"], county=county))}</a>'
+                       f'</h2><p class="nearby">'
                        + "".join(f'<a href="{_path(lang, s)}">{_e(_title(r["hospital"]))}</a>' for s, r in same)
                        + '</p></div>')
 
@@ -349,11 +358,80 @@ def render_directory(index, lang="en"):
         by_county.setdefault(r.get("county") or "Other", []).append((slug, r))
     for county in sorted(by_county):
         hosps = sorted(by_county[county], key=lambda x: x[1]["hospital"])
-        out.append(f'<div class="card"><h2>{_e(_fill(S["h_dir_county"], county=county) if "h_dir_county" in S else county + " County")}</h2><p class="nearby">'
+        label = _fill(S["h_dir_county"], county=county) if "h_dir_county" in S else county + " County"
+        # Link the heading to the county hub (a real page) unless it's the catch-all "Other" bucket.
+        head = (f'<a href="{_path(lang, slugify(county), "county")}">{_e(label)}</a>'
+                if county != "Other" else _e(label))
+        out.append(f'<div class="card"><h2>{head}</h2><p class="nearby">'
                    + "".join(f'<a href="{_path(lang, s)}">{_e(_title(r["hospital"]))}</a>' for s, r in hosps)
                    + '</p></div>')
     out.append(_foot(S, lang))
     return "".join(out)
+
+
+def county_index(index):
+    """slug -> canonical county name, from the hospital rows (one entry per county)."""
+    out = {}
+    for r in index.values():
+        c = r.get("county")
+        if c:
+            out.setdefault(slugify(c), c)
+    return out
+
+
+def render_county(county, index, lang="en"):
+    """A per-county hub (/hospitals/<county>): the CA Fair Pricing Act intro, every hospital in the
+    county linked to its page, a CTA into the tool, and cross-links to the guides + statewide directory.
+    Localized like the hospital pages (hreflang/canonical/switcher, RTL). Additive high-intent SEO."""
+    S = {**i18n.hospital_strings(lang), **i18n.county_strings(lang)}
+    cslug = slugify(county)
+    canonical = _url(lang, cslug, "county")
+    hosps = sorted(((s, r) for s, r in index.items() if r.get("county") == county),
+                   key=lambda x: x[1]["hospital"])
+    home = "/" if lang == "en" else f"/{lang}/"
+    dir_path = _path(lang)                     # statewide directory
+    h1 = _fill(S["c_h1"], county=county)
+    title = h1 + " | Cobijo Health"
+    desc = _fill(S["c_meta"], county=county)
+
+    breadcrumb = (
+        '{"@type":"BreadcrumbList","itemListElement":['
+        '{"@type":"ListItem","position":1,"name":%s,"item":"%s"},'
+        '{"@type":"ListItem","position":2,"name":%s,"item":"%s"},'
+        '{"@type":"ListItem","position":3,"name":%s,"item":"%s"}]}'
+        % (_json(S["h_home"]), BASE + home, _json(S["h_dir"]), _url(lang), _json(h1), canonical))
+    jsonld = ('<script type="application/ld+json">{"@context":"https://schema.org","@graph":['
+              + breadcrumb + ']}</script>')
+
+    out = [_head(title, desc, canonical, lang, cslug, jsonld, "county")]
+    out.append(_header(lang, S["h_nav_cta"], cslug, "county"))
+    out.append(f'<p class="crumb"><a href="{home}">{_e(S["h_home"])}</a> › '
+               f'<a href="{dir_path}">{_e(S["h_dir"])}</a> › {_e(h1)}</p>')
+    out.append(f'<h1>{_e(h1)}</h1>')
+    out.append(f'<p class="lead">{_e(_fill(S["c_lead"], county=county))}</p>')
+
+    out.append(f'<div class="card"><h2>{_e(_fill(S["c_law_h"], county=county))}</h2>'
+               f'<p>{_e(_fill(S["c_law_p"], county=county))}</p></div>')
+
+    out.append(f'<div class="card nearby"><h2>{_e(_fill(S["c_list_h"], county=county))} ({len(hosps)})</h2><p class="nearby">'
+               + "".join(f'<a href="{_path(lang, s)}">{_e(_title(r["hospital"]))}</a>' for s, r in hosps)
+               + '</p></div>')
+
+    out.append(f'<div class="card cta"><h2>{_e(S["c_cta_h"])}</h2><p>{_e(S["c_cta_p"])}</p>'
+               f'<a href="{home}" onclick="plausible(\'county_cta_clicked\')">{_e(S["c_cta_btn"])}</a></div>')
+
+    out.append(f'<div class="card nearby"><h2>{_e(S["c_guides_h"])}</h2><p class="nearby">'
+               + "".join(f'<a href="{i18n.guide_path(lang, g)}">{_e(i18n.guide_nav_label(lang, g))}</a>'
+                         for g in i18n.GUIDES)
+               + f'<a href="{dir_path}">{_e(S["c_dir_link"])}</a></p></div>')
+
+    out.append(_foot(S, lang))
+    return "".join(out)
+
+
+def county_paths(index):
+    """Absolute URLs for the sitemap — every county × every language."""
+    return [_url(lang, cslug, "county") for cslug in county_index(index) for lang in i18n.LANGS]
 
 
 def hospital_paths(index):

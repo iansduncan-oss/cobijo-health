@@ -141,6 +141,110 @@ def hospital_strings(lang):
     return _section(lang, "hospital")
 
 
+def county_strings(lang):
+    """The 'county' section (per-county hub pages), English-filled. hospital_pages merges this over
+    hospital_strings so the hubs reuse the same shared chrome (h_home, h_dir, h_foot, …)."""
+    return _section(lang, "county")
+
+
+# --- Evergreen explainer guides (T3.3): /guides/<slug> + /<lang>/guides/<slug> ------------------- #
+# slug -> i18n section. One shared template (templates/guide.html); each guide's copy is its section.
+GUIDES = {
+    "cant-afford-hospital-bill-california": "guide_afford",
+    "how-to-apply-for-charity-care": "guide_apply",
+    "medical-bill-in-collections": "guide_collections",
+}
+
+
+def guide_path(lang, slug):
+    return f"/guides/{slug}" if lang == DEFAULT else f"/{lang}/guides/{slug}"
+
+
+def guide_url(lang, slug):
+    return SITE + guide_path(lang, slug)
+
+
+def guide_nav_label(lang, slug):
+    """The short cross-link label for a guide (its section's nav_label), English-filled."""
+    return _section(lang, GUIDES[slug]).get("nav_label", slug)
+
+
+def _guide_head_links(cur, slug):
+    out = [f'<link rel="alternate" hreflang="{c}" href="{guide_url(c, slug)}">' for c in LANGS]
+    out.append(f'<link rel="alternate" hreflang="x-default" href="{guide_url(DEFAULT, slug)}">')
+    out.append(f'<link rel="canonical" href="{guide_url(cur, slug)}">')
+    return "\n".join(out)
+
+
+def _guide_lang_switch(cur, slug):
+    opts = "".join(f'<option value="{guide_path(code, slug)}"{" selected" if code == cur else ""}>{name}</option>'
+                   for code, (name, _) in LANGS.items())
+    return ('<select class="langsel" aria-label="Language" '
+            'onchange="location.href=this.value">' + opts + "</select>")
+
+
+def render_guide(slug, lang):
+    """Render one evergreen guide. Reuses the localized `common` chrome + `about` disclaimer/footer,
+    with the guide's own section (title/h1/lead/body) winning on collisions. JSON-LD is built via
+    json.dumps so every block is valid by construction (no hand-quoted URLs)."""
+    if lang not in LANGS:
+        lang = DEFAULT
+    if slug not in GUIDES:
+        return None
+    sec = GUIDES[slug]
+    # common (brand/nav/footer) + about (disc_card + already-translated footer nav) + county (the
+    # "guides that can help" heading) + the guide copy (wins on any collision).
+    s = {**_section(lang, "common"), **_section(lang, "about"), **_section(lang, "hospital"),
+         **_section(lang, "county"), **_section(lang, sec)}
+    canonical = guide_url(lang, slug)
+    home = "/" if lang == DEFAULT else f"/{lang}/"
+    p = lambda seg: (f"/{seg}" if lang == DEFAULT else f"/{lang}/{seg}")  # noqa: E731
+
+    # steps/rights list — skip any empty item so a guide can carry fewer than 5.
+    items = "".join(f"<li>{s[k]}</li>" for k in ("li1", "li2", "li3", "li4", "li5") if s.get(k))
+
+    # related-guides cross-links (the other guides), localized labels.
+    rel = "".join(f'<a href="{guide_path(lang, g)}">{guide_nav_label(lang, g)}</a>'
+                  for g in GUIDES if g != slug)
+
+    graph = [
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": s.get("brand_a", "Cobijo") + s.get("brand_b", "Health"),
+             "item": SITE + home},
+            {"@type": "ListItem", "position": 2, "name": s["h1"], "item": canonical}]},
+        {"@type": "Article", "headline": s["h1"], "description": s["meta"], "inLanguage": lang,
+         "mainEntityOfPage": canonical,
+         "publisher": {"@type": ["MedicalOrganization", "NGO"], "name": "Cobijo Health",
+                       "url": "https://cobijohealth.org/"}},
+    ]
+    jsonld = ('<script type="application/ld+json">'
+              + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False).replace("</", "<\\/")
+              + "</script>")
+
+    tpl = open(os.path.join(TPL_DIR, "guide.html"), encoding="utf-8").read()
+    repl = {
+        "{{LANG}}": lang, "{{DIR}}": LANGS[lang][1],
+        "{{HEAD_LINKS}}": _guide_head_links(lang, slug),
+        "{{LANG_SWITCH}}": _guide_lang_switch(lang, slug),
+        "{{JSONLD}}": jsonld,
+        "{{HOME}}": home,
+        "{{P_ABOUT}}": p("about"), "{{P_FAQ}}": p("faq"), "{{P_PRIV}}": p("privacy"),
+        "{{P_DIR}}": "/california-hospitals" if lang == DEFAULT else f"/{lang}/california-hospitals",
+        "{{LIST}}": items, "{{RELATED}}": rel,
+    }
+    if lang == DEFAULT:
+        s = {**s, "mt_note": ""}
+    for k, v in repl.items():
+        tpl = tpl.replace(k, v)
+    for k, v in s.items():
+        tpl = tpl.replace("{{%s}}" % k, v)
+    return tpl
+
+
+def guide_paths():
+    return [guide_url(lang, slug) for slug in GUIDES for lang in LANGS]
+
+
 def sitemap_paths():
     """All (path) URLs this engine owns, every language — for the sitemap."""
-    return [url(lang, page) for page in PAGES for lang in LANGS]
+    return ([url(lang, page) for page in PAGES for lang in LANGS] + guide_paths())

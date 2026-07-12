@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{meta}}">
+{{HEAD_LINKS}}
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#1f6f54">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Cobijo Health">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{meta}}">
+<meta property="og:image" content="https://cobijohealth.org/og-image.png">
+<script defer data-domain="cobijohealth.org" src="https://analytics.aviontechs.com/js/script.outbound-links.js"></script>
+{{JSONLD}}
+<style>
+  :root{--ink:#1a2e28;--sand:#f6f1e7;--card:#fffdf8;--teal:#1f6f54;--teal-d:#155540;--gold:#c79a3c;--line:#e3dccb;--muted:#5c6b63;}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:var(--sand);color:var(--ink);font:17px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  a{color:var(--teal-d)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  nav{position:sticky;top:0;z-index:10;background:rgba(246,241,231,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:900px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .brand{font-size:22px;font-weight:800;letter-spacing:-.4px;text-decoration:none;color:var(--ink)}
+  .brand span{color:var(--teal)}
+  .nav-r{display:flex;align-items:center;gap:12px}
+  .langsel{border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);padding:9px 12px;min-height:44px;font:inherit;font-weight:600;cursor:pointer}
+  :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .cta{display:inline-block;background:var(--teal);color:#fff;border-radius:10px;padding:11px 18px;font-weight:700;text-decoration:none;font-size:16px}
+  .cta:hover{background:var(--teal-d)}
+  .crumb{font-size:14px;color:var(--muted);margin:22px 0 0}.crumb a{color:var(--muted)}
+  h1{font-size:33px;line-height:1.15;color:var(--teal-d);margin:10px 0 10px}
+  .lead{font-size:19px;color:var(--ink);margin:0 0 8px}
+  h2{font-size:23px;color:var(--teal-d);margin:34px 0 8px}
+  p{margin:0 0 12px}
+  ul{margin:0 0 12px;padding-left:20px}li{margin-bottom:6px}
+  [dir=rtl] ul{padding-left:0;padding-right:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:16px 20px;margin:22px 0}
+  [dir=rtl] .card{border-left:1px solid var(--line);border-right:4px solid var(--gold)}
+  .cta-card{background:linear-gradient(135deg,#1f6f54,#15503d);color:#fff;border:0;text-align:center;padding:24px 22px}
+  .cta-card h2{color:#fff;margin:0 0 8px}.cta-card p{opacity:.95;margin:0 0 16px}
+  .cta-card a{display:inline-block;background:#fff;color:var(--teal-d);font-weight:800;text-decoration:none;border-radius:12px;padding:13px 24px;font-size:17px}
+  .related h2{margin-top:0}.related a{display:block;font-weight:600;margin:6px 0}
+  .mtnote{font-size:13px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:18px 0 0}
+  .mtnote:empty{display:none}
+  footer{padding:34px 0 60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:40px}
+  footer a{color:var(--muted)}
+  .fnav{display:flex;flex-wrap:wrap;gap:10px 18px;margin-bottom:14px}.fnav a{font-weight:600}
+  .disc{font-size:13px;line-height:1.5}
+  @media(max-width:600px){h1{font-size:27px}}
+</style>
+</head>
+<body>
+<nav><div class="nav-in">
+  <a class="brand" href="{{HOME}}">{{brand_a}}<span>{{brand_b}}</span></a>
+  <div class="nav-r">{{LANG_SWITCH}}<a class="cta" href="{{HOME}}">{{nav_cta}}</a></div>
+</div></nav>
+
+<main class="wrap">
+  <p class="crumb"><a href="{{HOME}}">{{h_home}}</a> › {{h1}}</p>
+  <h1>{{h1}}</h1>
+  <p class="lead">{{lead}}</p>
+
+  <h2>{{s1_h}}</h2><p>{{s1_p}}</p>
+  <h2>{{s2_h}}</h2><p>{{s2_p}}</p>
+  <h2>{{s3_h}}</h2><p>{{s3_p}}</p>
+  <h2>{{s4_h}}</h2><p>{{s4_p}}</p>
+
+  <h2>{{list_h}}</h2>
+  <ul>{{LIST}}</ul>
+
+  <div class="card cta-card">
+    <h2>{{cta_h}}</h2>
+    <p>{{cta_p}}</p>
+    <a href="{{HOME}}" onclick="window.plausible&&plausible('guide_cta_clicked')">{{cta_btn}}</a>
+  </div>
+
+  <div class="card related">
+    <h2>{{c_guides_h}}</h2>
+    {{RELATED}}
+    <a href="{{P_DIR}}">{{f_dir}}</a>
+  </div>
+
+  <div class="card"><p style="margin:0">{{disc_card}}</p></div>
+  <p class="mtnote">{{mt_note}}</p>
+</main>
+
+<footer><div class="wrap">
+  <div class="fnav">
+    <a href="{{HOME}}">{{f_tool}}</a><a href="{{P_ABOUT}}">{{f_about}}</a><a href="{{P_FAQ}}">{{f_faq}}</a>
+    <a href="{{P_PRIV}}">{{f_priv}}</a><a href="{{P_DIR}}">{{f_dir}}</a>
+    <a href="https://github.com/iansduncan-oss/cobijo-health">{{f_gh}}</a>
+  </div>
+  <p class="disc">{{foot1}}</p>
+</div></footer>
+</body>
+</html>
