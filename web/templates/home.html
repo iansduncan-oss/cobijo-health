@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="OMQq_OnrKiOPACwJdOB-trbX0Ik74z8YFLom3tEFw18" />
+<title>{{page_title}}</title>
+<meta name="description" content="{{meta_desc}}">
+{{HEAD_LINKS}}
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#1f6f54">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cobijo Health">
+<meta property="og:title" content="{{page_title}}">
+<meta property="og:description" content="{{meta_desc}}">
+<meta property="og:image" content="https://cobijohealth.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+{{ORG_JSONLD}}
+<script defer data-domain="cobijohealth.org" src="https://analytics.aviontechs.com/js/script.outbound-links.js"></script>
+<style>
+  :root{
+    --ink:#1a2e28; --sand:#f6f1e7; --card:#fffdf8; --teal:#1f6f54; --teal-d:#155540;
+    --gold:#c79a3c; --line:#e3dccb; --muted:#5c6b63;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sand);color:var(--ink);
+    font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
+  header{padding:34px 0 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .brand{font-size:30px;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--ink)}
+  .brand span{color:var(--teal)}
+  .tag{color:var(--muted);margin-top:2px}
+  .langsel{border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);padding:10px 14px;min-height:44px;font:inherit;font-weight:600;cursor:pointer}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;
+    box-shadow:0 1px 0 rgba(0,0,0,.02),0 12px 32px -20px rgba(31,111,84,.35)}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 22px}
+  label{display:block;font-weight:600;margin:16px 0 6px;font-size:15px}
+  input,select{width:100%;padding:12px 13px;font:inherit;border:1.5px solid var(--line);
+    border-radius:10px;background:#fff;color:var(--ink)}
+  input:focus,select:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+  :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .skip{position:absolute;left:-999px;top:0;z-index:100;background:var(--teal);color:#fff;
+    padding:10px 14px;border-radius:0 0 8px 0;text-decoration:none;font-weight:700}
+  .skip:focus{left:0}
+  .mtnote{font-size:13px;color:var(--muted);background:#fff;border:1px dashed var(--line);
+    border-radius:10px;padding:10px 14px;margin:0 0 16px}
+  .mtnote:empty{display:none}
+  .fieldnote{font-size:13px;color:var(--muted);margin:6px 0 0}
+  .incgrp{display:flex;gap:8px;align-items:stretch}
+  .incgrp input{flex:1;min-width:0}
+  .incgrp select{width:auto;flex:none}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .check{display:flex;align-items:center;gap:10px;margin-top:18px;font-weight:600}
+  .check input{width:auto}
+  button.go{margin-top:24px;width:100%;background:var(--teal);color:#fff;border:0;border-radius:12px;
+    padding:15px;font:inherit;font-weight:700;font-size:18px;cursor:pointer;transition:background .15s}
+  button.go:hover{background:var(--teal-d)}
+  button.go:disabled{opacity:.6;cursor:progress}
+  .out{margin-top:26px;display:none}
+  .plan{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;
+    padding:20px 22px;white-space:pre-wrap;font-size:16px}
+  .plan strong{color:var(--teal-d)}
+  details{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px 18px}
+  summary{cursor:pointer;font-weight:700;padding:12px 0}
+  .letter{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;
+    background:var(--sand);border-radius:8px;padding:16px;margin:6px 0 14px;overflow:auto;direction:ltr;text-align:left}
+  .copy{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;margin-bottom:14px}
+  .copied{color:var(--teal-d);font-weight:700;font-size:14px}
+  .err{color:#a12a1e;font-weight:600;margin-top:14px}
+  .recover{margin-top:14px;background:#fbf8f1;border:1px dashed var(--line);border-radius:12px;padding:14px 16px}
+  .recover[hidden]{display:none}
+  .recover p{margin:0 0 10px;font-size:14.5px}
+  .recover .recbtn{background:var(--teal);color:#fff;border:0;border-radius:10px;padding:11px 15px;
+    font:inherit;font-weight:700;cursor:pointer;margin-right:12px}
+  .recover a{font-size:14px}
+  .di-note{background:#fff4e0;border:1px solid #e8d6a8;color:#7a5c15;border-radius:12px;
+    padding:12px 16px;margin-bottom:14px;font-size:14.5px}
+  .foot{color:var(--muted);font-size:13.5px;margin-top:26px;text-align:center}
+  .foot a{color:var(--muted)}
+  .hero{border-radius:16px;padding:22px 24px;color:#fff;margin-bottom:16px;
+    box-shadow:0 12px 32px -20px rgba(0,0,0,.5)}
+  .hero.free{background:linear-gradient(135deg,#1f6f54,#15503d)}
+  .hero.discount{background:linear-gradient(135deg,#9a7020,#7e5a17)}
+  .hero.high_cost{background:linear-gradient(135deg,#2f6f8f,#245a74)}
+  .hero.over{background:linear-gradient(135deg,#5c6b63,#454f49)}
+  .hero.unknown{background:linear-gradient(135deg,#2f6f8f,#245a74)}
+  .hero .badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+    border-radius:50%;background:rgba(255,255,255,.22);font-size:20px;font-weight:800;margin-bottom:10px}
+  .hero .head{font-size:23px;font-weight:800;line-height:1.25;margin:0}
+  .hero .hsub{margin-top:8px;font-size:14.5px;opacity:.95}
+  .hero .hsub b{font-weight:800}
+  .chip{display:inline-block;margin-top:12px;background:rgba(0,0,0,.2);border-radius:999px;
+    padding:5px 12px;font-size:12.5px;font-weight:600}
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+  .rcard.soft{background:#fbf8f1;border-style:dashed}
+  .rcard-h{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--teal-d);font-size:16px;margin-bottom:8px}
+  .rcard-h .n{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+    border-radius:50%;background:var(--teal);color:#fff;font-size:14px;flex:none}
+  .rcard p{margin:6px 0}
+  .rcard strong{color:var(--teal-d)}
+  .ceiling{background:#eef6f1;border:1px solid #cfe6da;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:15px}
+  .ceiling b{color:var(--teal-d);font-size:19px}
+  .subh{font-weight:700;font-size:13.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:14px 0 6px}
+  ul.checks,ul.bul{list-style:none;padding:0;margin:0}
+  ul.checks li,ul.bul li{position:relative;padding:5px 0 5px 26px;font-size:15px}
+  ul.checks li:before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:800}
+  ul.bul li:before{content:"•";position:absolute;left:6px;color:var(--gold);font-weight:800}
+  [dir=rtl] ul.checks li,[dir=rtl] ul.bul li{padding:5px 26px 5px 0}
+  [dir=rtl] ul.checks li:before{left:auto;right:0}[dir=rtl] ul.bul li:before{left:auto;right:6px}
+  .callbox{background:#eef6f1;border:1px solid #cfe6da;border-radius:12px;padding:14px 16px;margin:14px 0}
+  .callbtn{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;text-decoration:none;
+    font-weight:800;font-size:18px;border-radius:10px;padding:12px 18px;min-height:44px}
+  .callscript{font-size:14px;color:var(--ink);margin:10px 0 0;line-height:1.5}
+  .linkrow{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 2px}
+  .linkbtn{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:700;font-size:14.5px;
+    border-radius:10px;padding:11px 15px;min-height:44px;background:var(--teal);color:#fff;border:1.5px solid var(--teal)}
+  .linkbtn.alt{background:#fff;color:var(--teal-d);border-color:var(--line)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}
+  .actions button{background:var(--teal);color:#fff;border:0;border-radius:10px;padding:11px 16px;
+    font:inherit;font-weight:700;cursor:pointer}
+  .actions button.alt{background:var(--ink)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">{{skip}}</a>
+<div class="wrap">
+  <header>
+    <div>
+      <a class="brand" href="./">{{brand_a}}<span>{{brand_b}}</span></a>
+      <div class="tag">{{tag}}</div>
+    </div>
+    {{LANG_SWITCH}}
+  </header>
+
+  <p class="mtnote">{{mt_note}}</p>
+
+  <noscript>
+    <div class="mtnote" style="border-style:solid">{{noscript}}
+      <a href="/california-hospitals">{{browse}}</a></div>
+  </noscript>
+
+  <main id="main">
+  <div class="card">
+    <h1>{{title}}</h1>
+    <p class="sub">{{sub}}</p>
+    <form id="f" onsubmit="return submitForm(event)">
+      <label for="hospital">{{hospital}}</label>
+      <input id="hospital" list="hospitals" autocomplete="off" required placeholder="{{hospital_ph}}">
+      <datalist id="hospitals"></datalist>
+
+      <div class="row">
+        <div>
+          <label for="income">{{income}}</label>
+          <div class="incgrp">
+            <input id="income" type="number" min="0" inputmode="numeric" required placeholder="30000">
+            <select id="income_freq" aria-label="{{income_freq_label}}">
+              <option value="year">{{freq_year}}</option>
+              <option value="month">{{freq_month}}</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="household">{{household}}</label>
+          <input id="household" type="number" min="1" inputmode="numeric" value="1" required>
+        </div>
+      </div>
+
+      <label for="insurance">{{insurance}}</label>
+      <select id="insurance">
+        <option value="uninsured">{{ins_no}}</option>
+        <option value="insured">{{ins_yes}}</option>
+      </select>
+
+      <label class="check"><input id="collections" type="checkbox"> <span>{{collections}}</span></label>
+
+      <label for="fullname">{{yourname}}</label>
+      <input id="fullname" autocomplete="name" placeholder="{{yourname_ph}}">
+
+      <button class="go" id="go" type="submit">{{go}}</button>
+      <div class="err" id="err" role="alert" aria-live="assertive"></div>
+      <div class="recover" id="recover" hidden>
+        <p>{{notfound_help}}</p>
+        <button type="button" class="recbtn" onclick="runGeneric()">{{notfound_generic_btn}}</button>
+        <a href="/california-hospitals">{{browse}}</a>
+      </div>
+    </form>
+  </div>
+
+  <div class="out" id="out" tabindex="-1" aria-live="polite">
+    <div id="result"></div>
+    <details id="letterbox">
+      <summary>{{letter_summary}}</summary>
+      <p class="fieldnote">{{letter_before_send}}</p>
+      <button class="copy" onclick="copyLetter()">{{copy}}</button>
+      <span class="copied" id="copied" role="status" aria-live="polite"></span>
+      <div class="letter" id="letter"></div>
+    </details>
+    <div class="actions">
+      <button onclick="window.print()">{{print}}</button>
+      <button class="alt" onclick="restart()">{{restart}}</button>
+    </div>
+  </div>
+  </main>
+
+  <div class="foot">{{foot}}</div>
+  <div class="foot" style="margin-top:6px"><a href="/california-hospitals">{{browse}}</a></div>
+</div>
+
+<script>
+window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)};
+function track(n,p){ try{ window.plausible(n, p?{props:p}:undefined); }catch(_){} }
+function okUrl(u){ return typeof u==="string" && /^https?:\/\//i.test(u); }
+const UI = { "{{LANG}}": {{TOOL_STRINGS_JSON}} };
+let lang="{{LANG}}", lastReq=null, lastResult=null, lastLetter="", presetOshpdid="";
+fetch("/hospitals").then(r=>r.json()).then(list=>{
+  document.getElementById("hospitals").innerHTML=list.map(h=>`<option value="${h.replace(/"/g,'&quot;')}">`).join("");
+});
+(function(){ const q=new URLSearchParams(location.search);
+  const name=q.get("hospital"), oid=q.get("h");
+  // The SEO hospital-page CTA passes h=<oshpdid> so a shared hospital name resolves to the exact
+  // campus. It's cleared the moment the user edits the hospital field (they may pick a different one).
+  if(oid) presetOshpdid=oid;
+  if(name){ const el=document.getElementById("hospital"); if(el){ el.value=name; setTimeout(()=>document.getElementById("income").focus(),150);} } })();
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function render(text){return esc(text).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");}
+function annualIncome(){          // convert monthly -> yearly so hourly/weekly earners aren't tripped up
+  const v=Number(document.getElementById("income").value)||0;
+  return document.getElementById("income_freq").value==="month" ? Math.round(v*12) : v;
+}
+function buildReq(){
+  return {hospital:document.getElementById("hospital").value,
+    oshpdid:presetOshpdid,          // exact-campus hint from the SEO CTA; server falls back to name
+    income:annualIncome(),
+    household:document.getElementById("household").value,
+    insurance:document.getElementById("insurance").value,
+    full_name:document.getElementById("fullname").value,
+    in_collections:document.getElementById("collections").checked};
+}
+// Carry ONLY the hospital across a language switch (the tedious field to re-type). Income/name are
+// never persisted anywhere — honoring the "nothing is saved" promise, safe on shared computers.
+function syncLangSwitchHospital(){
+  presetOshpdid="";                 // user is choosing a hospital themselves — drop the CTA's campus hint
+  const h=document.getElementById("hospital").value.trim();
+  document.querySelectorAll("select.langsel option").forEach(o=>{
+    const base=o.value.split("?")[0];
+    o.value = h ? base+"?hospital="+encodeURIComponent(h) : base;
+  });
+}
+document.getElementById("hospital").addEventListener("input", syncLangSwitchHospital);
+// Funnel entry: fire once when the user first engages the form (measures SEO/hospital-page -> tool).
+(function(){ let fired=false;
+  const mark=()=>{ if(fired) return; fired=true; track('tool_started',{referred: presetOshpdid?"hospital_page":"direct"}); };
+  document.getElementById("f").addEventListener("focusin", mark, {once:true}); })();
+function showRecover(on){ const r=document.getElementById("recover"); if(r) r.hidden=!on; }
+function runGeneric(){                 // "get general guidance" — re-run with no specific hospital
+  showRecover(false);
+  lastReq=buildReq(); lastReq.generic=true;
+  runPlan().then(()=>{ const out=document.getElementById("out");
+    if(out.style.display==="block") out.scrollIntoView({behavior:"smooth",block:"start"}); });
+}
+async function runPlan(){
+  const go=document.getElementById("go"), err=document.getElementById("err"), out=document.getElementById("out");
+  err.textContent=""; showRecover(false); go.disabled=true; go.textContent="…";
+  try{
+    const res=await fetch("/plan",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(Object.assign({},lastReq,{lang}))});
+    if(!res.ok){
+      err.textContent = res.status===429 ? (UI[lang].err_ratelimit||UI[lang].err_generic)
+                      : res.status===404 ? UI[lang].err_hospital
+                      : (UI[lang].err_generic||"Something went wrong. Please try again.");
+      if(res.status===404) showRecover(true);      // dead-end -> offer general guidance + directory
+      out.style.display="none"; return; }
+    const d=await res.json();
+    lastResult=d.result; lastLetter=d.letter;
+    renderResult(d.result);
+    track('plan_generated',{tier:d.result.tier, language:lang, hospital:d.result.hospital.name});
+    document.getElementById("letter").textContent=d.letter;
+    { const c=document.getElementById("copied"); if(c) c.textContent=""; }   // clear stale "Copied ✓"
+    out.style.display="block";
+    out.focus({preventScroll:true});
+  }catch(_){ err.textContent=UI[lang].err_generic||"Something went wrong. Please try again."; }
+  finally{ go.disabled=false; go.textContent=UI[lang].go; }
+}
+function submitForm(e){
+  e.preventDefault(); lastReq=buildReq();
+  runPlan().then(()=>{ const out=document.getElementById("out");
+    if(out.style.display==="block") out.scrollIntoView({behavior:"smooth",block:"start"}); });
+  return false;
+}
+function restart(){
+  document.getElementById("out").style.display="none"; lastReq=null; presetOshpdid="";
+  document.getElementById("err").textContent=""; showRecover(false);
+  document.getElementById("f").reset(); window.scrollTo({top:0,behavior:"smooth"});
+}
+const ICON={free:"✓",discount:"%",high_cost:"+",over:"☑",unknown:"?"};
+function renderResult(r){
+  const U=UI[lang], h=r.hospital;
+  let html = r.not_in_directory ? `<div class="di-note">${esc(U.not_in_directory)}</div>` : "";
+  html+=`<div class="hero ${r.tier}">
+    <div class="badge" aria-hidden="true">${ICON[r.tier]||"✓"}</div>
+    <div class="head">${esc(r.headline)}</div>
+    <div class="hsub"><b>${esc(h.name)}</b> · ${U.hh} ${r.patient.household}, $${Number(r.patient.income).toLocaleString()}${U.peryear} ≈ ${Math.round(r.fpl_pct)}% ${U.fpl}</div>
+    ${h.needs_review?`<div class="chip">⚠ ${esc(U.review_label)}</div>`:""}
+  </div>`;
+  let n=1;
+  html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_charity)}</div>
+    <p>${render(r.charity.message)}</p>`;
+  if(r.charity.income_ceiling)
+    html+=`<div class="ceiling">${esc(U.ceiling_pre)} <b>$${Number(r.charity.income_ceiling).toLocaleString()}${U.peryear}</b></div>`;
+  html+=`<div class="subh">${esc(U.sec_apply)}</div><ul class="checks">`+
+    r.charity.apply.map(a=>`<li>${render(a)}</li>`).join("")+`</ul>`;
+  if(h.phone) html+=`<div class="callbox"><div class="subh" style="margin:0 0 8px">${esc(U.call_title)}</div>`+
+    `<a class="callbtn" href="tel:${h.phone.replace(/[^0-9+]/g,"")}" onclick="track('phone_clicked')">📞 ${esc(h.phone)}</a>`+
+    `<p class="callscript">${esc(U.call_script)}</p></div>`;
+  if(okUrl(h.application_url)||okUrl(h.policy_url)){
+    html+=`<div class="linkrow">`;
+    if(okUrl(h.application_url)) html+=`<a class="linkbtn" href="${esc(h.application_url)}" target="_blank" rel="noopener" onclick="track('application_link_clicked')">📝 ${esc(U.download_app)}</a>`;
+    if(okUrl(h.policy_url)) html+=`<a class="linkbtn alt" href="${esc(h.policy_url)}" target="_blank" rel="noopener" onclick="track('policy_link_clicked')">📄 ${esc(U.read_policy)}</a>`;
+    html+=`</div>`;
+  }
+  if(h.effective_date) html+=`<p class="tag" style="font-size:13px;margin-top:10px">${esc(U.effective_pre)} ${esc(h.effective_date)}.</p>`;
+  html+=`</div>`;
+  if(r.benefits&&r.benefits.length)
+    html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_coverage)}</div><ul class="bul">`+
+      r.benefits.map(b=>`<li>${render(b)}</li>`).join("")+`</ul></div>`;
+  if(r.debt&&r.debt.length)
+    html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_debt)}</div><ul class="bul">`+
+      r.debt.map(d=>`<li>${render(d)}</li>`).join("")+`</ul></div>`;
+  html+=`<div class="rcard soft">${render(r.closing)}</div>`;
+  if(r.lang_note) html+=`<p class="foot" style="text-align:left;margin-top:8px">${esc(r.lang_note)}</p>`;
+  document.getElementById("result").innerHTML=html;
+}
+function copyLetter(){
+  const done=()=>{ const c=document.getElementById("copied"); if(c) c.textContent=" "+(UI[lang].copied||"Copied ✓"); track('letter_copied'); };
+  const fallback=()=>{                       // older mobile / non-HTTPS: select the letter + execCommand
+    const el=document.getElementById("letter"); const r=document.createRange(); r.selectNodeContents(el);
+    const s=getSelection(); s.removeAllRanges(); s.addRange(r);
+    try{ if(document.execCommand("copy")) done(); }catch(_){}
+    s.removeAllRanges();
+  };
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(lastLetter).then(done).catch(fallback);
+    } else { fallback(); }
+  }catch(_){ fallback(); }
+}
+</script>
+</body>
+</html>

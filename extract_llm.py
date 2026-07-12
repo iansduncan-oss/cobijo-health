@@ -51,9 +51,8 @@ DEFAULT_MODEL = "claude-opus-4-8"
 MAX_CHARS = 120_000                  # ~30k tokens; policies run 15-70k chars
 MAX_OUTPUT_TOKENS = 8000             # rich policies emit long structured output; 4096 truncated
 
-# 2026 HHS Federal Poverty Guidelines (48 states + DC), effective 1/13/2026 — update each Jan.
-FPL = {1: 15960, 2: 21640, 3: 27320, 4: 33000, 5: 38680, 6: 44360, 7: 50040, 8: 55720}
-FPL_EACH_ADDITIONAL = 5680
+# FPL table now lives in constants.py — single source of truth shared with navigator.py.
+from constants import FPL, FPL_EACH_ADDITIONAL
 
 # CA charity-care statutory thresholds — Health & Safety Code §127405 (Hospital Fair Pricing Act).
 # 400% FPL is a FLOOR, not a cap: hospitals MUST offer charity care or discount payment to patients at

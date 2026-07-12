@@ -1,0 +1,378 @@
+#!/usr/bin/env python3
+"""Programmatic SEO: one content-rich page per California hospital, generated from the dataset.
+
+Each page answers the searches patients actually make ("<hospital> financial assistance",
+"<hospital> charity care income limits") with the hospital's real rules: the free-care income
+table by household size, discount thresholds, required documents, the official application/policy
+PDFs, a phone + call script, and a CTA into the interactive tool. Server-rendered HTML (no JS
+needed to read it) + JSON-LD so it's crawlable and rich-result eligible.
+
+Localized (T3.1): the hospital DATA is language-neutral, but the boilerplate (headings, lead, table
+labels, CTA, footer) is translated via the i18n "hospital" section, so /hospital/<slug> (English) and
+/<lang>/hospital/<slug> each carry reciprocal hreflang + a language switcher and are independently
+indexable. Share/copy/print affordances (T3.2) turn a page into an offline handout for clinics/social
+workers; Plausible events (T3.5) measure the SEO -> tool funnel.
+
+Public API:
+  build_index(rows) -> (slug->row dict, oshpdid->slug dict)
+  render_hospital(row, slug, index, lang="en") -> html str
+  render_directory(index, lang="en") -> html str
+  hospital_paths(index) -> [absolute URL, ...] for every hospital × language (sitemap)
+  BASE = "https://cobijohealth.org"
+"""
+import html
+import re
+
+import i18n
+
+BASE = "https://cobijohealth.org"
+
+
+def slugify(s):
+    return re.sub(r"[^a-z0-9]+", "-", (s or "").lower()).strip("-")
+
+
+def build_index(rows):
+    """slug -> row (unique slugs; disambiguate collisions by city then oshpdid). Also oshpdid -> slug."""
+    slug_to_row, oshpdid_to_slug = {}, {}
+    for r in rows:
+        base = slugify(r["hospital"])
+        slug = base
+        if slug in slug_to_row:
+            slug = slugify(r["hospital"] + "-" + (r.get("city") or ""))
+        if slug in slug_to_row:
+            slug = base + "-" + str(r.get("oshpdid") or "")
+        slug_to_row[slug] = r
+        if r.get("oshpdid"):
+            oshpdid_to_slug[str(r["oshpdid"])] = slug
+    return slug_to_row, oshpdid_to_slug
+
+
+def _e(s):
+    return html.escape(str(s), quote=True)
+
+
+def _title(name):
+    return name.title()
+
+
+def _money(v):
+    try:
+        return "${:,}".format(int(v))
+    except (ValueError, TypeError):
+        return None
+
+
+def _fill(s, **kw):
+    """Fill {token} placeholders by literal replace — robust against a stray brace in a translation."""
+    for k, v in kw.items():
+        s = s.replace("{" + k + "}", str(v))
+    return s
+
+
+# --- localized URL + hreflang + switcher helpers ------------------------------------------------- #
+def _path(lang, slug=None):
+    """Relative path for a hospital page (slug given) or the directory (slug None), per language."""
+    seg = f"hospital/{slug}" if slug else "california-hospitals"
+    return f"/{seg}" if lang == "en" else f"/{lang}/{seg}"
+
+
+def _url(lang, slug=None):
+    return BASE + _path(lang, slug)
+
+
+def _head_links(cur, slug=None):
+    """Reciprocal hreflang alternates + x-default + a self canonical, mirroring web/i18n.py."""
+    out = [f'<link rel="alternate" hreflang="{c}" href="{_url(c, slug)}">' for c in i18n.LANGS]
+    out.append(f'<link rel="alternate" hreflang="x-default" href="{_url("en", slug)}">')
+    out.append(f'<link rel="canonical" href="{_url(cur, slug)}">')
+    return "\n".join(out)
+
+
+def _lang_switch(cur, slug=None):
+    opts = "".join(f'<option value="{_path(code, slug)}"{" selected" if code == cur else ""}>{name}</option>'
+                   for code, (name, _) in i18n.LANGS.items())
+    return ('<select class="langsel" aria-label="Language" onchange="location.href=this.value">'
+            + opts + "</select>")
+
+
+_CSS = """
+:root{--ink:#1a2e28;--sand:#f6f1e7;--card:#fffdf8;--teal:#1f6f54;--teal-d:#155540;--gold:#c79a3c;--line:#e3dccb;--muted:#5c6b63}
+*{box-sizing:border-box}body{margin:0;background:var(--sand);color:var(--ink);font:17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:800px;margin:0 auto;padding:0 20px 80px}
+a{color:var(--teal-d)}
+header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:22px;font-weight:800;text-decoration:none;color:var(--ink)}.brand span{color:var(--teal)}
+.hnav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.langsel{border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);padding:8px 12px;min-height:40px;font:inherit;font-weight:600;cursor:pointer}
+.crumb{font-size:13.5px;color:var(--muted);margin:6px 0 2px}.crumb a{color:var(--muted)}
+h1{font-size:29px;line-height:1.2;margin:6px 0 6px}
+.loc{color:var(--muted);font-size:15px;margin:0 0 18px}
+.lead{font-size:18px;margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:16px 0;box-shadow:0 12px 32px -24px rgba(31,111,84,.4)}
+h2{font-size:21px;color:var(--teal-d);margin:2px 0 10px}
+table{width:100%;border-collapse:collapse;font-size:15.5px;margin:8px 0}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.3px}
+td.amt{font-weight:800;color:var(--teal-d);white-space:nowrap}
+ul{padding-left:20px}li{margin:5px 0}
+[dir=rtl] ul{padding-left:0;padding-right:20px}
+[dir=rtl] th,[dir=rtl] td{text-align:right}
+.callbtn{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;text-decoration:none;font-weight:800;font-size:18px;border-radius:10px;padding:12px 18px;min-height:44px}
+.script{font-size:14.5px;margin:10px 0 0}
+.linkrow{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 2px}
+.linkbtn{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:700;font-size:14.5px;border-radius:10px;padding:11px 15px;min-height:44px;background:var(--teal);color:#fff;border:1.5px solid var(--teal);cursor:pointer;font-family:inherit}
+.linkbtn.alt{background:#fff;color:var(--teal-d);border-color:var(--line)}
+.cta{background:linear-gradient(135deg,#1f6f54,#15503d);color:#fff;text-align:center}
+.cta h2{color:#fff}.cta p{opacity:.95;margin:0 0 16px}
+.cta a{display:inline-block;background:#fff;color:var(--teal-d);font-weight:800;text-decoration:none;border-radius:12px;padding:14px 26px;font-size:17px}
+.chip{display:inline-block;background:#fff4e0;border:1px solid #e8d6a8;color:#7a5c15;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:600;margin-bottom:8px}
+.note{font-size:13.5px;color:var(--muted)}
+.nearby a{display:inline-block;margin:3px 10px 3px 0}
+.share{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.copied{color:var(--teal-d);font-weight:700;font-size:14px}
+footer{color:var(--muted);font-size:13.5px;margin-top:30px;border-top:1px solid var(--line);padding-top:18px}
+footer a{color:var(--muted)}
+@media print{
+  .hnav,.cta,.share,.sharewrap,.nearby,header a[href="/"]{display:none!important}
+  body{background:#fff}.card{box-shadow:none;border-color:#ccc;break-inside:avoid}
+  a[href]:after{content:""}
+}
+"""
+
+
+def _head(title, desc, canonical, lang, slug=None, jsonld=""):
+    d = i18n.LANGS.get(lang, ("", "ltr"))[1]
+    return f"""<!DOCTYPE html><html lang="{lang}" dir="{d}"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{_e(title)}</title>
+<meta name="description" content="{_e(desc)}">
+{_head_links(lang, slug)}
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#1f6f54">
+<meta property="og:type" content="article"><meta property="og:title" content="{_e(title)}">
+<meta property="og:description" content="{_e(desc)}"><meta property="og:url" content="{_e(canonical)}">
+<meta property="og:image" content="{BASE}/og-image.png"><meta name="twitter:card" content="summary_large_image">
+<script defer data-domain="cobijohealth.org" src="https://analytics.aviontechs.com/js/script.outbound-links.js"></script>
+<script>window.plausible=window.plausible||function(){{(window.plausible.q=window.plausible.q||[]).push(arguments)}};</script>
+{jsonld}
+<style>{_CSS}</style></head><body><div class="wrap">"""
+
+
+def _header(lang, nav_cta, slug=None):
+    return (f'<header><a class="brand" href="{"/" if lang == "en" else "/" + lang + "/"}">Cobijo<span>Health</span></a>'
+            f'<div class="hnav"><a href="{"/" if lang == "en" else "/" + lang + "/"}" style="font-weight:700;text-decoration:none">{_e(nav_cta)}</a>'
+            f'{_lang_switch(lang, slug)}</div></header>')
+
+
+def _foot(S, lang):
+    p = (lambda seg: (f"/{seg}" if lang == "en" else f"/{lang}/{seg}"))
+    home = "/" if lang == "en" else f"/{lang}/"
+    # About/FAQ/Privacy are short nav labels the "hospital" section doesn't carry — pull them from the
+    # localized common/page catalog so the footer isn't half-English on a translated page.
+    common = i18n.strings(lang, "about")
+    return (f'<footer><p><a href="{home}">{_e(S["h_check_bill"])}</a> · '
+            f'<a href="{p("about")}">{_e(common.get("f_about", "About"))}</a> · '
+            f'<a href="{p("faq")}">{_e(common.get("f_faq", "FAQ"))}</a> · '
+            f'<a href="{p("privacy")}">{_e(common.get("f_priv", "Privacy"))}</a> · '
+            f'<a href="{_path(lang)}">{_e(S["h_dir"])}</a></p>'
+            f'<p>{_e(S["h_foot"])}</p></footer></div></body></html>')
+
+
+def _income_table(ceilings, verb, S):
+    rows = []
+    for size in range(1, 9):
+        v = _money((ceilings or {}).get(str(size)))
+        if not v:
+            continue
+        ppl = S["h_person"] if size == 1 else S["h_people"]
+        rows.append(f'<tr><td>{size} {_e(ppl)}</td><td class="amt">{v}<span class="note">{_e(S["h_per_yr"])}</span></td>'
+                    f'<td>{_e(verb)}</td></tr>')
+    if not rows:
+        return ""
+    return (f'<table><thead><tr><th>{_e(S["h_tbl_size"])}</th><th>{_e(S["h_tbl_income"])}</th>'
+            f'<th>{_e(S["h_tbl_qualify"])}</th></tr></thead><tbody>' + "".join(rows) + '</tbody></table>')
+
+
+def render_hospital(row, slug, index, lang="en"):
+    S = i18n.hospital_strings(lang)
+    name = _title(row["hospital"])
+    city = (row.get("city") or "").title()
+    county = row.get("county")
+    canonical = _url(lang, slug)
+    pol = row.get("policy") or {}
+    free = pol.get("free_care") or {}
+    disc = pol.get("discount_payment") or {}
+    free_pct = free.get("fpl_ceiling_pct")
+    disc_pct = disc.get("fpl_ceiling_pct")
+    phone = (pol.get("contact") or {}).get("phone")
+    loc = ", ".join([p for p in [city, (county + " County") if county else None, "CA"] if p])
+
+    city_suffix = f" ({city}, CA)" if city else ""
+    title = _fill(S["h_h1"], name=name).replace(" — ", " ") + city_suffix + " | Cobijo Health"
+    desc = _fill(S["h_meta"], name=name + (f", {city}" if city else ""))
+
+    # --- JSON-LD: BreadcrumbList (all langs) + FAQPage (English only; FAQ rich results are deprecated,
+    #     and an English FAQ on a translated page is a content/lang mismatch we'd rather avoid). ---
+    home_url = BASE + ("/" if lang == "en" else f"/{lang}/")
+    breadcrumb = (
+        '{"@type":"BreadcrumbList","itemListElement":['
+        '{"@type":"ListItem","position":1,"name":%s,"item":"%s"},'
+        '{"@type":"ListItem","position":2,"name":%s,"item":"%s"},'
+        '{"@type":"ListItem","position":3,"name":%s,"item":"%s"}]}'
+        % (_json(S["h_home"]), home_url, _json(S["h_dir"]), _url(lang), _json(name), _json(canonical)))
+    graph = [breadcrumb]
+    if lang == "en":
+        fam4 = _money((row.get("free_care_income_ceiling_by_household") or {}).get("4"))
+        faqs = []
+        if fam4 and free_pct:
+            faqs.append((f"Who qualifies for free care at {name}?",
+                         f"Patients at or below {free_pct}% of the Federal Poverty Level generally qualify for "
+                         f"free (charity) care. For a household of four that is about {fam4} per year or less."))
+        faqs.append((f"Does {name} offer financial assistance?",
+                     f"Yes. Under California's Hospital Fair Pricing Act, {name} offers free or discounted care to "
+                     f"eligible low-income and uninsured patients. Cobijo Health can check if you qualify in about a minute."))
+        if phone:
+            faqs.append((f"How do I apply for financial assistance at {name}?",
+                         f"Call the hospital's financial-assistance office at {phone}, or download the application "
+                         f"form and submit it with proof of income. You can apply even after a bill is sent or in collections."))
+        faq_json = ",".join('{"@type":"Question","name":%s,"acceptedAnswer":{"@type":"Answer","text":%s}}'
+                            % (_json(q), _json(a)) for q, a in faqs)
+        graph.append('{"@type":"FAQPage","mainEntity":[' + faq_json + ']}')
+    jsonld = ('<script type="application/ld+json">{"@context":"https://schema.org","@graph":['
+              + ",".join(graph) + ']}</script>')
+
+    out = [_head(title, desc, canonical, lang, slug, jsonld)]
+    out.append(_header(lang, S["h_nav_cta"], slug))
+    dir_path = _path(lang)
+    home = "/" if lang == "en" else f"/{lang}/"
+    out.append(f'<p class="crumb"><a href="{home}">{_e(S["h_home"])}</a> › '
+               f'<a href="{dir_path}">{_e(S["h_dir"])}</a> › {_e(name)}</p>')
+    if row.get("needs_review"):
+        out.append(f'<span class="chip">{_e(S["h_verify"])}</span>')
+    out.append(f'<h1>{_e(_fill(S["h_h1"], name=name))}</h1>')
+    if loc:
+        out.append(f'<p class="loc">{_e(loc)}</p>')
+    out.append(f'<p class="lead">{_e(_fill(S["h_lead"], name=name))}</p>')
+
+    free_tbl = _income_table(row.get("free_care_income_ceiling_by_household"), S["h_free_verb"], S)
+    if free_tbl:
+        out.append(f'<div class="card"><h2>{_e(S["h_free_h"])}</h2>')
+        if free_pct:
+            out.append(f'<p>{_e(_fill(S["h_free_p"], name=name, pct=int(free_pct)))}</p>')
+        out.append(free_tbl)
+        out.append('</div>')
+
+    disc_tbl = _income_table(row.get("discount_income_ceiling_by_household"), S["h_disc_verb"], S)
+    if disc_tbl:
+        out.append(f'<div class="card"><h2>{_e(S["h_disc_h"])}</h2>')
+        if disc_pct:
+            out.append(f'<p>{_e(_fill(S["h_disc_p"], pct=int(disc_pct)))}</p>')
+        out.append(disc_tbl)
+        out.append('</div>')
+
+    docs = (pol.get("eligibility_process") or {}).get("documentation_required") or []
+    if docs:
+        out.append(f'<div class="card"><h2>{_e(S["h_docs_h"])}</h2><ul>')
+        for d in docs[:6]:
+            out.append(f"<li>{_e(d)}</li>")
+        out.append('</ul></div>')
+
+    out.append(f'<div class="card"><h2>{_e(S["h_apply_h"])}</h2>')
+    if phone:
+        out.append(f'<a class="callbtn" href="tel:{_e(re.sub(r"[^0-9+]", "", phone))}" '
+                   f'onclick="plausible(\'hospital_call_clicked\')">📞 {_e(phone)}</a>'
+                   f'<p class="script">{_e(S["h_call_script"])}</p>')
+    links = []
+    if _is_url(row.get("application_url")):
+        links.append(f'<a class="linkbtn" href="{_e(row["application_url"])}" target="_blank" rel="noopener">📝 {_e(S["h_get_app"])}</a>')
+    if _is_url(row.get("charity_policy_url")):
+        links.append(f'<a class="linkbtn alt" href="{_e(row["charity_policy_url"])}" target="_blank" rel="noopener">📄 {_e(S["h_read_policy"])}</a>')
+    if links:
+        out.append('<div class="linkrow">' + "".join(links) + '</div>')
+    if row.get("charity_effective_date"):
+        out.append(f'<p class="note" style="margin-top:12px">{_e(_fill(S["h_effective"], date=row["charity_effective_date"]))}</p>')
+    out.append('</div>')
+
+    # CTA into the tool. Pass oshpdid so a shared hospital name (Stanford ×2, UCI-Fountain Valley ×2)
+    # resolves to THIS exact campus. The tool carries the chosen language via the /<lang>/ prefix.
+    tool_home = "/" if lang == "en" else f"/{lang}/"
+    cta_q = f'{tool_home}?hospital={_urlq(row["hospital"].title())}'
+    if row.get("oshpdid"):
+        cta_q += f'&h={_urlq(str(row["oshpdid"]))}'
+    out.append(f'<div class="card cta"><h2>{_e(S["h_cta_h"])}</h2>'
+               f'<p>{_e(S["h_cta_p"])}</p>'
+               f'<a href="{_e(cta_q)}" onclick="plausible(\'hospital_cta_clicked\')">{_e(_fill(S["h_cta_btn"], name=name))}</a></div>')
+
+    # Share / print (T3.2) — an offline handout channel for clinics & social workers.
+    out.append(f'<div class="card sharewrap"><h2>{_e(S["h_share_h"])}</h2><div class="share">'
+               f'<button type="button" class="linkbtn" onclick="cobShare()">🔗 {_e(S["h_share"])}</button>'
+               f'<button type="button" class="linkbtn alt" onclick="cobCopy(this)">📋 {_e(S["h_copy"])}</button>'
+               f'<button type="button" class="linkbtn alt" onclick="window.print()">🖨 {_e(S["h_print"])}</button>'
+               f'<span class="copied" id="copied"></span></div></div>')
+
+    # internal linking: other hospitals in the same county
+    if county:
+        same = [(s, r) for s, r in index.items() if r.get("county") == county and s != slug][:10]
+        if same:
+            out.append(f'<div class="card nearby"><h2>{_e(_fill(S["h_nearby"], county=county))}</h2><p class="nearby">'
+                       + "".join(f'<a href="{_path(lang, s)}">{_e(_title(r["hospital"]))}</a>' for s, r in same)
+                       + '</p></div>')
+
+    out.append(_foot(S, lang))
+    out.append(_share_js(_e(S["h_copied"])))
+    return "".join(out)
+
+
+def _share_js(copied_label):
+    return ("<script>"
+            "function cobCopy(btn){var u=location.href;var d=function(){var c=document.getElementById('copied');"
+            "if(c)c.textContent=' " + copied_label + "';plausible('hospital_link_copied');};"
+            "if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(d).catch(function(){});}}"
+            "function cobShare(){var u=location.href,t=document.title;"
+            "if(navigator.share){navigator.share({title:t,url:u}).then(function(){plausible('hospital_shared');}).catch(function(){});}"
+            "else{cobCopy();}}"
+            "</script>")
+
+
+def render_directory(index, lang="en"):
+    S = i18n.hospital_strings(lang)
+    canonical = _url(lang)
+    out = [_head(S["h_dir_title"], S["h_dir_meta"], canonical, lang, None)]
+    out.append(_header(lang, S["h_nav_cta"], None))
+    home = "/" if lang == "en" else f"/{lang}/"
+    out.append(f'<p class="crumb"><a href="{home}">{_e(S["h_home"])}</a> › {_e(S["h_dir"])}</p>')
+    out.append(f'<h1>{_e(S["h_dir_h1"])}</h1>')
+    out.append(f'<p class="lead">{_e(S["h_dir_lead"])}</p>')
+    by_county = {}
+    for slug, r in index.items():
+        by_county.setdefault(r.get("county") or "Other", []).append((slug, r))
+    for county in sorted(by_county):
+        hosps = sorted(by_county[county], key=lambda x: x[1]["hospital"])
+        out.append(f'<div class="card"><h2>{_e(_fill(S["h_dir_county"], county=county) if "h_dir_county" in S else county + " County")}</h2><p class="nearby">'
+                   + "".join(f'<a href="{_path(lang, s)}">{_e(_title(r["hospital"]))}</a>' for s, r in hosps)
+                   + '</p></div>')
+    out.append(_foot(S, lang))
+    return "".join(out)
+
+
+def hospital_paths(index):
+    """Absolute URLs for the sitemap — every hospital × every language + the directory × every language."""
+    urls = [_url(lang, s) for s in index for lang in i18n.LANGS]
+    urls += [_url(lang) for lang in i18n.LANGS]
+    return urls
+
+
+# --- tiny helpers (stdlib only) ---
+def _json(s):
+    import json
+    return json.dumps(str(s), ensure_ascii=False)
+
+
+def _urlq(s):
+    from urllib.parse import quote
+    return quote(s)
+
+
+def _is_url(u):
+    return isinstance(u, str) and u.startswith(("http://", "https://"))

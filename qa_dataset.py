@@ -47,6 +47,9 @@ OUT = os.path.join(HERE, "output")
 
 SEV_ORDER = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
 DATASETS = ("cobijo_charity_care_dataset.json", "extracted_full.json", "extracted_smoke.json")
+# At/above this confidence, an extraction that found ZERO income thresholds is treated as a silent
+# failure (a re-extraction candidate) rather than a hospital that genuinely publishes no income rules.
+REEXTRACT_CONF = 0.8
 
 
 def key(row):
@@ -97,6 +100,17 @@ def check_row(row):
     for r in validate(pol):
         sev = "HIGH" if ("no free-care" in r or "out of range" in r or "exceeds" in r) else "MEDIUM"
         f.append((sev, "validator", r))
+
+    # T2.1 — high-confidence extraction that found NO income thresholds (free ceiling, discount
+    # ceiling, tiers all absent) is almost always a SILENT extraction gap (wrong PDF section, or the
+    # discount PDF wasn't fetched), not a hospital that truly publishes no income rules — a confident
+    # model shouldn't return nothing. Tag it distinctly so a periodic sweep can queue re-extraction
+    # (vs. the generic "no thresholds" reason validate() already emits).
+    conf = pol.get("extraction_confidence")
+    if fc is None and dc is None and not tiers and conf is not None and conf >= REEXTRACT_CONF:
+        f.append(("HIGH", "reextract_candidate",
+                  f"high confidence ({conf}) but zero income thresholds extracted — likely a silent "
+                  f"extraction gap (wrong PDF section / discount PDF missed); queue for re-extraction"))
 
     # 1. Ceiling sanity — >400% FPL is LEGAL (§127405 floor, not cap), so only an implausibly high
     #    value signals a units/decimal misread. Free care above the floor is unusual (verify), and free

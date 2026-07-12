@@ -36,13 +36,21 @@ MESSAGES = {
         "cc_over": ("Your income (~{pct:.0f}% FPL) is above {name}'s assistance ceiling "
                     "(~{ceiling:.0f}% FPL) — but still apply (policies changed in 2025), and use "
                     "bill-error review, negotiation, and the options below."),
+        "cc_unknown": ("We couldn't read {name}'s exact income limits from its policy — but every "
+                       "California hospital is required by law to offer free or discounted care. "
+                       "**Apply anyway** — at ~{pct:.0f}% of the Federal Poverty Level you may well qualify."),
+        "cc_no_hospital": ("We don't have this hospital's details in our directory yet — but every "
+                           "California hospital is required by law to offer free or discounted care. "
+                           "**Apply anyway** — at ~{pct:.0f}% of the Federal Poverty Level you may well qualify."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("You reported having insurance — we'd still check for cost-sharing help and "
                         "secondary programs."),
         "ben_medicaid_heuristic": ("**Medi-Cal (California Medicaid)** — at ~{pct:.0f}% FPL you're "
-                                   "likely eligible; CA covers eligible adults regardless of "
-                                   "immigration status. Free/low-cost coverage, and it can apply to "
-                                   "recent bills."),
+                                   "likely income-eligible for free or low-cost coverage that can "
+                                   "even apply to recent bills. California covers many adults "
+                                   "regardless of immigration status, though enrollment rules "
+                                   "changed in 2026 — check your current eligibility. Using Medi-Cal "
+                                   "does not count against a public-charge immigration test."),
         "ben_aca_heuristic": ("**Covered California (ACA) subsidies** — at ~{pct:.0f}% FPL you "
                               "likely qualify for premium help. (Enhanced subsidies were set to "
                               "lapse after 2025 — verify 2026 rules; PolicyEngine reflects current "
@@ -52,8 +60,10 @@ MESSAGES = {
         # --- policyengine.benefit_leads ---
         "pe_medicaid": ("**Medi-Cal (California Medicaid)** — current CA rules (via PolicyEngine) "
                         "show your household likely eligible for free/low-cost coverage worth an "
-                        "estimated ~${value:,}/yr. CA covers eligible adults regardless of "
-                        "immigration status, and coverage can apply to recent bills."),
+                        "estimated ~${value:,}/yr. California covers many adults regardless of "
+                        "immigration status (enrollment rules changed in 2026 — check your current "
+                        "eligibility), and coverage can apply to recent bills. Using Medi-Cal does "
+                        "not count against a public-charge test."),
         "pe_aca": ("**Covered California (ACA) subsidies** — PolicyEngine estimates a premium tax "
                    "credit of ~${ptc:,}/yr to lower your monthly premium on a marketplace plan."),
         "pe_over": ("Based on current CA rules (PolicyEngine), your income appears above the Medi-Cal "
@@ -96,6 +106,7 @@ MESSAGES = {
         "result_discount": "You likely qualify for a discount",
         "result_high_cost": "You may qualify based on high medical costs",
         "result_over": "You may be over the income limit — but you still have options",
+        "result_unknown": "We couldn't confirm this hospital's limits — but you should still apply",
     },
     "es": {
         # --- match_charity_care ---
@@ -116,13 +127,24 @@ MESSAGES = {
                     "{name} (~{ceiling:.0f}% del NFP) — pero solicítela de todos modos (las políticas "
                     "cambiaron en 2025), y use la revisión de errores en la factura, la negociación y "
                     "las opciones a continuación."),
+        "cc_unknown": ("No pudimos leer los límites de ingresos exactos de {name} en su política — pero "
+                       "todo hospital de California está obligado por ley a ofrecer atención gratuita o "
+                       "con descuento. **Solicítela de todos modos** — con ~{pct:.0f}% del Nivel Federal "
+                       "de Pobreza es muy posible que califique."),
+        "cc_no_hospital": ("Todavía no tenemos los detalles de este hospital en nuestro directorio, pero "
+                           "todo hospital de California está obligado por ley a ofrecer atención gratuita o "
+                           "con descuento. **Solicítela de todos modos** — con ~{pct:.0f}% del Nivel Federal "
+                           "de Pobreza es muy posible que califique."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("Usted indicó que tiene seguro — de todos modos revisaríamos ayuda con los "
                         "gastos compartidos y programas secundarios."),
         "ben_medicaid_heuristic": ("**Medi-Cal (Medicaid de California)** — con ~{pct:.0f}% del NFP "
-                                   "usted probablemente es elegible; California cubre a los adultos "
-                                   "elegibles sin importar su estatus migratorio. Cobertura "
-                                   "gratuita o de bajo costo, y puede aplicarse a facturas recientes."),
+                                   "usted probablemente es elegible por ingresos para cobertura "
+                                   "gratuita o de bajo costo, que puede aplicarse a facturas "
+                                   "recientes. California cubre a muchos adultos sin importar su "
+                                   "estatus migratorio, aunque las reglas de inscripción cambiaron "
+                                   "en 2026 — verifique su elegibilidad actual. Usar Medi-Cal no "
+                                   "cuenta en su contra en la prueba migratoria de carga pública."),
         "ben_aca_heuristic": ("**Covered California (subsidios de ACA)** — con ~{pct:.0f}% del NFP "
                               "usted probablemente califica para ayuda con la prima. (Los subsidios "
                               "ampliados iban a expirar después de 2025 — verifique las reglas de "
@@ -134,8 +156,10 @@ MESSAGES = {
         "pe_medicaid": ("**Medi-Cal (Medicaid de California)** — según las reglas vigentes de "
                         "California (vía PolicyEngine), su hogar probablemente es elegible para "
                         "cobertura gratuita o de bajo costo con un valor estimado de ~${value:,}/año. "
-                        "California cubre a los adultos elegibles sin importar su estatus migratorio, "
-                        "y la cobertura puede aplicarse a facturas recientes."),
+                        "California cubre a muchos adultos sin importar su estatus migratorio (las "
+                        "reglas de inscripción cambiaron en 2026 — verifique su elegibilidad actual), "
+                        "y la cobertura puede aplicarse a facturas recientes. Usar Medi-Cal no cuenta "
+                        "en su contra en la prueba de carga pública."),
         "pe_aca": ("**Covered California (subsidios de ACA)** — PolicyEngine estima un crédito "
                    "tributario para la prima de ~${ptc:,}/año para reducir su prima mensual en un "
                    "plan del mercado."),
@@ -184,8 +208,24 @@ MESSAGES = {
         "result_discount": "Usted probablemente califica para un descuento",
         "result_high_cost": "Podría calificar por sus altos costos médicos",
         "result_over": "Es posible que supere el límite de ingresos, pero aún tiene opciones",
+        "result_unknown": "No pudimos confirmar los límites de este hospital — pero aún debería solicitar",
     },
 }
+
+# The other 8 languages (zh/vi/tl/ko/hy/fa/ar/ru) load their catalog from the "plan" section of
+# web/i18n/<lang>.json (machine-assisted, native-review pending). en/es stay inline above so the
+# CLI and the unit tests never depend on the web/ tree. t() falls back to English per missing key.
+import json as _json
+import os as _os
+_I18N_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "web", "i18n")
+for _lg in ("zh", "vi", "tl", "ko", "hy", "fa", "ar", "ru"):
+    _p = _os.path.join(_I18N_DIR, f"{_lg}.json")
+    try:
+        _plan = _json.load(open(_p, encoding="utf-8")).get("plan")
+        if _plan:
+            MESSAGES[_lg] = _plan
+    except (FileNotFoundError, ValueError):
+        pass
 
 
 def t(lang, key, **kw):

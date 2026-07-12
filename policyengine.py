@@ -24,6 +24,8 @@ import argparse
 import json
 import urllib.request
 
+from constants import BENEFIT_YEAR
+
 PE_API = "https://api.policyengine.org/us/calculate"
 # Cap the MODELED household so a crafted/typo'd size (e.g. 100000) can't build a giant payload
 # and tie up a request. Benefit estimates are stable well below this; the exact FPL % is computed
@@ -31,7 +33,9 @@ PE_API = "https://api.policyengine.org/us/calculate"
 PE_MAX_HOUSEHOLD = 15
 
 
-def policyengine_benefits(annual_income, household_size, state="CA", year=2026, timeout=30):
+def policyengine_benefits(annual_income, household_size, state="CA", year=None, timeout=8):
+    if year is None:
+        year = BENEFIT_YEAR                 # current eligibility year, not a hardcoded 2026
     """Compute Medicaid + ACA PTC for a household via the PolicyEngine US API.
 
     Member 0 = the adult earner (carries all income). If size >= 2, member 1 is a second
@@ -91,7 +95,7 @@ def policyengine_benefits(annual_income, household_size, state="CA", year=2026, 
     }
 
 
-def benefit_leads(annual_income, household_size, state="CA", year=2026, timeout=30, lang="en"):
+def benefit_leads(annual_income, household_size, state="CA", year=None, timeout=8, lang="en"):
     """PolicyEngine -> patient-facing lead strings (same shape screen_benefits returns).
 
     Grounds each lead in the computed dollar figure. Raises on API failure so the navigator
@@ -114,7 +118,7 @@ def main():
     ap.add_argument("--income", type=int, required=True)
     ap.add_argument("--household", type=int, default=1)
     ap.add_argument("--state", default="CA")
-    ap.add_argument("--year", type=int, default=2026)
+    ap.add_argument("--year", type=int, default=None, help="eligibility year (default: current year)")
     args = ap.parse_args()
     leads, b = benefit_leads(args.income, args.household, state=args.state, year=args.year)
     print(json.dumps({k: v for k, v in b.items() if k != "raw"}, indent=2))

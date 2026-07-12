@@ -105,6 +105,15 @@ python3 navigator.py --offline ...         # skip PolicyEngine (no network)
 | `syfphr_scraper.py` | Legacy SYFPHR scrape — **archive baseline only** (pre-2025 rules) |
 | `golden_mountains_community.json` | Hand-verified extraction, schema/QA sanity anchor |
 
+## Docs (`docs/`, grouped)
+- **`product/`** — `sharpened-plan-v2.md` (living plan), `hcai-data-access.md` (how the data was
+  reverse-engineered), `hcai-data-request.md` (the CPRA request, sent 2026-07-09).
+- **`legal/`** — `founding-runbook.md` (turnkey steps to incorporate), `trademark-attorney-inquiry.md`,
+  `privacy-posture.md` + `privacy-policy-draft.md`, and `incorporation/` (Articles, bylaws, 1023-EZ
+  prep). Legal/privacy items are **DRAFT — attorney/counsel review pending**.
+- **`funding/`** — `funding-targets.md` (prioritized funders; fiscal sponsorship as the
+  pre-501(c)(3) unlock) and `applications/` (ready-to-use application drafts + executive summary).
+- **`board/`** — `board-recruitment-brief.md` (the 5 seats) + `board-outreach-kit.md` (templates).
 
 ## Tests
 `python3 -m unittest test_cobijo` — stdlib, no deps or network. Covers the charity-care match,

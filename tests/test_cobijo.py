@@ -213,6 +213,77 @@ class TestBuildPlanStruct(unittest.TestCase):
         self.assertIn("GRATUITA", es)
 
 
+class TestNameIndexDisambiguation(unittest.TestCase):
+    """A duplicated hospital name must not silently overwrite a sibling campus in the name index."""
+    def _rows(self):
+        def r(name, city, oid):
+            row = make_row(); row["hospital"] = name; row["city"] = city; row["oshpdid"] = oid
+            return row
+        return [r("Alpha Medical Center", "Fresno", "1"),          # unique name
+                r("Shared Hospital", "Eureka", "2"),               # dup name, different cities
+                r("Shared Hospital", "Orange", "3")]
+
+    def test_both_dup_campuses_addressable(self):
+        rows = self._rows()
+        idx = navigator._build_name_index(rows)
+        self.assertIn("SHARED HOSPITAL (EUREKA)", idx)
+        self.assertIn("SHARED HOSPITAL (ORANGE)", idx)
+        self.assertIs(idx["SHARED HOSPITAL (EUREKA)"], rows[1])
+        self.assertIs(idx["SHARED HOSPITAL (ORANGE)"], rows[2])
+
+    def test_bare_name_resolves_to_first(self):     # back-compat: a plain lookup never breaks
+        rows = self._rows()
+        idx = navigator._build_name_index(rows)
+        self.assertIs(idx["SHARED HOSPITAL"], rows[1])
+
+    def test_unique_name_gets_plain_display(self):
+        rows = self._rows()
+        navigator._build_name_index(rows)
+        self.assertEqual(rows[0]["_display"], "Alpha Medical Center")
+        self.assertEqual(rows[1]["_display"], "Shared Hospital (Eureka)")
+
+    def test_find_by_oshpdid_hits_exact_campus(self):
+        rows = self._rows()
+        ds = {"by_id": {r["oshpdid"]: r for r in rows}, "by_name": navigator._build_name_index(rows),
+              "rows": rows}
+        self.assertIs(navigator.find_hospital(ds, oshpdid="3", name="Shared Hospital"), rows[2])
+
+
+class TestGenericPlan(unittest.TestCase):
+    """T1.9 — a hospital not in the dataset must produce a helpful hospital-independent plan, not a
+    dead-end. It invents no hospital-specific numbers (tier stays 'unknown')."""
+    def setUp(self):
+        self._orig = navigator.USE_POLICYENGINE
+        navigator.USE_POLICYENGINE = False      # offline heuristic
+
+    def tearDown(self):
+        navigator.USE_POLICYENGINE = self._orig
+
+    def _intake(self, **kw):
+        base = {"hospital_name": "Some Clinic", "first_name": "there", "household_size": 4,
+                "annual_income": 25000, "insurance": "uninsured", "in_collections": True}
+        base.update(kw)
+        return base
+
+    def test_generic_shape(self):
+        r = navigator.build_generic_plan_struct(self._intake(), lang="en")
+        self.assertEqual(r["tier"], "unknown")
+        self.assertTrue(r["not_in_directory"])
+        self.assertIsNone(r["charity"]["income_ceiling"])   # no invented dollar figure
+        self.assertTrue(r["benefits"])                      # benefit screen is hospital-agnostic
+        self.assertEqual(len(r["debt"]), 4)                 # in_collections -> full debt defense
+        self.assertIn("California", r["charity"]["message"])
+
+    def test_generic_no_name_is_none(self):
+        r = navigator.build_generic_plan_struct(self._intake(hospital_name=""), lang="en")
+        self.assertIsNone(r["hospital"]["name"])
+
+    def test_generic_letter_uses_placeholder_when_no_name(self):
+        letter = navigator.generate_letter({"household_size": 4, "annual_income": 25000},
+                                           {"hospital": "[Hospital name]"}, 76, "unknown")
+        self.assertIn("[Hospital Name]", letter)      # .title()-cased, still a fill-in placeholder
+
+
 def fake_ds(row=None):
     row = row or make_row()
     return {"by_id": {}, "by_name": {row["hospital"].upper(): row}, "rows": [row]}
@@ -361,6 +432,46 @@ class TestQAChecks(unittest.TestCase):
         a, b = make_row(), make_row()             # same sha, identical policy -> no divergence
         self.assertEqual(qa_dataset.check_chains([a, b]), {})
 
+    def test_high_conf_no_thresholds_is_reextract_candidate(self):
+        # A confident extraction with zero income thresholds is a silent gap, not a real "no rules"
+        # policy — it must be tagged for re-extraction, not just the generic validator reason.
+        row = make_row(free=None, disc=None, tiers=[])   # make_row sets confidence 0.9
+        findings = qa_dataset.check_row(row)
+        self.assertTrue(any(c == "reextract_candidate" and s == "HIGH" for s, c, _ in findings), findings)
+
+    def test_low_conf_no_thresholds_not_reextract_candidate(self):
+        # Below the confidence bar it's already low-trust; don't double-flag it as a re-extract candidate.
+        row = make_row(free=None, disc=None, tiers=[])
+        row["policy"]["extraction_confidence"] = 0.3
+        self.assertFalse(any(c == "reextract_candidate" for _, c, _ in qa_dataset.check_row(row)))
+
+
+class TestFreshnessContent(unittest.TestCase):
+    """Same URL + same effective date but a changed PDF content hash = a silent re-upload; the diff
+    must surface it (URL/date-only comparison would miss it entirely)."""
+    import freshness_monitor as _fm
+
+    def _fp(self, url="u", date="01/01/2025", sha=None):
+        h = {"policies": {"charity_care": {"current_policy_url": url, "current_effective_date": date},
+                          "discount_payment": {}}, "post_title": "H"}
+        return self._fm.fingerprint(h, content_sha=sha)
+
+    def test_same_url_new_content_flagged(self):
+        cur = {"h": self._fp(sha="aaa")}
+        base = {"h": self._fp(sha="bbb")}
+        _, _, changed = self._fm.diff(cur, base)
+        self.assertTrue(changed and "content changed" in changed[0][2][0])
+
+    def test_identical_content_not_flagged(self):
+        cur = base = {"h": self._fp(sha="aaa")}
+        self.assertEqual(self._fm.diff(cur, base), ([], [], []))
+
+    def test_missing_sha_is_not_a_change(self):
+        # An unknown hash (fetch failure / not-yet-extracted) must read as unknown, never "changed".
+        cur = {"h": self._fp(sha=None)}
+        base = {"h": self._fp(sha="bbb")}
+        self.assertEqual(self._fm.diff(cur, base)[2], [])
+
 
 class TestValidateGate(unittest.TestCase):
     """validate() is the gate that sets needs_review on the SERVED row — it must catch
@@ -409,6 +520,159 @@ class TestEffectiveDate(unittest.TestCase):
 
     def test_none_ok(self):
         self.assertIsNone(effective_date_issue(None))
+
+
+class TestUnknownTier(unittest.TestCase):
+    """A hospital whose income thresholds didn't extract must NOT tell an eligible patient they're
+    'over the ceiling' (a max([]) -> 0% FPL artifact). It routes them to apply instead."""
+    def test_no_thresholds_returns_unknown_not_over(self):
+        row = make_row(free=None, disc=None, tiers=[])
+        tier, msg = navigator.match_charity_care(row, pct=80, household=4, insured=False)
+        self.assertEqual(tier, "unknown")
+        self.assertNotIn("0% FPL", msg)      # never present a false 0% ceiling
+
+    def test_unknown_headline_present_en_es(self):
+        self.assertTrue(t("en", "result_unknown"))
+        self.assertTrue(t("es", "result_unknown"))
+
+    def test_real_over_still_matches(self):        # guard: the branch didn't shadow a genuine over-ceiling
+        tier, _ = navigator.match_charity_care(make_row(free=200, disc=400), pct=999, household=4, insured=False)
+        self.assertEqual(tier, "over")
+
+
+class TestEffectiveDateDisplay(unittest.TestCase):
+    def test_future_suppressed(self):
+        self.assertIsNone(navigator.effective_date_display({"charity_effective_date": "06/25/2099"}))
+
+    def test_past_kept(self):
+        self.assertEqual(navigator.effective_date_display({"charity_effective_date": "05/13/2025"}), "05/13/2025")
+
+    def test_missing_is_none(self):
+        self.assertIsNone(navigator.effective_date_display({}))
+
+    def test_unparseable_kept_as_is(self):
+        self.assertEqual(navigator.effective_date_display({"charity_effective_date": "Spring 2024"}), "Spring 2024")
+
+
+class TestLetterName(unittest.TestCase):
+    """The letter is the tool's deliverable — it must never be mailed signed 'Patient' or blank."""
+    def _intake(self, **kw):
+        base = {"household_size": 4, "annual_income": 33000, "insurance": "uninsured", "in_collections": False}
+        base.update(kw)
+        return base
+
+    def test_blank_web_name_becomes_placeholder(self):
+        letter = navigator.generate_letter(self._intake(full_name="", first_name="there", last_name=""),
+                                           make_row(), 100, "free")
+        self.assertIn("[Your full name]", letter)
+        self.assertNotIn("Patient", letter)
+        self.assertNotIn("there", letter)
+
+    def test_provided_name_used(self):
+        letter = navigator.generate_letter(self._intake(full_name="Maria Lopez"), make_row(), 100, "free")
+        self.assertIn("Maria Lopez", letter)
+
+    def test_cli_first_last_still_works(self):     # CLI path has no full_name key
+        letter = navigator.generate_letter(self._intake(first_name="James", last_name="Nguyen"),
+                                           make_row(), 100, "free")
+        self.assertIn("James Nguyen", letter)
+
+
+# The web i18n JSONs have NO parity guarantee elsewhere (only messages.py/sms.py do) — a dropped key
+# or renamed {field} in one of 10 languages would ship silently and render literal {{...}} or crash.
+import json as _json
+_WEB = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
+if _WEB not in sys.path:
+    sys.path.insert(0, _WEB)
+import i18n as web_i18n
+
+
+class TestWebI18n(unittest.TestCase):
+    I18N = os.path.join(_WEB, "i18n")
+
+    def _raw(self, lang):
+        with open(os.path.join(self.I18N, f"{lang}.json"), encoding="utf-8") as f:
+            return _json.load(f)
+
+    @staticmethod
+    def _fields(s):
+        return {n for _, n, _, _ in string.Formatter().parse(s) if n}
+
+    def test_all_langs_have_english_keys(self):
+        en = self._raw("en")
+        for lang in web_i18n.LANGS:
+            if lang == "en":
+                continue
+            data = self._raw(lang)
+            for sec, keys in en.items():
+                if not isinstance(keys, dict):
+                    continue
+                missing = set(keys) - set(data.get(sec, {}))
+                self.assertEqual(missing, set(), f"{lang}.{sec} missing keys: {missing}")
+
+    def test_format_fields_match_english(self):
+        en = self._raw("en")
+        for lang in web_i18n.LANGS:
+            if lang == "en":
+                continue
+            data = self._raw(lang)
+            for sec, keys in en.items():
+                if not isinstance(keys, dict):
+                    continue
+                for k, v in keys.items():
+                    other = data.get(sec, {}).get(k)
+                    if not isinstance(v, str) or not other:
+                        continue          # missing keys are caught above; runtime falls back to en
+                    self.assertEqual(self._fields(v), self._fields(other),
+                                     f"{lang}.{sec}.{k}: format fields differ")
+
+    def test_every_page_renders_without_placeholders(self):
+        import re
+        for page in web_i18n.PAGES:
+            for lang in web_i18n.LANGS:
+                html = web_i18n.render(page, lang)
+                left = re.findall(r"{{[A-Za-z_]+}}", html)
+                self.assertEqual(left, [], f"{page}/{lang} leftover placeholders: {set(left)}")
+
+
+class TestHospitalPagesI18n(unittest.TestCase):
+    """The localized per-hospital SEO pages (T3.1) must render in every language with the right <html
+    lang>/dir and no unfilled {token}s (a dropped placeholder would print '{name}' to a patient)."""
+    import re as _re
+    if _WEB not in sys.path:
+        sys.path.insert(0, _WEB)
+    import hospital_pages as _hp
+
+    def _row(self):
+        r = make_row(); r["hospital"] = "Alpha Regional Medical Center"; r["city"] = "Fresno"
+        r["county"] = "Fresno"; r["oshpdid"] = "12345"
+        r["charity_policy_url"] = "https://example.org/policy.pdf"
+        r["charity_effective_date"] = "05/13/2025"
+        return r
+
+    def test_renders_all_langs_no_tokens(self):
+        idx, _ = self._hp.build_index([self._row()])
+        slug = next(iter(idx))
+        for lang, (_, direction) in web_i18n.LANGS.items():
+            html = self._hp.render_hospital(idx[slug], slug, idx, lang)
+            self.assertIn(f'lang="{lang}"', html)
+            self.assertIn(f'dir="{direction}"', html)
+            left = self._re.findall(r"\{(?:name|pct|date|county)\}", html)
+            self.assertEqual(left, [], f"{lang}: unfilled tokens {set(left)}")
+            self.assertIn(f'hreflang="{lang}"', html)         # reciprocal alternates present
+
+    def test_directory_renders_all_langs(self):
+        idx, _ = self._hp.build_index([self._row()])
+        for lang in web_i18n.LANGS:
+            html = self._hp.render_directory(idx, lang)
+            self.assertIn(f'lang="{lang}"', html)
+            self.assertNotIn("{county}", html)
+
+    def test_faq_jsonld_english_only(self):     # avoid an English FAQ on a translated page
+        idx, _ = self._hp.build_index([self._row()])
+        slug = next(iter(idx))
+        self.assertIn("FAQPage", self._hp.render_hospital(idx[slug], slug, idx, "en"))
+        self.assertNotIn("FAQPage", self._hp.render_hospital(idx[slug], slug, idx, "es"))
 
 
 if __name__ == "__main__":

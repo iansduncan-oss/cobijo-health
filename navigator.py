@@ -24,12 +24,14 @@ Usage:
   python3 navigator.py --hospital "MOUNTAINS COMMUNITY HOSPITAL" --income 40000 --household 4
 """
 import argparse
+import datetime
 import json
 import os
 import textwrap
 import time
 
 import policyengine
+from constants import FPL, FPL_EACH_ADDITIONAL
 from messages import t
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -43,11 +45,8 @@ USE_POLICYENGINE = True
 PE_COOLDOWN_SECONDS = 60
 _PE_COOLDOWN_UNTIL = 0.0
 
-# 2026 HHS Federal Poverty Guidelines (48 states + DC), annual USD. Effective 1/13/2026.
-# Verified 2026-07 against ASPE: https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines
-# Re-verify each January when new guidelines publish — every eligibility % divides by these.
-FPL = {1: 15960, 2: 21640, 3: 27320, 4: 33000, 5: 38680, 6: 44360, 7: 50040, 8: 55720}
-FPL_EACH_ADDITIONAL = 5680
+# FPL table + FPL_EACH_ADDITIONAL now live in constants.py (imported above) — single source of
+# truth shared with extract_llm.py so a January refresh can't update one file and miss the other.
 
 # Full datasets are gitignored (regenerate via extract_llm.py + build_dataset.py); sample_dataset.json
 # is a small tracked fallback so a fresh clone / CI / the public repo runs out of the box.
@@ -65,6 +64,47 @@ def fpl_percent(income, household):
     return round(income / poverty_limit(household) * 100, 1)   # show a negative FPL% or a bogus tier
 
 
+def effective_date_display(row):
+    """The policy effective date to show a patient — or None if missing or in the FUTURE.
+    A future 'effective' date is an extraction artifact (already flagged needs_review); presenting
+    it as the current policy date would mislead. Unparseable formats are shown as-is (best effort)."""
+    d = (row.get("charity_effective_date") or "").strip()
+    if not d:
+        return None
+    for fmt in ("%m/%d/%Y", "%Y-%m-%d", "%m/%d/%y", "%m/%Y", "%B %d, %Y", "%b %d, %Y", "%B %Y", "%Y"):
+        try:
+            parsed = datetime.datetime.strptime(d, fmt).date()
+            return None if parsed > datetime.date.today() else d
+        except ValueError:
+            continue
+    return d
+
+
+def _build_name_index(rows):
+    """UPPER(name) -> row, but disambiguated so a duplicated hospital name can't silently overwrite a
+    sibling campus. 4 CA hospitals share a name (Stanford Health Care ×2, UCI-Fountain Valley ×2 —
+    same city, one hospital double-listed under two OSHPD IDs; Providence St. Joseph and Stanford
+    Tri-Valley — genuinely different cities). For a colliding name we also register a "NAME (CITY)"
+    key so each is addressable, and stamp row["_display"] for the autocomplete. The bare UPPER(name)
+    still maps to the FIRST occurrence (deterministic) so a plain CLI / ?hospital= lookup never breaks."""
+    from collections import Counter
+    counts = Counter(r["hospital"].upper() for r in rows if r.get("hospital"))
+    by_name = {}
+    for r in rows:
+        nm = r.get("hospital")
+        if not nm:
+            continue
+        up = nm.upper()
+        by_name.setdefault(up, r)                     # bare name -> first occurrence (back-compat)
+        if counts[up] > 1 and r.get("city"):
+            disp = f"{nm.title()} ({r['city'].title()})"    # same-city dups collapse to one label
+            r["_display"] = disp
+            by_name[disp.upper()] = r
+        else:
+            r["_display"] = nm.title()
+    return by_name
+
+
 def load_dataset():
     """Load the extracted dataset; index usable rows by oshpdid AND UPPER(hospital name)."""
     for name in DATASETS:
@@ -73,7 +113,7 @@ def load_dataset():
             continue
         rows = [r for r in json.load(open(path)) if r.get("status") == "extracted" and r.get("policy")]
         by_id = {r["oshpdid"]: r for r in rows if r.get("oshpdid")}
-        by_name = {r["hospital"].upper(): r for r in rows if r.get("hospital")}
+        by_name = _build_name_index(rows)
         return {"by_id": by_id, "by_name": by_name, "rows": rows}, name
     raise SystemExit("No extracted dataset found — run extract_llm.py then build_dataset.py.")
 
@@ -132,6 +172,13 @@ def match_charity_care(row, pct, household, insured, lang="en"):
         thr = hmc["oop_threshold_pct_of_income"]
         return "high_cost", t(lang, "cc_high_cost", name=name, thr=thr)
 
+    # No readable income thresholds at all (free + discount ceiling + tiers all absent) — this is an
+    # extraction gap, NOT a genuine "over the ceiling". Computing max([]) -> 0 would tell an eligible
+    # low-income patient they're above a 0% FPL ceiling (the opposite of the truth). CA law still
+    # requires charity care, so route them to apply rather than present a false rejection.
+    if free is None and disc_ceiling is None and not tiers:
+        return "unknown", t(lang, "cc_unknown", name=name, pct=pct)
+
     ceiling = max([v for v in (free, disc_ceiling) if v is not None] or [0])
     return "over", t(lang, "cc_over", pct=pct, name=name, ceiling=ceiling)
 
@@ -179,8 +226,9 @@ def build_plan(intake, row, lang="en"):
     L = [t(lang, "plan_greeting", first=intake["first_name"], name=name),
          t(lang, "plan_household", household=intake["household_size"],
            income=intake["annual_income"], pct=pct), ""]
-    if row.get("charity_effective_date"):
-        L.append(t(lang, "plan_effective", name=name, date=row["charity_effective_date"]))
+    eff = effective_date_display(row)
+    if eff:
+        L.append(t(lang, "plan_effective", name=name, date=eff))
     if row.get("needs_review"):
         L.append(t(lang, "plan_needs_review"))
     L.append("")
@@ -239,8 +287,11 @@ def build_plan_struct(intake, row, lang="en"):
         "tier": tier,
         "headline": t(lang, "result_" + tier),
         "hospital": {"name": name, "phone": phone,
-                     "effective_date": row.get("charity_effective_date"),
-                     "needs_review": bool(row.get("needs_review"))},
+                     "effective_date": effective_date_display(row),
+                     "needs_review": bool(row.get("needs_review")),
+                     "policy_url": row.get("charity_policy_url"),
+                     "application_url": row.get("application_url"),
+                     "discount_policy_url": row.get("discount_policy_url")},
         "patient": {"first": intake["first_name"], "household": household,
                     "income": intake["annual_income"]},
         "charity": {"message": cc_msg, "income_ceiling": ceiling, "apply": apply_steps},
@@ -251,9 +302,46 @@ def build_plan_struct(intake, row, lang="en"):
     }
 
 
+def build_generic_plan_struct(intake, lang="en"):
+    """A hospital-independent plan for when the typed hospital isn't in our dataset — so a not-found
+    lookup helps instead of dead-ending. Every California hospital must offer charity care by law, and
+    the benefit-screen + debt-defense guidance is hospital-agnostic. No hospital-specific numbers are
+    invented: the charity tier is `unknown` ("apply anyway"). Same shape as build_plan_struct."""
+    pct = fpl_percent(intake["annual_income"], intake["household_size"])
+    name = (intake.get("hospital_name") or "").strip()
+    benefits = screen_benefits(pct, intake.get("insurance"), income=intake.get("annual_income"),
+                               household=intake.get("household_size"), lang=lang)
+    debt = debt_defense(intake.get("in_collections"), lang=lang)
+    closing_n = 2 + (1 if benefits else 0) + (1 if debt else 0)
+    return {
+        "fpl_pct": pct,
+        "tier": "unknown",
+        "not_in_directory": True,
+        "headline": t(lang, "result_unknown"),
+        "hospital": {"name": name.title() if name else None, "phone": None,
+                     "effective_date": None, "needs_review": False,
+                     "policy_url": None, "application_url": None, "discount_policy_url": None},
+        "patient": {"first": intake.get("first_name", "there"), "household": intake["household_size"],
+                    "income": intake["annual_income"]},
+        "charity": {"message": t(lang, "cc_no_hospital", pct=pct), "income_ceiling": None,
+                    "apply": [t(lang, "step1_apply_nophone"), t(lang, "step1_retroactive")]},
+        "benefits": benefits,
+        "debt": debt,
+        "closing": t(lang, "step4", n=closing_n),
+        "lang_note": t(lang, "letter_note_english") if lang != "en" else None,
+    }
+
+
 def generate_letter(intake, row, pct, tier):
     ask = "free (fully charity) care" if tier == "free" else "a charity-care discount"
-    return f"""{intake['first_name']} {intake['last_name']}
+    # Name: prefer an explicit full_name (the web always sets it, possibly ""), else first+last (CLI);
+    # an empty value becomes a bracketed placeholder the sender must fill in — never a stand-in like
+    # "Patient" that would be mailed verbatim.
+    name = intake.get("full_name")
+    if name is None:                       # CLI intake carries first/last, not full_name
+        name = f"{intake.get('first_name', '')} {intake.get('last_name', '')}".strip()
+    name = (name or "").strip() or "[Your full name]"
+    return f"""{name}
 {intake.get('address', '[Your address]')}
 {intake.get('phone', '[Your phone]')}
 
@@ -285,7 +373,7 @@ Please also provide an itemized copy of my bill so I can review it for accuracy.
 Thank you for your time. You can reach me at the phone number above.
 
 Sincerely,
-{intake['first_name']} {intake['last_name']}
+{name}
 """
 
 
