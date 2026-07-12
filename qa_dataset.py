@@ -51,6 +51,23 @@ DATASETS = ("cobijo_charity_care_dataset.json", "extracted_full.json", "extracte
 # failure (a re-extraction candidate) rather than a hospital that genuinely publishes no income rules.
 REEXTRACT_CONF = 0.8
 
+# Corpora (by policy content hash) manually verified via a cache-busted re-extraction on the strongest
+# model (opus-4-8, 2026-07-11) to publish NO income thresholds — mostly behavioral / psychiatric /
+# specialty hospitals whose FAPs don't use sliding-scale income tables. These are confirmed, not gaps,
+# so they're exempt from the reextract_candidate flag (else every QA sweep re-queues a pointless, key-
+# burning re-extraction). Keyed by source_sha256 so a hospital that later republishes its policy gets a
+# new hash and is re-checked automatically. See scripts/reextract_candidates.py.
+REEXTRACT_VERIFIED_NO_THRESHOLD = {
+    "d8e9b38fa61410e17f42fff77a55b47a3e80229b9e368fcf90e94334c71b5041",  # Coachella Valley Behavioral
+    "805d73ea4326ffef08e1b1a07026f641ec8cae305d620514ce6cea4132da8cd0",  # College Hospital
+    "0dd344e329923588479a7cca4ffde7ef93ae9e60abaa7aa5ef481185f62aa541",  # Fresno Surgical Hospital
+    "7607bb8f74183fd28b0b74aaa4de252d854e4ec73ce35a4b20742d921b907a91",  # Orchard Hospital
+    "6c7f29b733ec901bca40bf146981c14dade0e837b51cd8ca6538f2f5a8196c14",  # San Diego County Psychiatric
+    "ac46358929cc81acbec7bb2e6f2a12395e1972d6c2d961a8b73f4f3be1333044",  # Select Specialty - San Diego
+    "c56d241856a07055a3ffac0ace184f5142a04b7a9625b8e5b1f24fc0c5e556fa",  # The General Hospital
+    "d6ac2259d5b7e5bb7faf454c27224c8c524a50c0b31cc598bee88255626a5451",  # UCI Fountain Valley ×2 + Placentia Linda
+}
+
 
 def key(row):
     return row.get("permalink") or row.get("hospital")
@@ -107,7 +124,8 @@ def check_row(row):
     # model shouldn't return nothing. Tag it distinctly so a periodic sweep can queue re-extraction
     # (vs. the generic "no thresholds" reason validate() already emits).
     conf = pol.get("extraction_confidence")
-    if fc is None and dc is None and not tiers and conf is not None and conf >= REEXTRACT_CONF:
+    if (fc is None and dc is None and not tiers and conf is not None and conf >= REEXTRACT_CONF
+            and row.get("source_sha256") not in REEXTRACT_VERIFIED_NO_THRESHOLD):
         f.append(("HIGH", "reextract_candidate",
                   f"high confidence ({conf}) but zero income thresholds extracted — likely a silent "
                   f"extraction gap (wrong PDF section / discount PDF missed); queue for re-extraction"))
