@@ -258,7 +258,13 @@
     "freq_month": "kada buwan",
     "notfound_help": "Wala pa sa aming direktoryo ang ospital na iyon.",
     "notfound_generic_btn": "Ipakita ang pangkalahatang gabay →",
-    "not_in_directory": "Wala pa sa aming direktoryo ang ospital na ito — narito ang tulong na naaangkop sa bawat ospital sa California."
+    "not_in_directory": "Wala pa sa aming direktoryo ang ospital na ito — narito ang tulong na naaangkop sa bawat ospital sa California.",
+    "billdetails_summary": "Magdagdag ng detalye ng bill (opsyonal)",
+    "account": "Account o bill number",
+    "account_ph": "Gaya ng nakalimbag sa inyong bill",
+    "service_date": "Petsa ng serbisyo",
+    "service_date_ph": "hal. 03/15/2026",
+    "checking": "Tinitingnan…"
   },
   "hospital": {
     "h_home": "Home",
@@ -326,7 +332,7 @@
     "s2_h": "Maaari kang maging kwalipikado para sa libre o may diskwentong pangangalaga",
     "s2_p": "Sa ilalim ng Hospital Fair Pricing Act ng California (Health & Safety Code §127400 at kasunod), ang mga ospital ay kailangang mag-alok ng charity care (libreng pangangalaga) at may diskwentong pangangalaga sa mga kwalipikadong pasyente. Depende sa ospital, ang mga pasyenteng may kita ng sambahayan hanggang 400% ng Federal Poverty Level — humigit-kumulang $60,000 kada taon para sa isang tao o mga $125,000 para sa pamilyang apat — ay maaaring maging kwalipikado para sa diskwento, at ang mga pasyenteng mas mababa ang kita ay madalas na walang binabayaran. Ang pagiging walang insurance, o ang pagkakaroon ng medical bills na mataas kumpara sa iyong kita, ay maaari ring gawin kang kwalipikado.",
     "s3_h": "Hindi mahalaga kung luma na ang bill o nasa collections na",
-    "s3_p": "Maaari kang mag-apply para sa tulong pinansyal kahit pagkatapos mong matanggap ang bill, mag-set up ng payment plan, o maipadala na sa collection agency ang account. Sa California, karaniwang hindi maaaring i-report ng ospital ang iyong bill sa credit agency o ibenta ang utang hanggang hindi bababa sa 180 days pagkatapos ng unang bill (AB 1020). At sa ilalim ng isang batas noong 2024 (SB 1061), ang utang medikal ay hindi maaaring i-report sa iyong credit report sa California.",
+    "s3_p": "Maaari kang mag-apply para sa tulong pinansyal kahit pagkatapos mong matanggap ang bill, mag-set up ng payment plan, o maipadala na sa collection agency ang account. Sa California, karaniwang hindi maaaring i-report ng ospital ang iyong bill sa credit agency o ibenta ang utang hanggang hindi bababa sa 180 days pagkatapos ng unang bill (AB 1020). At sa ilalim ng isang batas noong 2025 (SB 1061), ang utang medikal ay hindi maaaring i-report sa iyong credit report sa California.",
     "s4_h": "Paano makakatulong ang Cobijo — libre, sa iyong wika",
     "s4_p": "Ang Cobijo Health ay isang libreng nonprofit na tool. Sabihin mo sa amin ang iyong ospital, kita, at laki ng sambahayan, at sasabihin namin sa iyo kung maaari kang maging kwalipikado para sa libre o may diskwentong pangangalaga sa partikular na ospital na iyon, susuriin ka para sa Medi-Cal at Covered California, at gagawan ka ng liham ng kahilingan na handa nang ipadala. Walang itinatago kami sa anumang ilagay mo.",
     "list_h": "Mabilis na checklist",
@@ -372,7 +378,7 @@
     "s1_h": "Maaari ka pa ring mag-apply para sa tulong pinansyal",
     "s1_p": "Ang pagpunta ng bill sa collections ay hindi nagkakansela sa iyong karapatan sa charity care o diskwento. Sa ilalim ng Hospital Fair Pricing Act ng California, maaari kang mag-apply para sa programang tulong pinansyal ng ospital kahit nasa collections na ang account — at kung kwalipikado ka, dapat i-adjust ng ospital at ng collection agency nito ang balanse. Kung sa tingin mo ay maaari kang maging kwalipikado, mag-apply bago ka magbayad o makipag-ayos.",
     "s2_h": "Ang utang medikal at ang iyong credit sa California",
-    "s2_p": "Sa ilalim ng isang batas ng California noong 2024 (SB 1061, ang Medical Debt Relief Act), ang utang medikal ay karaniwang hindi maaaring i-report sa mga credit agency o lumabas sa iyong credit report sa California — at ang utang medikal na nakalista sa credit report ay hindi maipapatupad laban sa iyo. Hiwalay dito, karaniwang hindi maaaring i-report ng mga ospital ang bill sa credit agency o ibenta ito hanggang hindi bababa sa 180 days pagkatapos ng unang bill (AB 1020).",
+    "s2_p": "Sa ilalim ng isang batas ng California noong 2025 (SB 1061, ang Medical Debt Relief Act), ang utang medikal ay karaniwang hindi maaaring i-report sa mga credit agency o lumabas sa iyong credit report sa California — at ang utang medikal na nakalista sa credit report ay hindi maipapatupad laban sa iyo. Hiwalay dito, karaniwang hindi maaaring i-report ng mga ospital ang bill sa credit agency o ibenta ito hanggang hindi bababa sa 180 days pagkatapos ng unang bill (AB 1020).",
     "s3_h": "Alamin ang iyong mga karapatan sa mga collector",
     "s3_p": "Dapat sumunod ang mga debt collector sa batas. Maaari kang humiling sa isang collector, nang nakasulat, na patunayan na tunay na sa iyo at tama ang utang — at dapat nilang itigil ang pangongolekta hanggang gawin nila iyon. Hindi maaaring galitin, pagbantaan, o pagsinungalingan ka ng mga collector. Kung lumabag ang collector sa mga patakarang ito, maaari kang magreklamo sa California Attorney General o sa pederal na Consumer Financial Protection Bureau. Magtabi ng talaan ng bawat tawag at liham.",
     "s4_h": "Ano ang dapat gawin ngayon",
@@ -579,5 +585,29 @@
     "cta_p": "Ang pagpapanatiling wala sa credit ang utang ay isang bagay — ang pagpapababa ng bill ay isa pa. Tinitingnan ng Cobijo kung kwalipikado ka para sa charity care o diskwento at isinusulat ang iyong kahilingan — libre, sa iyong wika, walang nai-save.",
     "cta_btn": "Tingnan kung kwalipikado ka →",
     "nav_label": "Medical debt at ang iyong credit report"
+  },
+  "guide_payplan": {
+    "title": "Karapatan sa Payment Plan ng Ospital sa California (Walang Interes) | Cobijo Health",
+    "meta": "Kailangang mag-alok ang mga ospital sa California ng payment plan na walang interes sa mga kwalipikadong pasyente para sa bill ng ospital. Alamin kung ano ang makatwirang buwanang bayad at paano ito i-set up — libre.",
+    "h1": "Ang inyong karapatan sa payment plan ng ospital na walang interes",
+    "lead": "Kung hindi ninyo kayang bayaran nang isang bagsakan ang bill ng ospital sa California, maaaring may karapatan kayong bayaran ito nang paunti-unti — nang walang interes. Narito kung paano gumagana ang mga payment plan at paano humiling ng isa.",
+    "s1_h": "Maaaring may karapatan kayo sa isang payment plan",
+    "s1_p": "Sa ilalim ng Hospital Fair Pricing Act ng California (Health & Safety Code §127400 at sumusunod), kailangang mag-alok ang mga ospital ng pinalawig na payment plan sa mga pasyenteng kwalipikado para sa charity care o discounted care — kadalasan ang mga may kita ng sambahayan na hanggang 400% ng Federal Poverty Level. Kung kwalipikado kayo, hindi kayo maaaring pilitin ng ospital na bayaran ang buong bill nang isang bagsakan.",
+    "s2_h": "Ano ang ibig sabihin ng 'makatwirang' buwanang bayad",
+    "s2_p": "Sinasabi ng batas sa California na ang makatwirang buwanang bayad ay hindi hihigit sa 10% ng buwanang kita ng inyong sambahayan, matapos ibawas ang mahahalagang gastusin sa pamumuhay tulad ng upa, pagkain, kuryente't tubig, transportasyon, at iba pang bill sa gamutan. Ang bayad ay nakabatay sa kung ano talaga ang kaya ninyo — hindi sa numerong pinili ng ospital. Kung hindi kayo magkasundo ng ospital, sinasabi ng batas na kailangang magtakda ang ospital ng plano na sumusunod sa 10% na tuntuning ito.",
+    "s3_h": "Ang inyong payment plan ay dapat walang interes",
+    "s3_p": "Para sa mga pasyenteng kwalipikado para sa charity care o diskuwento, hindi maaaring maningil ng interes ang ospital sa payment plan. Babayaran lamang ninyo ang inyong utang sa na-diskuwentong bill, na ikakalat nang paunti-unti. Laging humiling ng plano nang nakasulat, at magtabi ng kopya.",
+    "s4_h": "Kung ma-hulog kayo sa isang bayad",
+    "s4_p": "Ang pagkakalampas ng isang bayad ay hindi awtomatikong magpapadala ng inyong bill sa collections. Bago makansela ng ospital ang inyong payment plan, kadalasan ay kailangan muna nitong subukang maabot kayo — sa telepono at nakasulat — at mag-alok na gumawa ng bagong plano. Kung magbago ang inyong kita, maaari kayong humiling na ibaba ang inyong buwanang bayad.",
+    "list_h": "Paano mag-set up ng payment plan",
+    "li1": "Mag-apply muna para sa charity care o diskuwento — ang inyong payment plan ay nakabatay sa nabawasang bill.",
+    "li2": "Hilingin sa billing office ng ospital ang pinalawig na payment plan na walang interes, nang nakasulat.",
+    "li3": "Mag-alok ng buwanang halaga na hindi hihigit sa 10% ng inyong buwanang kita matapos ang mahahalagang gastusin.",
+    "li4": "Kunin ang kasunduan nang nakasulat bago kayo magbayad, at itabi ang bawat resibo.",
+    "li5": "Kung humigpit ang pera, makipag-ugnayan sa ospital para muling makipag-ayos — huwag basta tumigil sa pagbabayad.",
+    "cta_h": "Hindi sigurado kung kwalipikado kayo?",
+    "cta_p": "Sagutin ang ilang tanong para makita kung kwalipikado kayo para sa charity care o diskuwento, at makakuha ng liham na ipapadala sa inyong ospital — libre.",
+    "cta_btn": "Tingnan kung kwalipikado kayo →",
+    "nav_label": "Karapatan sa payment plan ng ospital"
   }
 }

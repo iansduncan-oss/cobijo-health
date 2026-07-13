@@ -40,8 +40,10 @@
   h1{font-size:22px;margin:0 0 4px}
   .sub{color:var(--muted);margin:0 0 22px}
   label{display:block;font-weight:600;margin:16px 0 6px;font-size:15px}
-  input,select{width:100%;padding:12px 13px;font:inherit;border:1.5px solid var(--line);
+  input,select{width:100%;padding:12px 13px;font:inherit;border:1.5px solid #b9ad8f;
     border-radius:10px;background:#fff;color:var(--ink)}
+  .sronly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
   input:focus,select:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
   :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
   .skip{position:absolute;left:-999px;top:0;z-index:100;background:var(--teal);color:#fff;
@@ -85,7 +87,7 @@
   .hero{border-radius:16px;padding:22px 24px;color:#fff;margin-bottom:16px;
     box-shadow:0 12px 32px -20px rgba(0,0,0,.5)}
   .hero.free{background:linear-gradient(135deg,#1f6f54,#15503d)}
-  .hero.discount{background:linear-gradient(135deg,#9a7020,#7e5a17)}
+  .hero.discount{background:linear-gradient(135deg,#8f6a1e,#7e5a17)}
   .hero.high_cost{background:linear-gradient(135deg,#2f6f8f,#245a74)}
   .hero.over{background:linear-gradient(135deg,#5c6b63,#454f49)}
   .hero.unknown{background:linear-gradient(135deg,#2f6f8f,#245a74)}
@@ -195,14 +197,14 @@
     <p class="sub">{{sub}}</p>
     <form id="f" onsubmit="return submitForm(event)">
       <label for="hospital">{{hospital}}</label>
-      <input id="hospital" list="hospitals" autocomplete="off" required placeholder="{{hospital_ph}}">
+      <input id="hospital" list="hospitals" autocomplete="off" required aria-required="true" placeholder="{{hospital_ph}}">
       <datalist id="hospitals"></datalist>
 
       <div class="row">
         <div>
           <label for="income">{{income}}</label>
           <div class="incgrp">
-            <input id="income" type="number" min="0" inputmode="numeric" required placeholder="30000">
+            <input id="income" type="number" min="0" inputmode="numeric" required aria-required="true" placeholder="30000">
             <select id="income_freq" aria-label="{{income_freq_label}}">
               <option value="year">{{freq_year}}</option>
               <option value="month">{{freq_month}}</option>
@@ -211,7 +213,7 @@
         </div>
         <div>
           <label for="household">{{household}}</label>
-          <input id="household" type="number" min="1" inputmode="numeric" value="1" required>
+          <input id="household" type="number" min="1" inputmode="numeric" value="1" required aria-required="true">
         </div>
       </div>
 
@@ -226,7 +228,22 @@
       <label for="fullname">{{yourname}}</label>
       <input id="fullname" autocomplete="name" placeholder="{{yourname_ph}}">
 
+      <details class="billdetails">
+        <summary>{{billdetails_summary}}</summary>
+        <div class="row">
+          <div>
+            <label for="account">{{account}}</label>
+            <input id="account" autocomplete="off" maxlength="40" placeholder="{{account_ph}}">
+          </div>
+          <div>
+            <label for="service_date">{{service_date}}</label>
+            <input id="service_date" autocomplete="off" maxlength="40" placeholder="{{service_date_ph}}">
+          </div>
+        </div>
+      </details>
+
       <button class="go" id="go" type="submit">{{go}}</button>
+      <span class="sronly" id="status" role="status" aria-live="polite"></span>
       <div class="err" id="err" role="alert" aria-live="assertive"></div>
       <div class="recover" id="recover" hidden>
         <p>{{notfound_help}}</p>
@@ -243,7 +260,7 @@
       <p class="fieldnote">{{letter_before_send}}</p>
       <button class="copy" onclick="copyLetter()">{{copy}}</button>
       <span class="copied" id="copied" role="status" aria-live="polite"></span>
-      <div class="letter" id="letter"></div>
+      <div class="letter" id="letter" lang="en"></div>
     </details>
     <div class="actions">
       <button onclick="window.print()">{{print}}</button>
@@ -288,6 +305,8 @@ function buildReq(){
     household:document.getElementById("household").value,
     insurance:document.getElementById("insurance").value,
     full_name:document.getElementById("fullname").value,
+    account:document.getElementById("account").value,
+    service_date:document.getElementById("service_date").value,
     in_collections:document.getElementById("collections").checked};
 }
 // Carry ONLY the hospital across a language switch (the tedious field to re-type). Income/name are
@@ -313,8 +332,10 @@ function runGeneric(){                 // "get general guidance" — re-run with
     if(out.style.display==="block") out.scrollIntoView({behavior:"smooth",block:"start"}); });
 }
 async function runPlan(){
-  const go=document.getElementById("go"), err=document.getElementById("err"), out=document.getElementById("out");
+  const go=document.getElementById("go"), err=document.getElementById("err"), out=document.getElementById("out"),
+        status=document.getElementById("status");
   err.textContent=""; showRecover(false); go.disabled=true; go.textContent="…";
+  if(status) status.textContent=UI[lang].checking||"Checking…";   // announce the wait to screen readers
   try{
     const res=await fetch("/plan",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify(Object.assign({},lastReq,{lang}))});
@@ -333,7 +354,7 @@ async function runPlan(){
     out.style.display="block";
     out.focus({preventScroll:true});
   }catch(_){ err.textContent=UI[lang].err_generic||"Something went wrong. Please try again."; }
-  finally{ go.disabled=false; go.textContent=UI[lang].go; }
+  finally{ go.disabled=false; go.textContent=UI[lang].go; if(status) status.textContent=""; }
 }
 function submitForm(e){
   e.preventDefault(); lastReq=buildReq();

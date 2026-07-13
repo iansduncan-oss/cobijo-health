@@ -167,7 +167,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, json.dumps({"ok": True, "hospitals": len(DS["rows"])}),
                               extra_headers={"Cache-Control": "no-store"})
         if path == "/hospitals":
-            return self._send(200, json.dumps(HOSPITALS))
+            # The datalist source is fetched on every tool load but only changes on a dataset rebuild —
+            # cache it so the low-bandwidth audience isn't re-downloading it each visit.
+            return self._send(200, json.dumps(HOSPITALS),
+                              extra_headers={"Cache-Control": "public, max-age=3600"})
         if path == "/california-hospitals":
             return self._send(200, hospital_pages.render_directory(HOSPITAL_INDEX), "text/html; charset=utf-8")
         if path.startswith("/hospital/"):
@@ -264,6 +267,14 @@ class Handler(BaseHTTPRequestHandler):
                 "insurance": req.get("insurance") or "uninsured",
                 "in_collections": bool(req.get("in_collections")),
             }
+            # Optional bill details -> the letter fills them in; empty stays a [bracket] the sender
+            # completes (generate_letter uses .get(key, "[...]"), so only set the key when non-empty).
+            acct = (req.get("account") or "").strip()[:40]
+            svc = (req.get("service_date") or "").strip()[:40]
+            if acct:
+                intake["account"] = acct
+            if svc:
+                intake["service_date"] = svc
         except (ValueError, TypeError):
             return self._send(400, json.dumps({"error": "income and household must be numbers"}))
 

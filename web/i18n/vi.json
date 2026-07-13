@@ -258,7 +258,13 @@
     "freq_month": "mỗi tháng",
     "notfound_help": "Chúng tôi chưa có bệnh viện đó trong danh bạ.",
     "notfound_generic_btn": "Xem hướng dẫn chung →",
-    "not_in_directory": "Bệnh viện này chưa có trong danh bạ của chúng tôi — đây là trợ giúp áp dụng cho mọi bệnh viện ở California."
+    "not_in_directory": "Bệnh viện này chưa có trong danh bạ của chúng tôi — đây là trợ giúp áp dụng cho mọi bệnh viện ở California.",
+    "billdetails_summary": "Thêm chi tiết hóa đơn (không bắt buộc)",
+    "account": "Số tài khoản hoặc số hóa đơn",
+    "account_ph": "Đúng như in trên hóa đơn của bạn",
+    "service_date": "Ngày khám/điều trị",
+    "service_date_ph": "ví dụ: 03/15/2026",
+    "checking": "Đang kiểm tra…"
   },
   "hospital": {
     "h_home": "Trang chủ",
@@ -326,7 +332,7 @@
     "s2_h": "Bạn có thể đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá",
     "s2_p": "Theo Đạo luật Định giá Công bằng của Bệnh viện California (Health & Safety Code §127400 và các điều tiếp theo), các bệnh viện phải cung cấp chăm sóc từ thiện (chăm sóc miễn phí) và chăm sóc giảm giá cho những bệnh nhân đủ điều kiện. Tùy theo bệnh viện, những bệnh nhân có thu nhập hộ gia đình lên đến 400% Mức Nghèo Liên bang — khoảng $60,000 một năm cho một người hoặc khoảng $125,000 cho một gia đình bốn người — có thể đủ điều kiện được giảm giá, và những bệnh nhân thu nhập thấp hơn thường không phải trả gì cả. Việc không có bảo hiểm, hoặc có các hóa đơn y tế cao so với thu nhập của bạn, cũng có thể khiến bạn đủ điều kiện.",
     "s3_h": "Không quan trọng hóa đơn đã cũ hay đã bị chuyển sang đòi nợ",
-    "s3_p": "Bạn có thể nộp đơn xin hỗ trợ tài chính ngay cả sau khi bạn đã nhận được hóa đơn, đã lập một kế hoạch trả góp, hoặc tài khoản đã bị chuyển sang một công ty đòi nợ. Ở California, một bệnh viện thường không thể báo cáo hóa đơn của bạn cho cơ quan tín dụng hoặc bán khoản nợ cho đến ít nhất 180 days sau hóa đơn đầu tiên (AB 1020). Và theo một luật năm 2024 (SB 1061), nợ y tế hoàn toàn không thể được báo cáo trên báo cáo tín dụng California của bạn.",
+    "s3_p": "Bạn có thể nộp đơn xin hỗ trợ tài chính ngay cả sau khi bạn đã nhận được hóa đơn, đã lập một kế hoạch trả góp, hoặc tài khoản đã bị chuyển sang một công ty đòi nợ. Ở California, một bệnh viện thường không thể báo cáo hóa đơn của bạn cho cơ quan tín dụng hoặc bán khoản nợ cho đến ít nhất 180 days sau hóa đơn đầu tiên (AB 1020). Và theo một luật năm 2025 (SB 1061), nợ y tế hoàn toàn không thể được báo cáo trên báo cáo tín dụng California của bạn.",
     "s4_h": "Cobijo có thể giúp như thế nào — miễn phí, bằng ngôn ngữ của bạn",
     "s4_p": "Cobijo Health là một công cụ phi lợi nhuận miễn phí. Hãy cho chúng tôi biết bệnh viện, thu nhập, và số người trong hộ gia đình của bạn, và chúng tôi sẽ cho bạn biết liệu bạn có thể đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá tại đúng bệnh viện đó hay không, kiểm tra xem bạn có đủ điều kiện cho Medi-Cal và Covered California không, và soạn cho bạn một lá thư yêu cầu sẵn sàng để gửi. Chúng tôi không lưu lại bất cứ điều gì bạn nhập vào.",
     "list_h": "Danh sách kiểm tra nhanh",
@@ -372,7 +378,7 @@
     "s1_h": "Bạn vẫn có thể nộp đơn xin hỗ trợ tài chính",
     "s1_p": "Việc một hóa đơn bị chuyển sang đòi nợ không hủy bỏ quyền của bạn đối với chăm sóc từ thiện hoặc giảm giá. Theo Đạo luật Định giá Công bằng của Bệnh viện California, bạn có thể nộp đơn xin chương trình hỗ trợ tài chính của bệnh viện ngay cả sau khi tài khoản đã bị đòi nợ — và nếu bạn đủ điều kiện, bệnh viện và công ty đòi nợ của họ phải điều chỉnh số dư. Nếu bạn nghĩ mình có thể đủ điều kiện, hãy nộp đơn trước khi bạn trả tiền hoặc dàn xếp.",
     "s2_h": "Nợ y tế và tín dụng của bạn ở California",
-    "s2_p": "Theo một luật California năm 2024 (SB 1061, Đạo luật Giảm nợ Y tế), nợ y tế nói chung không thể được báo cáo cho các cơ quan tín dụng hoặc xuất hiện trên báo cáo tín dụng California của bạn — và nợ y tế được liệt kê trên một báo cáo tín dụng không có hiệu lực cưỡng chế đối với bạn. Riêng biệt, các bệnh viện thường không thể báo cáo một hóa đơn cho cơ quan tín dụng hoặc bán nó cho đến ít nhất 180 days sau hóa đơn đầu tiên (AB 1020).",
+    "s2_p": "Theo một luật California năm 2025 (SB 1061, Đạo luật Giảm nợ Y tế), nợ y tế nói chung không thể được báo cáo cho các cơ quan tín dụng hoặc xuất hiện trên báo cáo tín dụng California của bạn — và nợ y tế được liệt kê trên một báo cáo tín dụng không có hiệu lực cưỡng chế đối với bạn. Riêng biệt, các bệnh viện thường không thể báo cáo một hóa đơn cho cơ quan tín dụng hoặc bán nó cho đến ít nhất 180 days sau hóa đơn đầu tiên (AB 1020).",
     "s3_h": "Hãy biết các quyền của bạn với những người đòi nợ",
     "s3_p": "Những người đòi nợ phải tuân theo luật. Bạn có thể yêu cầu người đòi nợ, bằng văn bản, xác minh rằng khoản nợ thực sự là của bạn và chính xác — và họ phải tạm dừng việc đòi nợ cho đến khi họ làm điều đó. Những người đòi nợ không được quấy rối, đe dọa, hoặc nói dối bạn. Nếu một người đòi nợ vi phạm những quy tắc này, bạn có thể khiếu nại với Tổng Chưởng lý California hoặc Cục Bảo vệ Tài chính Người tiêu dùng liên bang (CFPB). Hãy lưu giữ hồ sơ của mọi cuộc gọi và lá thư.",
     "s4_h": "Bây giờ nên làm gì",
@@ -579,5 +585,29 @@
     "cta_p": "Giữ nợ khỏi báo cáo tín dụng là một chuyện — giảm hóa đơn lại là chuyện khác. Cobijo kiểm tra xem bạn có đủ điều kiện nhận hỗ trợ từ thiện hoặc giảm giá không, và viết thư yêu cầu cho bạn — hoàn toàn miễn phí, bằng ngôn ngữ của bạn, không lưu thông tin gì.",
     "cta_btn": "Kiểm tra xem bạn có đủ điều kiện không →",
     "nav_label": "Nợ y tế và báo cáo tín dụng của bạn"
+  },
+  "guide_payplan": {
+    "title": "Quyền được trả góp viện phí tại California (không lãi suất) | Cobijo Health",
+    "meta": "Các bệnh viện ở California phải cung cấp cho những bệnh nhân đủ điều kiện một kế hoạch trả góp không lãi suất cho hóa đơn viện phí. Tìm hiểu mức trả hàng tháng hợp lý là bao nhiêu và cách lập kế hoạch trả góp — miễn phí.",
+    "h1": "Quyền của bạn được trả góp viện phí không lãi suất",
+    "lead": "Nếu bạn không thể trả hết một lần hóa đơn viện phí ở California, bạn có thể có quyền trả dần theo thời gian — mà không phải chịu lãi suất. Dưới đây là cách kế hoạch trả góp hoạt động và cách xin lập một kế hoạch.",
+    "s1_h": "Bạn có thể có quyền được trả góp",
+    "s1_p": "Theo Đạo luật Định giá Công bằng của Bệnh viện California (Health & Safety Code §127400 và các điều khoản tiếp theo), các bệnh viện phải cung cấp kế hoạch trả góp kéo dài cho những bệnh nhân đủ điều kiện nhận chăm sóc từ thiện hoặc chăm sóc được giảm giá — thường là những người có thu nhập gia đình lên tới 400% Mức Nghèo Liên bang. Nếu bạn đủ điều kiện, bệnh viện không thể ép bạn trả hết hóa đơn một lần.",
+    "s2_h": "Mức trả hàng tháng 'hợp lý' nghĩa là gì",
+    "s2_p": "Luật California nói rằng mức trả hàng tháng hợp lý là không quá 10% thu nhập gia đình hàng tháng của bạn, sau khi trừ đi các chi phí sinh hoạt thiết yếu như tiền thuê nhà, thức ăn, tiền điện nước, đi lại và các hóa đơn y tế khác. Số tiền trả dựa trên khả năng chi trả thực sự của bạn — chứ không phải con số bệnh viện tự đặt ra. Nếu bạn và bệnh viện không thể thống nhất, luật nói rằng bệnh viện phải lập một kế hoạch tuân theo quy tắc 10% này.",
+    "s3_h": "Kế hoạch trả góp của bạn không được tính lãi suất",
+    "s3_p": "Đối với những bệnh nhân đủ điều kiện nhận chăm sóc từ thiện hoặc được giảm giá, bệnh viện không được tính lãi suất trên kế hoạch trả góp. Bạn chỉ trả lại số tiền bạn nợ trên hóa đơn đã giảm giá, chia dần theo thời gian. Luôn xin kế hoạch bằng văn bản và giữ một bản sao.",
+    "s4_h": "Nếu bạn trả trễ một kỳ",
+    "s4_p": "Trễ một kỳ trả không tự động đưa hóa đơn của bạn sang bên đòi nợ. Trước khi bệnh viện có thể hủy kế hoạch trả góp của bạn, thông thường họ phải cố gắng liên lạc với bạn — qua điện thoại và bằng văn bản — và đề nghị thỏa thuận một kế hoạch mới. Nếu thu nhập của bạn thay đổi, bạn có thể xin giảm mức trả hàng tháng.",
+    "list_h": "Cách lập kế hoạch trả góp",
+    "li1": "Trước tiên hãy xin chăm sóc từ thiện hoặc giảm giá — kế hoạch trả góp của bạn dựa trên hóa đơn đã được giảm.",
+    "li2": "Yêu cầu phòng thu ngân của bệnh viện lập một kế hoạch trả góp kéo dài, không lãi suất, bằng văn bản.",
+    "li3": "Đề nghị một mức trả hàng tháng không quá 10% thu nhập hàng tháng của bạn sau khi trừ các chi phí thiết yếu.",
+    "li4": "Nhận thỏa thuận bằng văn bản trước khi bạn trả tiền, và giữ mọi biên nhận.",
+    "li5": "Nếu tài chính trở nên khó khăn hơn, hãy liên hệ với bệnh viện để thương lượng lại — đừng chỉ ngừng trả tiền.",
+    "cta_h": "Không chắc bạn có đủ điều kiện không?",
+    "cta_p": "Trả lời vài câu hỏi để xem bạn có đủ điều kiện nhận chăm sóc từ thiện hoặc được giảm giá không, và nhận một lá thư để gửi cho bệnh viện của bạn — miễn phí.",
+    "cta_btn": "Kiểm tra xem bạn có đủ điều kiện →",
+    "nav_label": "Quyền được trả góp viện phí"
   }
 }

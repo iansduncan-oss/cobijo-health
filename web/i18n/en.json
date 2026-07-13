@@ -253,7 +253,13 @@
     "freq_month": "per month",
     "notfound_help": "We don't have that hospital in our directory yet.",
     "notfound_generic_btn": "Show general guidance instead →",
-    "not_in_directory": "This hospital isn't in our directory yet — here's help that applies to every California hospital."
+    "not_in_directory": "This hospital isn't in our directory yet — here's help that applies to every California hospital.",
+    "billdetails_summary": "Add bill details (optional)",
+    "account": "Account or bill number",
+    "account_ph": "As printed on your bill",
+    "service_date": "Date(s) of service",
+    "service_date_ph": "e.g. 03/15/2026",
+    "checking": "Checking…"
   },
   "hospital": {
     "h_home": "Home",
@@ -321,7 +327,7 @@
     "s2_h": "You may qualify for free or discounted care",
     "s2_p": "Under California's Hospital Fair Pricing Act (Health & Safety Code §127400 and following), hospitals must offer charity care (free care) and discounted care to eligible patients. Depending on the hospital, patients with household income up to 400% of the Federal Poverty Level — roughly $60,000 a year for one person or about $125,000 for a family of four — can qualify for a discount, and lower-income patients often pay nothing at all. Being uninsured, or having medical bills that are high compared to your income, can also make you eligible.",
     "s3_h": "It doesn't matter if the bill is old or already in collections",
-    "s3_p": "You can apply for financial assistance even after you've received the bill, set up a payment plan, or had the account sent to a collection agency. In California, a hospital generally cannot report your bill to a credit agency or sell the debt until at least 180 days after the first bill (AB 1020). And under a 2024 law (SB 1061), medical debt cannot be reported on your California credit report at all.",
+    "s3_p": "You can apply for financial assistance even after you've received the bill, set up a payment plan, or had the account sent to a collection agency. In California, a hospital generally cannot report your bill to a credit agency or sell the debt until at least 180 days after the first bill (AB 1020). And under a 2025 law (SB 1061), medical debt cannot be reported on your California credit report at all.",
     "s4_h": "How Cobijo can help — free, in your language",
     "s4_p": "Cobijo Health is a free, nonprofit tool. Tell us your hospital, income, and household size, and we'll tell you whether you may qualify for free or discounted care at that specific hospital, screen you for Medi-Cal and Covered California, and write you a ready-to-send request letter. We don't save anything you enter.",
     "list_h": "Quick checklist",
@@ -367,7 +373,7 @@
     "s1_h": "You can still apply for financial assistance",
     "s1_p": "A bill going to collections does not cancel your right to charity care or a discount. Under California's Hospital Fair Pricing Act, you can apply for the hospital's financial-assistance program even after the account is in collections — and if you qualify, the hospital and its collection agency must adjust the balance. If you think you might qualify, apply before you pay or settle.",
     "s2_h": "Medical debt and your credit in California",
-    "s2_p": "Under a 2024 California law (SB 1061, the Medical Debt Relief Act), medical debt generally cannot be reported to credit agencies or appear on your California credit report — and medical debt listed on a credit report is not enforceable against you. Separately, hospitals generally cannot report a bill to a credit agency or sell it until at least 180 days after the first bill (AB 1020).",
+    "s2_p": "Under a 2025 California law (SB 1061, the Medical Debt Relief Act), medical debt generally cannot be reported to credit agencies or appear on your California credit report — and medical debt listed on a credit report is not enforceable against you. Separately, hospitals generally cannot report a bill to a credit agency or sell it until at least 180 days after the first bill (AB 1020).",
     "s3_h": "Know your rights with collectors",
     "s3_p": "Debt collectors must follow the law. You can ask a collector, in writing, to verify that the debt is really yours and correct — and they must pause collection until they do. Collectors cannot harass, threaten, or lie to you. If a collector breaks these rules, you can complain to the California Attorney General or the federal Consumer Financial Protection Bureau. Keep records of every call and letter.",
     "s4_h": "What to do now",
@@ -574,5 +580,29 @@
     "cta_p": "Keeping the debt off your credit is one thing — reducing the bill is another. Cobijo checks whether you qualify for charity care or a discount and writes your request letter — free, in your language, nothing saved.",
     "cta_btn": "Check if you qualify →",
     "nav_label": "Medical debt & your credit report"
+  },
+  "guide_payplan": {
+    "title": "Hospital Payment Plan Rights in California (Interest-Free) | Cobijo Health",
+    "meta": "California hospitals must offer eligible patients an interest-free payment plan for a hospital bill. Learn what a reasonable monthly payment is and how to set one up — free.",
+    "h1": "Your right to an interest-free hospital payment plan",
+    "lead": "If you can't pay a California hospital bill all at once, you may have the right to pay it over time — with no interest. Here's how payment plans work and how to ask for one.",
+    "s1_h": "You may have a right to a payment plan",
+    "s1_p": "Under California’s Hospital Fair Pricing Act (Health & Safety Code §127400 and following), hospitals must offer an extended payment plan to patients who qualify for charity care or discounted care — generally those with household income up to 400% of the Federal Poverty Level. If you qualify, the hospital cannot force you to pay the whole bill at once.",
+    "s2_h": "What a 'reasonable' monthly payment means",
+    "s2_p": "California law says a reasonable monthly payment is no more than 10% of your monthly household income, after subtracting essential living expenses like rent, food, utilities, transportation, and other medical bills. The payment is based on what you can actually afford — not a number the hospital picks. If you and the hospital cannot agree, the law says the hospital must set a plan that follows this 10% rule.",
+    "s3_h": "Your payment plan should have no interest",
+    "s3_p": "For patients who qualify for charity care or a discount, the hospital cannot charge interest on the payment plan. You pay back only what you owe on the discounted bill, spread out over time. Always ask for the plan in writing, and keep a copy.",
+    "s4_h": "If you fall behind on a payment",
+    "s4_p": "Missing one payment does not automatically send your bill to collections. Before a hospital can cancel your payment plan, it generally must try to reach you — by phone and in writing — and offer to work out a new plan. If your income changes, you can ask to lower your monthly payment.",
+    "list_h": "How to set up a payment plan",
+    "li1": "Apply for charity care or a discount first — your payment plan is based on the reduced bill.",
+    "li2": "Ask the hospital's billing office for an interest-free, extended payment plan in writing.",
+    "li3": "Offer a monthly amount that is no more than 10% of your monthly income after essential expenses.",
+    "li4": "Get the agreement in writing before you pay, and keep every receipt.",
+    "li5": "If money gets tighter, contact the hospital to renegotiate — don't just stop paying.",
+    "cta_h": "Not sure if you qualify?",
+    "cta_p": "Answer a few questions to see whether you qualify for charity care or a discount, and get a letter to send your hospital — free.",
+    "cta_btn": "Check if you qualify →",
+    "nav_label": "Hospital payment plan rights"
   }
 }

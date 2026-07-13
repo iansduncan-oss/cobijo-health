@@ -253,7 +253,13 @@
     "freq_month": "por mes",
     "notfound_help": "Todavía no tenemos ese hospital en nuestro directorio.",
     "notfound_generic_btn": "Ver orientación general →",
-    "not_in_directory": "Este hospital aún no está en nuestro directorio; aquí tiene ayuda que se aplica a todo hospital de California."
+    "not_in_directory": "Este hospital aún no está en nuestro directorio; aquí tiene ayuda que se aplica a todo hospital de California.",
+    "billdetails_summary": "Agregar detalles de la factura (opcional)",
+    "account": "Número de cuenta o de factura",
+    "account_ph": "Como aparece impreso en su factura",
+    "service_date": "Fecha(s) del servicio",
+    "service_date_ph": "ej. 03/15/2026",
+    "checking": "Verificando…"
   },
   "hospital": {
     "h_home": "Inicio",
@@ -321,7 +327,7 @@
     "s2_h": "Usted puede calificar para atención gratuita o con descuento",
     "s2_p": "Según la Ley de Precios Justos de los Hospitales de California (Health & Safety Code §127400 y siguientes), los hospitales deben ofrecer atención caritativa (atención gratuita) y atención con descuento a los pacientes elegibles. Según el hospital, los pacientes con ingresos del hogar de hasta 400% del Nivel Federal de Pobreza — aproximadamente $60,000 al año para una persona o alrededor de $125,000 para una familia de cuatro — pueden calificar para un descuento, y los pacientes de menores ingresos a menudo no pagan nada en absoluto. No tener seguro, o tener facturas médicas altas en comparación con sus ingresos, también puede hacerlo elegible.",
     "s3_h": "No importa si la factura es antigua o ya está en cobranzas",
-    "s3_p": "Usted puede solicitar ayuda económica incluso después de haber recibido la factura, establecido un plan de pagos o de que la cuenta haya pasado a una agencia de cobranzas. En California, por lo general un hospital no puede reportar su factura a una agencia de crédito ni vender la deuda hasta al menos 180 days después de la primera factura (AB 1020). Y según una ley de 2024 (SB 1061), la deuda médica no puede reportarse en absoluto en su reporte de crédito de California.",
+    "s3_p": "Usted puede solicitar ayuda económica incluso después de haber recibido la factura, establecido un plan de pagos o de que la cuenta haya pasado a una agencia de cobranzas. En California, por lo general un hospital no puede reportar su factura a una agencia de crédito ni vender la deuda hasta al menos 180 days después de la primera factura (AB 1020). Y según una ley de 2025 (SB 1061), la deuda médica no puede reportarse en absoluto en su reporte de crédito de California.",
     "s4_h": "Cómo Cobijo puede ayudar — gratis, en su idioma",
     "s4_p": "Cobijo Health es una herramienta gratuita y sin fines de lucro. Díganos su hospital, sus ingresos y el tamaño de su hogar, y le diremos si podría calificar para atención gratuita o con descuento en ese hospital en particular, revisaremos si califica para Medi-Cal y Covered California, y le escribiremos una carta de solicitud lista para enviar. No guardamos nada de lo que usted escribe.",
     "list_h": "Lista de verificación rápida",
@@ -367,7 +373,7 @@
     "s1_h": "Usted todavía puede solicitar ayuda económica",
     "s1_p": "Que una factura pase a cobranzas no cancela su derecho a la atención caritativa o a un descuento. Según la Ley de Precios Justos de los Hospitales de California, usted puede solicitar el programa de ayuda económica del hospital incluso después de que la cuenta esté en cobranzas — y si usted califica, el hospital y su agencia de cobranzas deben ajustar el saldo. Si cree que podría calificar, solicítela antes de pagar o llegar a un acuerdo.",
     "s2_h": "La deuda médica y su crédito en California",
-    "s2_p": "Según una ley de California de 2024 (SB 1061, la Ley de Alivio de Deudas Médicas), por lo general la deuda médica no puede reportarse a las agencias de crédito ni aparecer en su reporte de crédito de California — y la deuda médica que aparezca en un reporte de crédito no es exigible contra usted. Por separado, por lo general los hospitales no pueden reportar una factura a una agencia de crédito ni venderla hasta al menos 180 days después de la primera factura (AB 1020).",
+    "s2_p": "Según una ley de California de 2025 (SB 1061, la Ley de Alivio de Deudas Médicas), por lo general la deuda médica no puede reportarse a las agencias de crédito ni aparecer en su reporte de crédito de California — y la deuda médica que aparezca en un reporte de crédito no es exigible contra usted. Por separado, por lo general los hospitales no pueden reportar una factura a una agencia de crédito ni venderla hasta al menos 180 days después de la primera factura (AB 1020).",
     "s3_h": "Conozca sus derechos con los cobradores",
     "s3_p": "Los cobradores de deudas deben cumplir la ley. Usted puede pedirle a un cobrador, por escrito, que verifique que la deuda realmente es suya y es correcta — y deben suspender la cobranza hasta que lo hagan. Los cobradores no pueden acosarlo, amenazarlo ni mentirle. Si un cobrador incumple estas reglas, usted puede presentar una queja ante el Fiscal General de California o ante la Oficina federal para la Protección Financiera del Consumidor (CFPB). Guarde registros de cada llamada y carta.",
     "s4_h": "Qué hacer ahora",
@@ -574,5 +580,29 @@
     "cta_p": "Mantener la deuda fuera de su crédito es una cosa — reducir la factura es otra. Cobijo revisa si usted califica para ayuda por caridad o un descuento, y redacta su carta de solicitud — gratis, en su idioma, sin guardar nada.",
     "cta_btn": "Vea si califica →",
     "nav_label": "Deudas médicas y su reporte de crédito"
+  },
+  "guide_payplan": {
+    "title": "Sus derechos a un plan de pago del hospital en California (sin intereses) | Cobijo Health",
+    "meta": "Los hospitales de California deben ofrecer a los pacientes que califican un plan de pago sin intereses para una factura del hospital. Aprenda qué es un pago mensual razonable y cómo establecer uno — gratis.",
+    "h1": "Su derecho a un plan de pago del hospital sin intereses",
+    "lead": "Si no puede pagar de una sola vez una factura de un hospital de California, es posible que tenga derecho a pagarla poco a poco — sin intereses. Aquí le explicamos cómo funcionan los planes de pago y cómo pedir uno.",
+    "s1_h": "Es posible que tenga derecho a un plan de pago",
+    "s1_p": "Según la Ley de Precios Justos de los Hospitales de California (Health & Safety Code §127400 y siguientes), los hospitales deben ofrecer un plan de pago extendido a los pacientes que califican para atención gratuita (charity care) o atención con descuento — por lo general, aquellos con un ingreso familiar de hasta 400% del Nivel Federal de Pobreza. Si usted califica, el hospital no puede obligarlo a pagar toda la factura de una sola vez.",
+    "s2_h": "Qué significa un pago mensual 'razonable'",
+    "s2_p": "La ley de California dice que un pago mensual razonable no es más del 10% de su ingreso familiar mensual, después de restar los gastos básicos de vida como la renta, la comida, los servicios (luz, agua, gas), el transporte y otras facturas médicas. El pago se basa en lo que usted realmente puede pagar — no en una cifra que elige el hospital. Si usted y el hospital no se ponen de acuerdo, la ley dice que el hospital debe establecer un plan que siga esta regla del 10%.",
+    "s3_h": "Su plan de pago no debe tener intereses",
+    "s3_p": "Para los pacientes que califican para atención gratuita (charity care) o un descuento, el hospital no puede cobrar intereses sobre el plan de pago. Usted solo paga lo que debe según la factura con descuento, repartido en el tiempo. Siempre pida el plan por escrito y guarde una copia.",
+    "s4_h": "Si se atrasa en un pago",
+    "s4_p": "Perder un pago no envía su factura a cobranzas de forma automática. Antes de que un hospital pueda cancelar su plan de pago, por lo general debe tratar de comunicarse con usted — por teléfono y por escrito — y ofrecerle acordar un nuevo plan. Si su ingreso cambia, puede pedir que le bajen el pago mensual.",
+    "list_h": "Cómo establecer un plan de pago",
+    "li1": "Primero solicite atención gratuita (charity care) o un descuento — su plan de pago se basa en la factura reducida.",
+    "li2": "Pídale a la oficina de facturación del hospital un plan de pago extendido y sin intereses, por escrito.",
+    "li3": "Ofrezca una cantidad mensual que no sea más del 10% de su ingreso mensual después de los gastos básicos.",
+    "li4": "Obtenga el acuerdo por escrito antes de pagar y guarde cada recibo.",
+    "li5": "Si el dinero se pone más difícil, comuníquese con el hospital para volver a negociar — no deje de pagar sin más.",
+    "cta_h": "¿No está seguro de si califica?",
+    "cta_p": "Responda unas cuantas preguntas para ver si califica para atención gratuita (charity care) o un descuento, y reciba una carta para enviar a su hospital — gratis.",
+    "cta_btn": "Vea si califica →",
+    "nav_label": "Derechos a un plan de pago del hospital"
   }
 }
