@@ -160,6 +160,7 @@ GUIDES = {
     "hospital-presumptive-eligibility-california": "guide_pe",
     "medi-cal-vs-charity-care-california": "guide_medical",
     "hospital-bill-errors-california": "guide_errors",
+    "medical-debt-credit-report-california": "guide_credit",
 }
 
 

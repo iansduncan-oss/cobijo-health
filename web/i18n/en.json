@@ -514,5 +514,29 @@
     "cta_p": "Once your bill is correct, Cobijo checks whether you qualify for charity care or a discount and writes your request letter — free, in your language, nothing saved.",
     "cta_btn": "Check if you qualify →",
     "nav_label": "Check your bill for errors"
+  },
+  "guide_credit": {
+    "title": "Medical Debt and Your Credit Report in California (SB 1061) | Cobijo Health",
+    "meta": "In California, medical debt generally can't appear on your credit report under a 2025 law (SB 1061), and the state says it's still in force. Here's what the law does, what to do if medical debt shows up on your report, and how to protect your credit.",
+    "h1": "Medical debt and your credit report in California",
+    "lead": "Worried a hospital bill will wreck your credit? In California, a 2025 law keeps most medical debt off your credit report, and the state says the law still applies here. Here's how it works, what to watch for, and what to do if medical debt shows up on your report anyway.",
+    "s1_h": "California keeps medical debt off your credit report",
+    "s1_p": "As of January 1, 2025, California law (SB 1061) says a credit reporting agency can't put medical debt on your credit report — and your medical provider isn't allowed to send it to the credit agencies in the first place. A lender also can't hold medical debt against you when deciding on a loan, credit card, or apartment. The idea is simple: an unpaid medical bill shouldn't block you from housing, a car, or a job. It applies to Californians automatically — you don't have to sign up.",
+    "s2_h": "What about the national rule that was struck down?",
+    "s2_p": "You may have heard that a national rule to keep medical debt off credit reports was overturned in court in 2025. That was a separate federal rule, and the national picture is still being fought over. California has its own law, and the California Attorney General has said that in California it remains illegal for medical debt to appear on your credit report. Because these rules can change, the safest thing you can do is check your own credit report and speak up if medical debt shows up — which is exactly what the next steps cover.",
+    "s3_h": "What to do if medical debt is on your report",
+    "s3_p": "Check your credit reports first — you can get them free every week from all three credit bureaus at AnnualCreditReport.com. If you see a medical debt, dispute it in writing with the credit bureau (tell them it's medical debt, which California doesn't allow on your report), and also ask the hospital or collection agency to take it off. The bureau generally has to look into your dispute within 30 days. If it isn't fixed, file a complaint with the California Attorney General at oag.ca.gov/report, or contact a free legal aid office for help.",
+    "s4_h": "Two things to watch out for",
+    "s4_p": "First, if you pay a hospital bill with a regular credit card, it can turn into ordinary credit-card debt — which isn't protected the same way — so think twice before putting a big medical bill on a general credit card. Second, since July 1, 2025, any contract that creates a medical debt in California must tell you the debt can't be reported to credit agencies; if that notice is missing, the debt may not be enforceable — but talk to a legal aid office before you stop paying anything.",
+    "list_h": "How to protect your credit",
+    "li1": "In California, medical debt generally can't appear on your credit report (SB 1061).",
+    "li2": "California says its law still applies, even though a national rule was struck down in 2025.",
+    "li3": "Check your reports free every week at AnnualCreditReport.com.",
+    "li4": "Dispute any medical debt with the credit bureau and ask the provider to remove it.",
+    "li5": "Be careful paying a medical bill with a regular credit card — that debt isn't protected.",
+    "cta_h": "Still facing a hospital bill you can't afford?",
+    "cta_p": "Keeping the debt off your credit is one thing — reducing the bill is another. Cobijo checks whether you qualify for charity care or a discount and writes your request letter — free, in your language, nothing saved.",
+    "cta_btn": "Check if you qualify →",
+    "nav_label": "Medical debt & your credit report"
   }
 }

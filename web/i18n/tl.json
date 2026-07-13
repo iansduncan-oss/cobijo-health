@@ -514,5 +514,29 @@
     "cta_p": "Kapag tama na ang inyong bill, sinusuri ni Cobijo kung kwalipikado kayo para sa charity care o diskwento at isinusulat ang inyong kahilingan — libre, sa inyong wika, walang nai-ipon.",
     "cta_btn": "Tingnan kung kwalipikado kayo →",
     "nav_label": "Suriin ang inyong bill para sa mga mali"
+  },
+  "guide_credit": {
+    "title": "Medical Debt at ang Iyong Credit Report sa California (SB 1061) | Cobijo Health",
+    "meta": "Sa California, ang medical debt ay kadalasang hindi maaaring lumabas sa iyong credit report sa ilalim ng batas ng 2025 (SB 1061), at sinasabi ng estado na nananatili itong bisa. Narito ang ginagawa ng batas, ano ang gagawin kung lumabas ang medical debt sa iyong report, at paano pangalagaan ang iyong credit.",
+    "h1": "Medical debt at ang iyong credit report sa California",
+    "lead": "Nag-aalala ka bang masisira ng hospital bill ang iyong credit? Sa California, ang isang batas ng 2025 ay nagpapanatili ng karamihan sa medical debt na wala sa iyong credit report, at sinasabi ng estado na nananatiling epektibo ang batas dito. Narito kung paano ito gumagana, ano ang dapat bantayan, at ano ang dapat gawin kung lumabas pa rin ang medical debt sa iyong report.",
+    "s1_h": "Pinoprotektahan ng California ang iyong credit mula sa medical debt",
+    "s1_p": "Simula Enero 1, 2025, sinasabi ng batas ng California (SB 1061) na hindi maaaring ilagay ng credit reporting agency ang medical debt sa iyong credit report — at hindi rin pinapayagan ang iyong medical provider na ipadala ito sa mga credit agency. Hindi rin maaaring gamitin ng nagpapautang ang medical debt laban sa iyo kapag nagpapasya tungkol sa loan, credit card, o apartment. Simple ang ideya: ang hindi nabayarang medical bill ay hindi dapat humarang sa iyong paghahanap ng tirahan, sasakyan, o trabaho. Awtomatikong nalalapat ito sa mga taga-California — hindi mo kailangang mag-sign up.",
+    "s2_h": "Paano naman ang pambansang patakaran na binasag ng korte?",
+    "s2_p": "Maaaring narinig mo na ang isang pambansang patakaran para panatilihing wala sa credit report ang medical debt ay binasag ng korte noong 2025. Iyon ay isang hiwalay na federal na patakaran, at ang pambansang larawan ay patuloy pa ring pinagtatatalunan. Ang California ay may sariling batas, at sinabi ng California Attorney General na sa California ay nananatiling ilegal na lumabas ang medical debt sa iyong credit report. Dahil maaaring magbago ang mga patakarang ito, ang pinakaligtas na magagawa mo ay suriin ang iyong sariling credit report at magsalita kung lumabas ang medical debt — na eksaktong saklaw ng mga susunod na hakbang.",
+    "s3_h": "Ano ang dapat gawin kung nasa iyong report ang medical debt",
+    "s3_p": "Suriin muna ang iyong mga credit report — makukuha mo ang mga ito nang libre bawat linggo mula sa lahat ng tatlong credit bureau sa AnnualCreditReport.com. Kung makakita ka ng medical debt, ipagtalo ito nang nakasulat sa credit bureau (sabihin mo na medical debt ito, na hindi pinapayagan ng California sa iyong report), at hilingin din sa hospital o collection agency na alisin ito. Kadalasan, kailangang siyasatin ng bureau ang iyong pagtatalo sa loob ng 30 araw. Kung hindi ito naayos, mag-file ng reklamo sa California Attorney General sa oag.ca.gov/report, o makipag-ugnayan sa isang libreng legal aid office para sa tulong.",
+    "s4_h": "Dalawang bagay na dapat bantayan",
+    "s4_p": "Una, kung magbabayad ka ng hospital bill gamit ang isang regular na credit card, maaari itong maging ordinaryong credit-card debt — na hindi protektado sa parehong paraan — kaya mag-isip muna bago ilagay ang isang malaking medical bill sa isang pangkalahatang credit card. Pangalawa, simula Hulyo 1, 2025, anumang kontrata na lumilikha ng medical debt sa California ay dapat ipaalam sa iyo na hindi maaaring iulat ang utang sa mga credit agency; kung wala ang paunawang iyon, maaaring hindi maipapatupad ang utang — ngunit makipag-usap sa isang legal aid office bago ka huminto sa pagbabayad ng anumang bagay.",
+    "list_h": "Paano pangalagaan ang iyong credit",
+    "li1": "Sa California, ang medical debt ay kadalasang hindi maaaring lumabas sa iyong credit report (SB 1061).",
+    "li2": "Sinasabi ng California na nananatiling epektibo ang batas nito, kahit na binasag ng korte ang isang pambansang patakaran noong 2025.",
+    "li3": "Suriin ang iyong mga report nang libre bawat linggo sa AnnualCreditReport.com.",
+    "li4": "Ipagtalo ang anumang medical debt sa credit bureau at hilingin sa provider na alisin ito.",
+    "li5": "Mag-ingat sa pagbabayad ng medical bill gamit ang regular na credit card — ang utang na iyon ay hindi protektado.",
+    "cta_h": "Mayroon ka pa ring hospital bill na hindi mo kayang bayaran?",
+    "cta_p": "Ang pagpapanatiling wala sa credit ang utang ay isang bagay — ang pagpapababa ng bill ay isa pa. Tinitingnan ng Cobijo kung kwalipikado ka para sa charity care o diskwento at isinusulat ang iyong kahilingan — libre, sa iyong wika, walang nai-save.",
+    "cta_btn": "Tingnan kung kwalipikado ka →",
+    "nav_label": "Medical debt at ang iyong credit report"
   }
 }

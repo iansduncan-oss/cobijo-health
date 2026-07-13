@@ -514,5 +514,29 @@
     "cta_p": "Una vez que su cuenta esté correcta, Cobijo verifica si usted califica para ayuda económica o un descuento y redacta su carta de solicitud — sin costo, en su idioma, sin guardar ningún dato.",
     "cta_btn": "Vea si califica →",
     "nav_label": "Revise su cuenta en busca de errores"
+  },
+  "guide_credit": {
+    "title": "Deudas médicas y su reporte de crédito en California (SB 1061) | Cobijo Health",
+    "meta": "En California, las deudas médicas generalmente no pueden aparecer en su reporte de crédito gracias a una ley del 2025 (SB 1061), y el estado dice que sigue vigente. Aquí le explicamos qué hace la ley, qué hacer si una deuda médica aparece en su reporte, y cómo proteger su crédito.",
+    "h1": "Deudas médicas y su reporte de crédito en California",
+    "lead": "¿Le preocupa que una factura del hospital le arruine el crédito? En California, una ley del 2025 impide que la mayoría de las deudas médicas aparezcan en su reporte de crédito, y el estado dice que esa ley sigue aplicando aquí. Le explicamos cómo funciona, qué tener en cuenta, y qué hacer si una deuda médica aparece en su reporte de todas formas.",
+    "s1_h": "California protege su crédito de las deudas médicas",
+    "s1_p": "Desde el 1 de enero del 2025, la ley de California (SB 1061) prohíbe que las agencias de crédito pongan deudas médicas en su reporte — y también prohíbe que su proveedor médico las envíe a esas agencias desde el principio. Además, ningún prestamista puede usar una deuda médica en su contra al decidir si le aprueba un préstamo, una tarjeta de crédito o un apartamento. La idea es sencilla: una factura médica sin pagar no debería quitarle acceso a una vivienda, un carro o un trabajo. Esta protección aplica automáticamente para las personas en California — no tiene que inscribirse.",
+    "s2_h": "¿Y la regla nacional que cancelaron?",
+    "s2_p": "Es posible que haya escuchado que una regla federal para proteger las deudas médicas de los reportes de crédito fue anulada por un tribunal en 2025. Esa era una norma federal distinta, y el panorama a nivel nacional todavía está siendo disputado. California tiene su propia ley, y el Fiscal General de California ha declarado que en este estado sigue siendo ilegal que una deuda médica aparezca en su reporte de crédito. Dado que estas reglas pueden cambiar, lo más seguro que puede hacer es revisar su propio reporte de crédito y actuar si aparece una deuda médica — exactamente lo que cubrimos en los siguientes pasos.",
+    "s3_h": "Qué hacer si una deuda médica aparece en su reporte",
+    "s3_p": "Primero, revise sus reportes de crédito — puede obtenerlos gratis cada semana de las tres agencias principales en AnnualCreditReport.com. Si ve una deuda médica, dispútela por escrito con la agencia de crédito (indíqueles que es una deuda médica, la cual California no permite en su reporte), y pídale también al hospital o a la agencia de cobros que la retire. Por lo general, la agencia tiene hasta 30 días para investigar su disputa. Si no se resuelve, presente una queja ante el Fiscal General de California en oag.ca.gov/report, o comuníquese con una oficina de asistencia legal gratuita para que le ayuden.",
+    "s4_h": "Dos cosas importantes que debe saber",
+    "s4_p": "Primero, si paga una factura del hospital con una tarjeta de crédito normal, esa deuda se convierte en una deuda de tarjeta de crédito ordinaria — que no tiene la misma protección — así que piénselo bien antes de poner una factura médica grande en una tarjeta de crédito general. Segundo, desde el 1 de julio del 2025, cualquier contrato que cree una deuda médica en California debe informarle que esa deuda no puede reportarse a las agencias de crédito; si ese aviso no está incluido, es posible que la deuda no sea exigible — pero consulte con una oficina de asistencia legal antes de dejar de pagar cualquier cosa.",
+    "list_h": "Cómo proteger su crédito",
+    "li1": "En California, las deudas médicas generalmente no pueden aparecer en su reporte de crédito (SB 1061).",
+    "li2": "California dice que su ley sigue aplicando, aunque una regla federal fue anulada en 2025.",
+    "li3": "Revise sus reportes gratis cada semana en AnnualCreditReport.com.",
+    "li4": "Dispute cualquier deuda médica con la agencia de crédito y pídale al proveedor que la elimine.",
+    "li5": "Tenga cuidado al pagar una factura médica con una tarjeta de crédito regular — esa deuda no está protegida.",
+    "cta_h": "¿Todavía tiene una factura del hospital que no puede pagar?",
+    "cta_p": "Mantener la deuda fuera de su crédito es una cosa — reducir la factura es otra. Cobijo revisa si usted califica para ayuda por caridad o un descuento, y redacta su carta de solicitud — gratis, en su idioma, sin guardar nada.",
+    "cta_btn": "Vea si califica →",
+    "nav_label": "Deudas médicas y su reporte de crédito"
   }
 }
