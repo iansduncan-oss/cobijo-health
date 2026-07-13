@@ -34,16 +34,17 @@ import os
 import sys
 from collections import Counter, defaultdict
 
-from extract_llm import (validate, dollar_table, STATUTORY_FPL_FLOOR,
-                         DISCOUNT_IMPLAUSIBLE_PCT, FREE_CARE_UNUSUAL_PCT, FREE_CARE_IMPLAUSIBLE_PCT)
+from extract_llm import validate, dollar_table
+from state_rules import rules_for
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 OUT = os.path.join(HERE, "output")
 
-# Statutory thresholds live in extract_llm (single source of truth) — HSC §127405: 400% FPL is a
-# FLOOR, not a cap. Hospitals may extend eligibility above it, so a >400% ceiling is legal (and common),
-# not a misread. We flag as "likely misread" only past a realistic maximum (see the imported constants).
+# Statutory thresholds live in state_rules.py (single source, per-state), looked up per row via
+# rules_for(row["state"]) — HSC §127405: 400% FPL is a FLOOR, not a cap. Hospitals may extend eligibility
+# above it, so a >400% ceiling is legal (and common), not a misread. We flag as "likely misread" only
+# past a realistic maximum (see state_rules).
 
 SEV_ORDER = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
 DATASETS = ("cobijo_charity_care_dataset.json", "extracted_full.json", "extracted_smoke.json")
@@ -107,6 +108,7 @@ def check_row(row):
     if status != "extracted":
         return [("MEDIUM", "unresolved", f"unexpected status: {status}")]
 
+    rules = rules_for(row.get("state", "CA"))   # per-state bounds; all current rows are CA (identical)
     pol = row.get("policy") or {}
     fc = (pol.get("free_care") or {}).get("fpl_ceiling_pct")
     dp = pol.get("discount_payment") or {}
@@ -114,7 +116,7 @@ def check_row(row):
     tiers = dp.get("tiers") or []
 
     # Carry the structural validator's reasons into the same queue (HIGH: unusable/contradictory).
-    for r in validate(pol):
+    for r in validate(pol, row.get("state", "CA")):
         sev = "HIGH" if ("no free-care" in r or "out of range" in r or "exceeds" in r) else "MEDIUM"
         f.append((sev, "validator", r))
 
@@ -133,16 +135,16 @@ def check_row(row):
     # 1. Ceiling sanity — >400% FPL is LEGAL (§127405 floor, not cap), so only an implausibly high
     #    value signals a units/decimal misread. Free care above the floor is unusual (verify), and free
     #    care that's implausibly high would misinform nearly every patient.
-    if dc is not None and dc > DISCOUNT_IMPLAUSIBLE_PCT:
-        f.append(("HIGH", "statutory", f"discount ceiling {dc}% implausibly high (>{DISCOUNT_IMPLAUSIBLE_PCT}%) — likely units/decimal misread"))
-    if fc is not None and fc > FREE_CARE_IMPLAUSIBLE_PCT:
-        f.append(("HIGH", "statutory", f"free-care ceiling {fc}% implausibly high (>{FREE_CARE_IMPLAUSIBLE_PCT}%) — likely misread"))
-    elif fc is not None and fc > FREE_CARE_UNUSUAL_PCT:
-        f.append(("MEDIUM", "outlier", f"free-care ceiling {fc}% above the {STATUTORY_FPL_FLOOR}% floor — unusually generous, verify against PDF"))
+    if dc is not None and dc > rules.discount_implausible_pct:
+        f.append(("HIGH", "statutory", f"discount ceiling {dc}% implausibly high (>{rules.discount_implausible_pct}%) — likely units/decimal misread"))
+    if fc is not None and fc > rules.free_care_implausible_pct:
+        f.append(("HIGH", "statutory", f"free-care ceiling {fc}% implausibly high (>{rules.free_care_implausible_pct}%) — likely misread"))
+    elif fc is not None and fc > rules.free_care_unusual_pct:
+        f.append(("MEDIUM", "outlier", f"free-care ceiling {fc}% above the {rules.fpl_floor_pct}% floor — unusually generous, verify against PDF"))
     for t in tiers:
         hi = t.get("fpl_high_pct")
-        if hi is not None and hi > DISCOUNT_IMPLAUSIBLE_PCT:
-            f.append(("HIGH", "statutory", f"tier upper bound {hi}% implausibly high (>{DISCOUNT_IMPLAUSIBLE_PCT}%) — likely misread"))
+        if hi is not None and hi > rules.discount_implausible_pct:
+            f.append(("HIGH", "statutory", f"tier upper bound {hi}% implausibly high (>{rules.discount_implausible_pct}%) — likely misread"))
 
     # 2. Tier geometry.
     ordered = [t for t in tiers if t.get("fpl_low_pct") is not None and t.get("fpl_high_pct") is not None]

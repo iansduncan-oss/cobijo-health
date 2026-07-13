@@ -53,18 +53,18 @@ MAX_OUTPUT_TOKENS = 8000             # rich policies emit long structured output
 
 # FPL table now lives in constants.py — single source of truth shared with navigator.py.
 from constants import FPL, FPL_EACH_ADDITIONAL
+from state_rules import rules_for
 
-# CA charity-care statutory thresholds — Health & Safety Code §127405 (Hospital Fair Pricing Act).
-# 400% FPL is a FLOOR, not a cap: hospitals MUST offer charity care or discount payment to patients at
-# or below it, and "may choose to grant eligibility ... to patients with incomes over 400 percent."
-# So ceilings above 400% are legal — and common (~114 CA hospitals discount to 450-700% FPL) — NOT
-# misreads. We flag a ceiling as a likely units/decimal misread only past a realistic maximum, and hold
-# FREE (100% write-off) care to a tighter bound than partial DISCOUNTs, since free care rarely exceeds
-# the floor. (These were previously conflated at a single 500% bound, which false-flagged legit rows.)
-STATUTORY_FPL_FLOOR = 400          # hospitals must cover <= this; may exceed it (not a cap)
-DISCOUNT_IMPLAUSIBLE_PCT = 800     # discount ceiling above this ~= units/decimal misread (legit max ~700%)
-FREE_CARE_UNUSUAL_PCT = 400        # free care above the floor is unusual -> verify (MEDIUM in qa)
-FREE_CARE_IMPLAUSIBLE_PCT = 600    # free care this high ~= misread/misinforming (HIGH)
+# CA charity-care statutory thresholds now live in state_rules.py (single source, per-state). These
+# module-level aliases preserve the CA values + the existing import surface (qa_dataset imports them):
+# HSC §127405 makes 400% FPL a FLOOR, not a cap, so ceilings above it are legal (~114 CA hospitals reach
+# 450-700%) — we flag a units/decimal misread only past a realistic maximum, and hold FREE (100%
+# write-off) care to a tighter bound than partial DISCOUNTs since free care rarely exceeds the floor.
+_CA = rules_for("CA")
+STATUTORY_FPL_FLOOR = _CA.fpl_floor_pct              # hospitals must cover <= this; may exceed it (not a cap)
+DISCOUNT_IMPLAUSIBLE_PCT = _CA.discount_implausible_pct   # discount ceiling above this ~= misread (legit max ~700%)
+FREE_CARE_UNUSUAL_PCT = _CA.free_care_unusual_pct    # free care above the floor is unusual -> verify (MEDIUM)
+FREE_CARE_IMPLAUSIBLE_PCT = _CA.free_care_implausible_pct  # free care this high ~= misread/misinforming (HIGH)
 
 
 # --------------------------------------------------------------------------- #
@@ -207,18 +207,25 @@ SCHEMA = {
     "additionalProperties": False,
 }
 
-SYSTEM = (
-    "You are a meticulous health-policy data analyst extracting California hospital "
-    "Charity Care / Discount Payment policy terms into a strict schema for a nonprofit that "
-    "helps low-income patients. Accuracy is critical — patients rely on this. Rules: "
-    "(1) Extract ONLY what the document states; never infer or fill from general knowledge. "
-    "(2) Use null / empty when a field is absent — do NOT guess. "
-    "(3) The FREE-care ceiling is the income at/below which care is 100% free; the DISCOUNT "
-    "ceiling is the top income getting any reduced (non-free) price — never conflate them. "
-    "(4) Capture every material rule; put anything not matching a field in additional_provisions. "
-    "(5) Provide verbatim source_quotes for the key numbers. "
-    "(6) Set extraction_confidence honestly; lower it when the policy is ambiguous or conflicting."
-)
+def _system(state="CA"):
+    """The extraction system prompt for a state. The state name is templated in (CA -> "California
+    hospital", identical to the old literal); the generic default drops it -> "hospital"."""
+    name = rules_for(state).name
+    return (
+        f"You are a meticulous health-policy data analyst extracting {name + ' ' if name else ''}hospital "
+        "Charity Care / Discount Payment policy terms into a strict schema for a nonprofit that "
+        "helps low-income patients. Accuracy is critical — patients rely on this. Rules: "
+        "(1) Extract ONLY what the document states; never infer or fill from general knowledge. "
+        "(2) Use null / empty when a field is absent — do NOT guess. "
+        "(3) The FREE-care ceiling is the income at/below which care is 100% free; the DISCOUNT "
+        "ceiling is the top income getting any reduced (non-free) price — never conflate them. "
+        "(4) Capture every material rule; put anything not matching a field in additional_provisions. "
+        "(5) Provide verbatim source_quotes for the key numbers. "
+        "(6) Set extraction_confidence honestly; lower it when the policy is ambiguous or conflicting."
+    )
+
+
+SYSTEM = _system("CA")     # back-compat module constant — the CA prompt, byte-identical to the old literal
 
 
 # --------------------------------------------------------------------------- #
@@ -299,18 +306,20 @@ def _api_key():
     return None
 
 
-def _message_params(corpus, model):
-    """The Messages-API params for one extraction — shared by sync + batch paths."""
+def _message_params(corpus, model, state="CA"):
+    """The Messages-API params for one extraction — shared by sync + batch paths. `state` templates the
+    prompt's state name (defaults to CA -> byte-identical to the prior hardcoded 'California')."""
+    name = rules_for(state).name
     return {
         "model": model,
         "max_tokens": MAX_OUTPUT_TOKENS,
-        "system": SYSTEM,
+        "system": _system(state),
         "tools": [{"name": "record_policy",
                    "description": "Record the extracted charity-care / discount-payment policy terms.",
                    "input_schema": SCHEMA}],
         "tool_choice": {"type": "tool", "name": "record_policy"},
         "messages": [{"role": "user",
-                      "content": "Extract the policy terms from this California hospital "
+                      "content": f"Extract the policy terms from this {name + ' ' if name else ''}hospital "
                                  "Charity Care / Discount Payment policy:\n\n" + corpus}],
     }
 
@@ -408,7 +417,8 @@ def run_batch(items, model, key, poll_interval=30):
 # --------------------------------------------------------------------------- #
 # Validation (verify, don't trust)
 # --------------------------------------------------------------------------- #
-def validate(rec):
+def validate(rec, state="CA"):
+    rules = rules_for(state)         # per-state plausibility bounds (CA defaults are byte-identical)
     reasons = []
     fc = (rec.get("free_care") or {}).get("fpl_ceiling_pct")
     dp = rec.get("discount_payment") or {}
@@ -423,9 +433,9 @@ def validate(rec):
 
     if fc is None and dc is None and not tiers:
         reasons.append("no free-care ceiling, discount ceiling, or tiers extracted")
-    if implausible(fc, FREE_CARE_IMPLAUSIBLE_PCT):
+    if implausible(fc, rules.free_care_implausible_pct):
         reasons.append(f"free-care FPL% out of range: {fc}")
-    if implausible(dc, DISCOUNT_IMPLAUSIBLE_PCT):
+    if implausible(dc, rules.discount_implausible_pct):
         reasons.append(f"discount FPL% out of range: {dc}")
     if fc is not None and dc is not None and fc > dc:
         reasons.append(f"free-care ceiling ({fc}%) exceeds discount ceiling ({dc}%)")

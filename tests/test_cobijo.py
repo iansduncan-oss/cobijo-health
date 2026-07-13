@@ -682,6 +682,33 @@ class TestWebI18n(unittest.TestCase):
                 self.assertEqual(left, [], f"{page}/{lang} leftover placeholders: {set(left)}")
 
 
+class TestPrintHandout(unittest.TestCase):
+    """The results screen must ship the scoped print-handout CSS + toggle so a printed plan is a clean
+    one-page action sheet, not a raw dump of the whole page (form/nav/dark-on-dark cards)."""
+
+    def _home(self, lang="en"):
+        return web_i18n.render("home", lang)
+
+    def test_print_css_and_toggle_present(self):
+        html = self._home()
+        self.assertIn("@media print", html)                 # a print stylesheet exists at all
+        self.assertIn("printing-result", html)              # scoped so the blank form print is untouched
+        self.assertIn("addEventListener(\"beforeprint\"", html)   # flips into handout mode
+        self.assertIn("addEventListener(\"afterprint\"", html)    # restores the on-screen state
+
+    def test_handout_flattens_dark_hero_for_no_background_print(self):
+        # The dark hero/step cards must be forced to a light background so white text isn't invisible
+        # when the browser's "print background graphics" is off.
+        html = self._home()
+        self.assertIn("body.printing-result .hero", html)
+        self.assertIn("body.printing-result .rcard-h .n", html)
+
+    def test_handout_present_in_every_language(self):
+        # Reuses translated strings (zero new i18n keys), so the handout must exist in all langs + RTL.
+        for lang in web_i18n.LANGS:
+            self.assertIn("printing-result", self._home(lang), f"{lang}: print handout missing")
+
+
 class TestHospitalPagesI18n(unittest.TestCase):
     """The localized per-hospital SEO pages (T3.1) must render in every language with the right <html
     lang>/dir and no unfilled {token}s (a dropped placeholder would print '{name}' to a patient)."""

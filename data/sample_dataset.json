@@ -157,7 +157,8 @@
       "8": 222880
     },
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   },
   {
     "hospital": "ALAMEDA HOSPITAL",
@@ -279,7 +280,8 @@
     },
     "discount_income_ceiling_by_household": {},
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   },
   {
     "hospital": "BAKERSFIELD MEMORIAL HOSPITAL",
@@ -427,7 +429,8 @@
       "8": 278600
     },
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   },
   {
     "hospital": "ADVENTIST HEALTH BAKERSFIELD",
@@ -587,7 +590,8 @@
       "8": 222880
     },
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   },
   {
     "hospital": "ADVENTIST HEALTH CLEARLAKE",
@@ -747,7 +751,8 @@
       "8": 222880
     },
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   },
   {
     "hospital": "ADVENTIST HEALTH DELANO",
@@ -907,7 +912,8 @@
       "8": 222880
     },
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   },
   {
     "hospital": "ADVENTIST HEALTH GLENDALE",
@@ -1067,7 +1073,8 @@
       "8": 222880
     },
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   },
   {
     "hospital": "ADVENTIST HEALTH HANFORD",
@@ -1227,6 +1234,7 @@
       "8": 222880
     },
     "needs_review": false,
-    "review_reasons": []
+    "review_reasons": [],
+    "state": "CA"
   }
 ]

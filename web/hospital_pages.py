@@ -235,9 +235,10 @@ def render_hospital(row, slug, index, lang="en"):
     free_pct = free.get("fpl_ceiling_pct")
     disc_pct = disc.get("fpl_ceiling_pct")
     phone = (pol.get("contact") or {}).get("phone")
-    loc = ", ".join([p for p in [city, (county + " County") if county else None, "CA"] if p])
+    state = row.get("state", "CA")     # per-row state (all current rows are CA); prose below stays CA-specific (Phase 3)
+    loc = ", ".join([p for p in [city, (county + " County") if county else None, state] if p])
 
-    city_suffix = f" ({city}, CA)" if city else ""
+    city_suffix = f" ({city}, {state})" if city else ""
     title = _fill(S["h_h1"], name=name).replace(" — ", " ") + city_suffix + " | Cobijo Health"
     desc = _fill(S["h_meta"], name=name + (f", {city}" if city else ""))
 

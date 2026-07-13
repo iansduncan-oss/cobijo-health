@@ -132,6 +132,42 @@
   .attribution{display:none;text-align:center;margin:16px 0 2px;font-size:13px;color:var(--muted)}
   body.embed .attribution{display:block}
   .attribution a{color:var(--teal-d);font-weight:700;text-decoration:none}
+  /* --- Print handout: a clean one-page action plan + letter for a patient to keep / a social worker
+     to hand over. Scoped to .printing-result (set by our print flow) so printing the blank form is
+     untouched. Dark cards are flattened to bordered light blocks with black text so they survive the
+     common "don't print background graphics" setting; link destinations are revealed so paper is
+     actionable. Reuses already-translated strings -> zero new i18n keys, works in all 10 langs + RTL. --- */
+  @media print{
+    body.printing-result{background:#fff;color:#000}
+    body.printing-result .skip,body.printing-result .mtnote,body.printing-result noscript,
+    body.printing-result .card,body.printing-result #recover,body.printing-result .actions,
+    body.printing-result .foot-nav,body.printing-result .attribution,body.printing-result .langsel{display:none !important}
+    body.printing-result .wrap{max-width:none;padding:0}
+    body.printing-result header{padding:0 0 8px;margin:0 0 14px;border-bottom:1.5px solid #000}
+    body.printing-result .brand{font-size:22pt}
+    body.printing-result .tag{color:#333}
+    body.printing-result .out{margin:0}
+    body.printing-result .hero{background:#fff !important;color:#000 !important;border:1px solid #000;
+      border-left:6px solid #000;box-shadow:none;padding:12px 16px;margin-bottom:12px}
+    body.printing-result .hero .badge{display:none}
+    body.printing-result .hero .head{font-size:16pt}
+    body.printing-result .hero .chip{background:#eee;color:#000}
+    body.printing-result .rcard{border:1px solid #888;box-shadow:none;padding:12px 16px;break-inside:avoid}
+    body.printing-result .rcard.soft{border-style:solid}
+    body.printing-result .rcard-h{color:#000}
+    body.printing-result .rcard-h .n{background:#fff;color:#000;border:1.5px solid #000}
+    body.printing-result .ceiling,body.printing-result .callbox{background:#fff;border:1px solid #888}
+    body.printing-result .ceiling b,body.printing-result .rcard strong,body.printing-result .plan strong{color:#000}
+    body.printing-result ul.checks li:before,body.printing-result ul.bul li:before{color:#000}
+    body.printing-result .linkbtn,body.printing-result .callbtn{background:#fff !important;color:#000 !important;
+      border:1px solid #000 !important;padding:4px 9px;min-height:0;font-weight:700}
+    body.printing-result a.linkbtn[href^="http"]::after{content:" — " attr(href);
+      font-weight:400;font-size:8.5pt;word-break:break-all}
+    body.printing-result #letterbox{page-break-before:always;border:0;padding:0;margin:0}
+    body.printing-result #letterbox>summary,body.printing-result #letterbox .copy,
+    body.printing-result #letterbox .copied{display:none}
+    body.printing-result .letter{background:#fff;border:1px solid #888;overflow:visible;font-size:10pt}
+  }
 </style>
 {{EMBED_HEAD}}
 </head>
@@ -374,6 +410,24 @@ function copyLetter(){
     } else { fallback(); }
   }catch(_){ fallback(); }
 }
+// Print handout: when a result is on screen, flatten the page to a clean action-plan printout
+// (see the @media print rules) and expand the letter drawer so it's included; restore the on-screen
+// state afterward. Covers both our Print button and Ctrl/Cmd+P. Degrades to a full-page print if the
+// browser doesn't fire these events.
+let _letterWasOpen=null;
+addEventListener("beforeprint",()=>{
+  const out=document.getElementById("out");
+  if(out && out.style.display==="block"){
+    document.body.classList.add("printing-result");
+    const d=document.getElementById("letterbox"); if(d){ _letterWasOpen=d.open; d.open=true; }
+    track('plan_printed');
+  }
+});
+addEventListener("afterprint",()=>{
+  document.body.classList.remove("printing-result");
+  const d=document.getElementById("letterbox");
+  if(d && _letterWasOpen!==null){ d.open=_letterWasOpen; _letterWasOpen=null; }
+});
 </script>
 {{EMBED_SCRIPT}}
 </body>
