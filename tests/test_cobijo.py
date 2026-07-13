@@ -69,6 +69,32 @@ class TestFPL(unittest.TestCase):
         self.assertEqual(navigator.fpl_percent(-5000, 4), 0.0)
 
 
+class TestConstantsSingleSource(unittest.TestCase):
+    """The FPL table + benefit year must have ONE source (constants.py). Before that, the FPL table
+    lived byte-identical in two files and the PolicyEngine year was hardcoded to 2026 in three —
+    a January refresh could touch one and miss another, silently mis-computing every eligibility %.
+    These assert the modules share the SAME objects, so a re-introduced copy can't drift unnoticed."""
+
+    def test_fpl_table_is_single_shared_object(self):
+        import constants
+        import extract_llm
+        # `from constants import FPL` binds the SAME dict object — identity, not just equality, so a
+        # future literal copy pasted back into navigator/extract_llm fails here even if it starts equal.
+        self.assertIs(navigator.FPL, constants.FPL)
+        self.assertIs(extract_llm.FPL, constants.FPL)
+        self.assertIs(navigator.FPL_EACH_ADDITIONAL, constants.FPL_EACH_ADDITIONAL)
+        self.assertIs(extract_llm.FPL_EACH_ADDITIONAL, constants.FPL_EACH_ADDITIONAL)
+
+    def test_benefit_year_is_derived_not_hardcoded(self):
+        import datetime
+        import constants
+        import policyengine
+        # Guards the 2027 bug: BENEFIT_YEAR must track the calendar, and PolicyEngine must read it
+        # (default year=None -> BENEFIT_YEAR), so the benefit call never silently models a stale year.
+        self.assertEqual(constants.BENEFIT_YEAR, datetime.date.today().year)
+        self.assertIs(policyengine.BENEFIT_YEAR, constants.BENEFIT_YEAR)
+
+
 class TestMatchCharityCare(unittest.TestCase):
     def test_free_tier(self):
         tier, msg = navigator.match_charity_care(make_row(), pct=100, household=4, insured=False)

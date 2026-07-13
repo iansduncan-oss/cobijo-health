@@ -14,6 +14,18 @@ data/extracted_scanned.json
 data/cobijo_charity_care_dataset.json
 data/freshness_baseline.json
 
+# Re-extraction harness intermediates (regenerable via scripts/reextract_*.py)
+data/reextract_source.json
+data/extracted_reextract.json
+data/reextract_trunc_source.json
+data/extracted_trunc.json
+data/reextract_changed_source.json
+data/extracted_changed.json
+
+# Self-heal pipeline: pre-refresh rollback snapshot + the on-VPS key file
+data/.selfheal_bak/
+.pipeline.env
+
 # Generated outputs (letters, QA worksheet/report, rendered PDFs)
 output/
 

@@ -48,7 +48,7 @@ CACHE_DIR = "data/extract_cache"     # one <sha>.json per unique policy corpus (
 API_URL = "https://api.anthropic.com/v1/messages"
 BATCH_URL = "https://api.anthropic.com/v1/messages/batches"
 DEFAULT_MODEL = "claude-opus-4-8"
-MAX_CHARS = 120_000                  # ~30k tokens; policies run 15-70k chars
+MAX_CHARS = 200_000                  # ~50k tokens; covers the observed max corpus (184,555 chars) with 0 truncation
 MAX_OUTPUT_TOKENS = 8000             # rich policies emit long structured output; 4096 truncated
 
 # FPL table now lives in constants.py — single source of truth shared with navigator.py.
@@ -228,9 +228,13 @@ def _guid(url):
     return (url or "").split("id=")[-1][:36]
 
 
-def download_pdf(url, dest):
-    if os.path.exists(dest) and os.path.getsize(dest) > 0:
+def download_pdf(url, dest, force=False):
+    """Fetch url -> dest. Cached by default (skip if already on disk). Pass force=True to always
+    re-fetch — the freshness --content check needs a TRULY-live copy to catch a same-URL silent
+    re-upload (a cached copy would just re-hash to the old content and miss the change)."""
+    if not force and os.path.exists(dest) and os.path.getsize(dest) > 0:
         return
+    os.makedirs(os.path.dirname(dest) or ".", exist_ok=True)   # PDF_DIR may not exist yet (fresh box)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=90) as r:
         data = r.read()
@@ -238,14 +242,14 @@ def download_pdf(url, dest):
         f.write(data)
 
 
-def pdf_text(url):
-    """Download (cached) + extract text. Returns '' if unreachable or scanned."""
+def pdf_text(url, force=False):
+    """Download (cached unless force) + extract text. Returns '' if unreachable or scanned."""
     if not url:
         return ""
     guid = _guid(url)
     pdf = os.path.join(PDF_DIR, f"{guid}.pdf")
     try:
-        download_pdf(url, pdf)
+        download_pdf(url, pdf, force=force)
     except (URLError, HTTPError):
         return ""
     try:
@@ -256,8 +260,9 @@ def pdf_text(url):
         return ""
 
 
-def build_corpus(rec):
-    """Concatenate a hospital's unique policy texts (charity, discount, debt) in order."""
+def build_corpus(rec, force=False):
+    """Concatenate a hospital's unique policy texts (charity, discount, debt) in order.
+    force=True re-fetches every PDF (freshness --content: live content, not the cached copy)."""
     pols = rec["policies"]
     urls, seen = [], set()
     for sec in ("charity_care", "discount_payment", "debt_collection"):
@@ -268,7 +273,7 @@ def build_corpus(rec):
             urls.append((sec, u))
     parts = []
     for sec, u in urls:
-        t = pdf_text(u)
+        t = pdf_text(u, force=force)
         if t.strip():
             parts.append(f"===== {sec.upper()} POLICY =====\n{t}")
     corpus = "\n\n".join(parts)
@@ -558,7 +563,8 @@ def main():
             "charity_effective_date": pols["charity_care"].get("current_effective_date"),
             "discount_policy_url": pols["discount_payment"].get("current_policy_url"),
             "application_url": pols["charity_care"].get("application_url"),
-            "extracted_at": None, "model": args.model, "source_sha256": sha,
+            "extracted_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+            "model": args.model, "source_sha256": sha,
         }
         if scanned:
             out.append({**base, "status": "needs_ocr", "needs_review": True,
