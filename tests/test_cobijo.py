@@ -922,5 +922,323 @@ class TestGuides(unittest.TestCase):
         self.assertEqual(len(web_i18n.guide_paths()), len(web_i18n.GUIDES) * len(web_i18n.LANGS))
 
 
+class TestSupportPage(unittest.TestCase):
+    """The /support page (config-driven giving). The Donate button appears ONLY when a giving URL is
+    live (SUPPORT_URL); until then the page shows the honest 'giving opens soon' note + non-monetary
+    ways to help. Every language renders, and the page is in the sitemap + reachable over HTTP."""
+
+    def test_support_is_a_registered_page(self):
+        self.assertIn("support", web_i18n.PAGES)
+
+    def test_renders_all_langs_no_placeholders(self):
+        import re
+        for lang in web_i18n.LANGS:
+            html = web_i18n.render("support", lang)
+            self.assertIn(f'lang="{lang}"', html)
+            self.assertEqual(re.findall(r"{{[A-Za-z_]+}}", html), [],
+                             f"support/{lang} has leftover placeholders")
+
+    def test_donate_button_hidden_when_no_url(self):
+        # Default config: no giving path live -> no Donate button, honest 'soon' note instead.
+        original = web_i18n.SUPPORT_URL
+        web_i18n.SUPPORT_URL = ""
+        try:
+            html = web_i18n.render("support", "en")
+            self.assertNotIn(">Donate</a>", html)
+            self.assertIn(web_i18n.strings("en", "support")["give_soon"], html)
+            self.assertNotIn('href=""', html)          # never emit an empty-target button
+        finally:
+            web_i18n.SUPPORT_URL = original
+
+    def test_donate_button_shown_when_url_set(self):
+        original = web_i18n.SUPPORT_URL
+        web_i18n.SUPPORT_URL = "https://example.org/give"
+        try:
+            html = web_i18n.render("support", "en")
+            self.assertIn('href="https://example.org/give"', html)
+            self.assertIn(">Donate</a>", html)
+            self.assertIn('rel="noopener"', html)       # external giving link is hardened
+            self.assertNotIn(web_i18n.strings("en", "support")["give_soon"], html)
+        finally:
+            web_i18n.SUPPORT_URL = original
+
+    def test_english_has_no_machine_translation_banner(self):
+        self.assertNotIn(web_i18n.strings("en", "support")["mt_note"],
+                         web_i18n.render("support", "en"))
+
+    def test_translated_page_shows_banner_and_translated_copy(self):
+        # es is fully translated -> the 'machine-assisted, under review' banner should show, and the
+        # copy must be the Spanish h1 (not English fallback).
+        html = web_i18n.render("support", "es")
+        self.assertIn(web_i18n.strings("es", "support")["h1"], html)
+        self.assertIn(web_i18n.strings("es", "common")["mt_note"], html)
+
+    def test_support_in_sitemap_every_language(self):
+        paths = web_i18n.sitemap_paths()
+        for lang in web_i18n.LANGS:
+            self.assertIn(web_i18n.url(lang, "support"), paths)
+
+    def test_footer_links_to_support(self):
+        # Every localized chrome page (and a guide) should expose the Support footer link.
+        label = web_i18n.strings("en", "common")["f_support"]          # "Support"
+        for page in ("home", "about", "faq", "privacy", "landing"):
+            self.assertIn(">%s<" % label, web_i18n.render(page, "en"),
+                          f"{page} footer missing Support link")
+        self.assertIn("/support", web_i18n.render_guide(next(iter(web_i18n.GUIDES)), "en"))
+
+    def test_server_routes_support_en_and_localized(self):
+        import http.server, threading, socket
+        if _WEB not in sys.path:
+            sys.path.insert(0, _WEB)
+        import server as _srv
+        httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _srv.Handler)
+        port = httpd.server_address[1]
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+
+        def fetch(path):
+            s = socket.create_connection(("127.0.0.1", port), timeout=5)
+            s.sendall(f"GET {path} HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n".encode())
+            buf = b""
+            while True:
+                chunk = s.recv(4096)
+                if not chunk:
+                    break
+                buf += chunk
+            s.close()
+            head, _, body = buf.partition(b"\r\n\r\n")
+            status = int(head.decode("latin1").split("\r\n")[0].split()[1])
+            return status, body
+
+        try:
+            st, body = fetch("/support")
+            self.assertEqual(st, 200)
+            self.assertIn(b"Support this work", body)
+            st_es, body_es = fetch("/es/support")
+            self.assertEqual(st_es, 200)
+            self.assertIn(web_i18n.strings("es", "support")["h1"].encode("utf-8"), body_es)
+        finally:
+            httpd.shutdown()
+
+
+class TestHelpResources(unittest.TestCase):
+    """The 'where to get help' routing (resources.py + navigator.help_leads). Which door shows is a
+    pure function of the patient's signals; every door is a real https destination; labels + heading
+    localize in all 10 languages; and the routes ride on BOTH the web struct and the CLI text so they
+    can never drift."""
+
+    import resources as _res
+
+    def _ids(self, pct, insurance, in_collections):
+        return [r["id"] for r in self._res.help_resources(pct, insurance, in_collections)]
+
+    def test_routing_by_patient_signals(self):
+        self.assertEqual(self._ids(90, "uninsured", False), ["medical", "clinic"])
+        self.assertEqual(self._ids(160, "uninsured", False), ["medical", "coveredca", "clinic"])
+        self.assertEqual(self._ids(300, "uninsured", False), ["coveredca", "clinic"])
+        self.assertEqual(self._ids(300, "uninsured", True), ["coveredca", "clinic", "legalaid"])
+
+    def test_insured_not_in_collections_gets_no_routes(self):
+        # An insured patient who isn't being chased for a bill shouldn't see a link dump.
+        self.assertEqual(self._ids(90, "aetna", False), [])
+
+    def test_insured_in_collections_gets_legal_aid_only(self):
+        self.assertEqual(self._ids(90, "aetna", True), ["legalaid"])
+
+    def test_blank_and_selfpay_count_as_uninsured(self):
+        for label in ("", None, "none", "self-pay", "UNINSURED"):
+            self.assertIn("clinic", self._ids(90, label, False), f"{label!r} should route to a clinic")
+
+    def test_every_destination_is_https_and_labeled(self):
+        for r in self._res.RESOURCES:
+            self.assertTrue(r["url"].startswith("https://"), f"{r['id']} url not https")
+            self.assertIn(r["label"], MESSAGES["en"], f"{r['id']} label key missing from catalog")
+            if r["phone"]:
+                self.assertRegex(r["phone"], r"[0-9]", f"{r['id']} phone has no digits")
+
+    def test_labels_and_heading_translated_in_every_language(self):
+        keys = ["res_heading"] + [r["label"] for r in self._res.RESOURCES]
+        for lang in navigator_langs():
+            for k in keys:
+                self.assertIn(k, MESSAGES[lang], f"{lang} catalog missing {k} (would fall back to English)")
+                self.assertTrue(MESSAGES[lang][k].strip(), f"{lang}.{k} is empty")
+
+    def test_struct_carries_resolved_routes(self):
+        intake = {"first_name": "Maria", "household_size": 3, "annual_income": 20000,
+                  "insurance": "uninsured", "in_collections": True}
+        g = navigator.build_generic_plan_struct(intake, lang="en")
+        self.assertTrue(g["resources"], "generic plan should route an uninsured patient somewhere")
+        self.assertTrue(g["res_heading"])
+        labels = [x["label"] for x in g["resources"]]
+        self.assertTrue(any("Medi-Cal" in l for l in labels))
+        self.assertTrue(any("legal help" in l for l in labels))
+        for x in g["resources"]:
+            self.assertTrue(x["url"].startswith("https://"))
+            self.assertIn("label", x)
+
+    def test_cli_text_includes_routes(self):
+        # Web/CLI parity: the same routes ride on the text plan too (url + staffed phone line).
+        DS, _ = navigator.load_dataset()
+        intake = {"first_name": "J", "household_size": 1, "annual_income": 12000,
+                  "insurance": "uninsured", "in_collections": True}
+        _, _, text = navigator.build_plan(intake, DS["rows"][0], lang="en")
+        self.assertIn("benefitscal.com", text)
+        self.assertIn("(888) 804-3536", text)
+
+
+def navigator_langs():
+    """The languages the plan catalog claims to support (en/es inline + the 8 loaded from web i18n)."""
+    return list(MESSAGES.keys())
+
+
+class TestEmbedWidget(unittest.TestCase):
+    """The embeddable iframe widget (/embed + /embed.js). The embed render must strip chrome and be
+    framable by any partner site, while the normal homepage stays clickjacking-protected and byte-for-
+    byte unchanged. Served over the real handler so the header overrides are exercised."""
+
+    def _server(self):
+        import http.server, threading
+        if _WEB not in sys.path:
+            sys.path.insert(0, _WEB)
+        import server as _srv
+        httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _srv.Handler)
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+        return httpd, httpd.server_address[1]
+
+    @staticmethod
+    def _get(port, path):
+        import socket
+        s = socket.create_connection(("127.0.0.1", port), timeout=5)
+        s.sendall(f"GET {path} HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n".encode())
+        buf = b""
+        while True:
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            buf += chunk
+        s.close()
+        head, _, body = buf.partition(b"\r\n\r\n")
+        lines = head.decode("latin1").split("\r\n")
+        status = int(lines[0].split()[1])
+        hd = {ln.split(":", 1)[0].lower(): ln.split(":", 1)[1].strip() for ln in lines[1:] if ":" in ln}
+        return status, hd, body
+
+    def test_normal_home_unchanged_by_embed_hooks(self):
+        html = web_i18n.render("home", "en")
+        for tok in ("{{BODY_CLASS}}", "{{EMBED_HEAD}}", "{{EMBED_SCRIPT}}"):
+            self.assertNotIn(tok, html, f"{tok} left unfilled on normal home")
+        self.assertIn('<body class="">', html)
+        self.assertNotIn("noindex", html)           # the homepage must stay indexable
+        self.assertNotIn("parent.postMessage", html)
+
+    def test_embed_render_strips_chrome_and_isolates(self):
+        e = web_i18n.render("home", "en", embed=True)
+        self.assertIn('<body class="embed">', e)
+        self.assertIn("noindex", e)                  # embed must NOT be indexed (homepage is canonical)
+        self.assertIn("parent.postMessage", e)       # auto-resize reporter present
+        self.assertIn('class="attribution"', e)      # growth loop back to the full site
+
+    def test_embed_localizes(self):
+        es = web_i18n.render("home", "es", embed=True)
+        self.assertIn('lang="es"', es)
+        self.assertIn('<body class="embed">', es)
+
+    def test_home_is_clickjacking_protected(self):
+        httpd, port = self._server()
+        try:
+            st, hd, _ = self._get(port, "/")
+            self.assertEqual(st, 200)
+            self.assertEqual(hd.get("x-frame-options"), "DENY")
+            self.assertIn("frame-ancestors 'none'", hd.get("content-security-policy", ""))
+        finally:
+            httpd.shutdown()
+
+    def test_embed_is_framable_anywhere(self):
+        httpd, port = self._server()
+        try:
+            for path in ("/embed", "/es/embed"):
+                st, hd, body = self._get(port, path)
+                self.assertEqual(st, 200, path)
+                self.assertNotIn("x-frame-options", hd, f"{path} still blocks framing")
+                self.assertIn("frame-ancestors *", hd.get("content-security-policy", ""), path)
+                self.assertIn(b'class="embed"', body)
+        finally:
+            httpd.shutdown()
+
+    def test_embed_js_served_as_script(self):
+        httpd, port = self._server()
+        try:
+            st, hd, body = self._get(port, "/embed.js")
+            self.assertEqual(st, 200)
+            self.assertIn("javascript", hd.get("content-type", ""))
+            self.assertIn(b"iframe", body)
+            self.assertIn(b"/embed", body)
+            self.assertIn(b"postMessage", body)      # host-side resize listener
+        finally:
+            httpd.shutdown()
+
+
+class TestPartnersPage(unittest.TestCase):
+    """The /for-partners page: the discoverable home for the embed snippet + a live preview. Renders in
+    every language, is in the sitemap, reachable over HTTP, and links back into the footer nav."""
+
+    def test_registered_and_rendered(self):
+        self.assertIn("for-partners", web_i18n.PAGES)
+        import re
+        for lang in web_i18n.LANGS:
+            html = web_i18n.render("for-partners", lang)
+            self.assertIn(f'lang="{lang}"', html)
+            self.assertEqual(re.findall(r"{{[A-Za-z_]+}}", html), [], f"for-partners/{lang} leftovers")
+
+    def test_carries_snippet_and_live_preview(self):
+        html = web_i18n.render("for-partners", "en")
+        self.assertIn("embed.js", html)                 # the copy-paste snippet
+        self.assertIn("cobijo-widget", html)            # the live preview mount
+        self.assertIn("Put free medical-bill help", html)
+
+    def test_snippet_localizes_data_lang(self):
+        self.assertIn('data-lang="es"', web_i18n.render("for-partners", "es"))
+
+    def test_in_sitemap_every_language_but_not_embed(self):
+        sm = web_i18n.sitemap_paths()
+        for lang in web_i18n.LANGS:
+            self.assertIn(web_i18n.url(lang, "for-partners"), sm)
+        self.assertFalse(any("embed" in u for u in sm), "the noindex /embed must stay out of the sitemap")
+
+    def test_footer_link_present_across_pages(self):
+        label = web_i18n.strings("en", "common")["f_partners"]
+        for page in ("home", "about", "faq", "privacy", "landing", "support"):
+            self.assertIn(">%s<" % label, web_i18n.render(page, "en"), f"{page} footer missing partners link")
+        self.assertIn("/for-partners", web_i18n.render_guide(next(iter(web_i18n.GUIDES)), "en"))
+
+    def test_server_routes_localized(self):
+        import http.server, threading, socket
+        if _WEB not in sys.path:
+            sys.path.insert(0, _WEB)
+        import server as _srv
+        httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _srv.Handler)
+        port = httpd.server_address[1]
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+
+        def fetch(path):
+            s = socket.create_connection(("127.0.0.1", port), timeout=5)
+            s.sendall(f"GET {path} HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n".encode())
+            buf = b""
+            while True:
+                chunk = s.recv(4096)
+                if not chunk:
+                    break
+                buf += chunk
+            s.close()
+            return int(buf.split(b"\r\n", 1)[0].split()[1]), buf
+
+        try:
+            st, body = fetch("/for-partners")
+            self.assertEqual(st, 200)
+            self.assertIn(b"embed.js", body)
+            self.assertEqual(fetch("/es/for-partners")[0], 200)
+        finally:
+            httpd.shutdown()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

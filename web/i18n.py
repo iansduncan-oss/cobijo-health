@@ -22,6 +22,32 @@ TPL_DIR = os.path.join(HERE, "templates")
 SITE = "https://cobijohealth.org"
 DEFAULT = "en"
 
+# The one lever for the /support page's Donate button. Empty = no financial-giving path is live yet
+# (Cobijo is a 501(c)(3) *in formation*; a fiscal sponsor must be confirmed before we can solicit
+# tax-deductible gifts). While empty, /support shows an honest "giving opens soon" note and the
+# non-monetary ways to help. Set this to the donation URL — fiscal-sponsor page, GitHub Sponsors, or
+# a Stripe payment link — and the button appears. That is the ONLY change needed to turn giving on.
+SUPPORT_URL = ""
+
+# --- Embeddable widget (embed.js loads /embed in an iframe on partner sites) ---------------------- #
+# The embed page must NOT be indexed (the homepage is the canonical tool) and must tell its host page
+# how tall it is so the iframe can auto-size with no inner scrollbar. Injected only when embed=True.
+EMBED_HEAD = '<meta name="robots" content="noindex">'
+EMBED_SCRIPT = (
+    "<script>\n"
+    "(function(){\n"
+    "  function post(){\n"
+    "    var h=Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);\n"
+    "    try{ parent.postMessage({cobijo:'height', height:h}, '*'); }catch(_){}\n"
+    "  }\n"
+    "  window.addEventListener('load', post);\n"
+    "  window.addEventListener('resize', post);\n"
+    "  if(window.ResizeObserver){ new ResizeObserver(post).observe(document.body); }\n"
+    "  else { setInterval(post, 500); }\n"
+    "})();\n"
+    "</script>"
+)
+
 # code -> (endonym shown in the switcher, text direction)
 LANGS = {
     "en": ("English", "ltr"),
@@ -35,8 +61,8 @@ LANGS = {
     "ar": ("العربية", "rtl"),
     "ru": ("Русский", "ltr"),
 }
-PAGES = ("home", "landing", "about", "privacy", "faq")   # pages this engine serves (home = the tool, at /)
-SECTION = {"home": "tool"}             # page -> i18n section name when they differ
+PAGES = ("home", "landing", "about", "privacy", "faq", "support", "for-partners")   # pages this engine serves (home = the tool, at /)
+SECTION = {"home": "tool", "for-partners": "partners"}   # page -> i18n section name when they differ
 
 # Organization schema (MedicalOrganization + NGO) for the homepage/landing — the structured data that
 # actually helps per 2026 research (FAQ/SearchAction rich results are deprecated). English is standard.
@@ -116,7 +142,11 @@ def _lang_switch(page, cur):
             'onchange="location.href=this.value">' + "".join(opts) + "</select>")
 
 
-def render(page, lang):
+def render(page, lang, embed=False):
+    """Render a page. `embed=True` (only meaningful for `home`) serves the tool as a chromeless iframe
+    widget: the same template with the nav/footer stripped (body.embed CSS), a noindex tag, and a
+    postMessage height reporter so the host page can auto-size the iframe. The embed hooks are empty
+    on every normal render, so the live homepage is byte-for-byte unchanged."""
     if lang not in LANGS:
         lang = DEFAULT
     tpl = open(os.path.join(TPL_DIR, f"{page}.html"), encoding="utf-8").read()
@@ -126,10 +156,22 @@ def render(page, lang):
                .replace("{{HEAD_LINKS}}", _head_links(page, lang))
                .replace("{{LANG_SWITCH}}", _lang_switch(page, lang))
                .replace("{{ORG_JSONLD}}", ORG_JSONLD)
-               .replace("{{TOOL_STRINGS_JSON}}", tool_json))
+               .replace("{{TOOL_STRINGS_JSON}}", tool_json)
+               .replace("{{BODY_CLASS}}", "embed" if embed else "")
+               .replace("{{EMBED_HEAD}}", EMBED_HEAD if embed else "")
+               .replace("{{EMBED_SCRIPT}}", EMBED_SCRIPT if embed else ""))
     s = strings(lang, page)
-    if lang == DEFAULT:
-        s = {**s, "mt_note": ""}      # English is authoritative — no "machine-translated" banner
+    if page == "support":
+        # Config-driven Donate button: rendered only when a giving URL is live (see SUPPORT_URL).
+        # Until then the page shows an honest "giving opens soon" note from the copy itself.
+        cta = (f'<p><a class="cta" href="{SUPPORT_URL}" rel="noopener" target="_blank">'
+               f'{s.get("give_cta", "Donate")}</a></p>') if SUPPORT_URL else \
+              f'<p class="soon">{s.get("give_soon", "")}</p>'
+        html = html.replace("{{DONATE_CTA}}", cta)
+    # English is authoritative (no banner); /support is English-only until its 9-language fan-out lands,
+    # so suppress the "machine-translated" banner there too rather than claim a translation that isn't.
+    if lang == DEFAULT or (page == "support" and not _load_lang(lang).get("support")):
+        s = {**s, "mt_note": ""}
     for k, v in s.items():
         html = html.replace("{{%s}}" % k, v)
     return html
@@ -243,6 +285,7 @@ def render_guide(slug, lang):
         "{{JSONLD}}": jsonld,
         "{{HOME}}": home,
         "{{P_ABOUT}}": p("about"), "{{P_FAQ}}": p("faq"), "{{P_PRIV}}": p("privacy"),
+        "{{P_SUPPORT}}": p("support"), "{{P_PARTNERS}}": p("for-partners"),
         "{{P_DIR}}": "/california-hospitals" if lang == DEFAULT else f"/{lang}/california-hospitals",
         "{{LIST}}": items, "{{RELATED}}": rel,
         "{{OG_IMAGE}}": f"{SITE}/og/guide/{slug}.png",

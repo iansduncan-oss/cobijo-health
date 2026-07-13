@@ -31,6 +31,7 @@ import textwrap
 import time
 
 import policyengine
+import resources
 from constants import FPL, FPL_EACH_ADDITIONAL
 from messages import t
 
@@ -216,6 +217,14 @@ def debt_defense(in_collections, lang="en"):
     return [t(lang, k) for k in ("debt_rights", "debt_retroactive", "debt_legalaid", "debt_credit_note")]
 
 
+def help_leads(pct, insurance, in_collections, lang="en"):
+    """The 'where to get help' routes for this patient, labels localized. Turns the plan's advice
+    (apply for Medi-Cal, enroll, dispute) into concrete free destinations. See resources.py for which
+    door shows when. Returns [] when nothing applies (e.g. an insured patient not in collections)."""
+    return [{"url": r["url"], "phone": r["phone"], "label": t(lang, r["label"])}
+            for r in resources.help_resources(pct, insurance, in_collections)]
+
+
 def build_plan(intake, row, lang="en"):
     pct = fpl_percent(intake["annual_income"], intake["household_size"])
     insured = bool(intake.get("insurance")) and intake["insurance"].lower() not in ("none", "uninsured", "self-pay")
@@ -256,6 +265,11 @@ def build_plan(intake, row, lang="en"):
     if dd:
         L.append(t(lang, "step3", n=n)); n += 1
         L += ["  • " + d for d in dd] + [""]
+    leads = help_leads(pct, intake.get("insurance"), intake.get("in_collections"), lang=lang)
+    if leads:
+        L.append(t(lang, "res_heading"))
+        L += ["  • " + r["label"] + " — " + r["url"] + (f" ({r['phone']})" if r["phone"] else "")
+              for r in leads] + [""]
     L.append(t(lang, "step4", n=n))
     return pct, tier, "\n".join(L)
 
@@ -297,6 +311,8 @@ def build_plan_struct(intake, row, lang="en"):
         "charity": {"message": cc_msg, "income_ceiling": ceiling, "apply": apply_steps},
         "benefits": benefits,
         "debt": debt,
+        "resources": help_leads(pct, intake.get("insurance"), intake.get("in_collections"), lang=lang),
+        "res_heading": t(lang, "res_heading"),
         "closing": t(lang, "step4", n=closing_n),
         "lang_note": t(lang, "letter_note_english") if lang != "en" else None,
     }
@@ -327,6 +343,8 @@ def build_generic_plan_struct(intake, lang="en"):
                     "apply": [t(lang, "step1_apply_nophone"), t(lang, "step1_retroactive")]},
         "benefits": benefits,
         "debt": debt,
+        "resources": help_leads(pct, intake.get("insurance"), intake.get("in_collections"), lang=lang),
+        "res_heading": t(lang, "res_heading"),
         "closing": t(lang, "step4", n=closing_n),
         "lang_note": t(lang, "letter_note_english") if lang != "en" else None,
     }

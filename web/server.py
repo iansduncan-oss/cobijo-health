@@ -56,6 +56,15 @@ SECURITY_HEADERS = {
     ),
 }
 
+# The /embed widget is meant to be framed by any partner site, so it must OPT OUT of the site-wide
+# anti-clickjacking headers: drop X-Frame-Options (no "allow-all" value exists) and swap the CSP's
+# `frame-ancestors 'none'` for `*`. Everything else (script/style/connect policy) stays locked down.
+EMBED_HEADERS = {
+    "X-Frame-Options": None,      # None => omitted by _send (can't be framed otherwise)
+    "Content-Security-Policy": SECURITY_HEADERS["Content-Security-Policy"].replace(
+        "frame-ancestors 'none'", "frame-ancestors *"),
+}
+
 # --- Static assets (favicon set, OG image) served from web/ ---
 STATIC = {
     "/favicon.ico": ("favicon.ico", "image/x-icon"),
@@ -102,15 +111,16 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(data)))
-        for h, v in SECURITY_HEADERS.items():
-            self.send_header(h, v)
-        headers = dict(extra_headers or {})
+        # Security headers are the baseline; a route may override one (the /embed widget relaxes the
+        # frame headers so it can be embedded) or drop one by passing None.
+        headers = {**SECURITY_HEADERS, **(extra_headers or {})}
         # Deterministic-per-URL HTML — a short cache spares low-bandwidth users the full re-download
         # of the 466 server-rendered hospital pages / the tool on every visit.
         if code == 200 and ctype.startswith("text/html") and "Cache-Control" not in headers:
             headers["Cache-Control"] = "public, max-age=300"
         for h, v in headers.items():
-            self.send_header(h, v)
+            if v is not None:
+                self.send_header(h, v)
         self.end_headers()
         if not getattr(self, "_head", False):
             self.wfile.write(data)
@@ -143,6 +153,14 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, i18n.render("home", "en"), "text/html; charset=utf-8")
         if path in ("/landing", "/landing.html"):
             return self._send(200, i18n.render("landing", "en"), "text/html; charset=utf-8")
+        if path == "/embed.js":
+            # The loader partners drop on their site (injects the /embed iframe + auto-resizes it).
+            try:
+                with open(os.path.join(HERE, "embed.js"), "rb") as f:
+                    return self._send(200, f.read(), "application/javascript; charset=utf-8",
+                                      extra_headers={"Cache-Control": "public, max-age=3600"})
+            except FileNotFoundError:
+                return self._send(404, json.dumps({"error": "not found"}))
         if path == "/healthz":
             # Cheap, meaningful readiness probe (vs. the 400KB /hospitals list): proves the process
             # is up AND the dataset actually loaded. For deploy/uptime checks.
@@ -186,8 +204,11 @@ class Handler(BaseHTTPRequestHandler):
             lang, rest = parts[0], parts[1:]
         if len(rest) == 0 and lang != "en":
             return self._send(200, i18n.render("home", lang), "text/html; charset=utf-8")
-        if len(rest) == 1 and rest[0] in ("landing", "about", "privacy", "faq"):
+        if len(rest) == 1 and rest[0] in ("landing", "about", "privacy", "faq", "support", "for-partners"):
             return self._send(200, i18n.render(rest[0], lang), "text/html; charset=utf-8")
+        if len(rest) == 1 and rest[0] == "embed":     # /embed and /<lang>/embed — the iframe widget
+            return self._send(200, i18n.render("home", lang, embed=True), "text/html; charset=utf-8",
+                              extra_headers=EMBED_HEADERS)
         # Localized SEO pages (this block also serves English, since /guides/… and /hospitals/… fall
         # through to here with lang="en"): the directory, per-hospital, per-county hubs, and guides.
         if rest == ["california-hospitals"]:

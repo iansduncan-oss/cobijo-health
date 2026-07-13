@@ -8,6 +8,8 @@
     "f_about": "Tungkol Sa Amin",
     "f_faq": "Mga Madalas Itanong",
     "f_priv": "Privacy",
+    "f_support": "Suportahan",
+    "f_partners": "Para sa mga partner",
     "f_dir": "Lahat ng ospital sa California",
     "f_gh": "GitHub",
     "foot1": "<b>Cobijo Health</b> — isang nonprofit sa California (501(c)(3) na ginagawa pa lang). Ang tool na ito ay nagbibigay ng impormasyon, hindi legal o medikal na payo. Libre &amp; open-source. · <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>",
@@ -96,6 +98,40 @@
     "q9": "Anong mga wika ang sinasalita ng Cobijo?",
     "a9": "Ang Cobijo ay gumagana sa Ingles, Espanyol, Tsino, Vietnamese, Tagalog, Koreano, Armenian, Farsi, Arabe, at Ruso. Gamitin ang menu ng wika sa itaas ng anumang pahina para magpalit."
   },
+  "support": {
+    "title": "Suportahan ang Cobijo Health",
+    "meta_desc": "Tulungan ang mga pasyente sa California na makakuha ng tulong pinansyal para sa mga medical bill. Ang Cobijo Health ay isang libre at bukas na nonprofit na kasalukuyang binubuo — narito kung paano ka makakatulong.",
+    "h1": "Suportahan ang gawaing ito",
+    "lead": "Ang Cobijo Health ay libre para sa bawat pasyente, at mananatiling libre magpakailanman. Kami ay isang nonprofit sa California na kasalukuyang binubuo, ginawa nang hayagan. Narito kung paano mo kami matutulungang maabot ang mas maraming tao.",
+    "give_h": "Mag-donate",
+    "give_p": "Ang iyong suporta ay sumasagot sa mga pangunahing pangangailangan — pagpapanatiling online ng tool, pag-update ng aming datos sa patakaran sa tulong pinansyal ng bawat ospital sa California, at pagsasalin nito sa mga wikang talagang ginagamit ng aming mga pasyente.",
+    "give_soon": "Tinatapos na namin ang aming fiscal sponsor upang ang mga donasyon ay maging tax-deductible at tuwirang mapunta sa misyon. Malapit nang buksan dito ang pinansyal na pagbibigay. Samantala, ang mga paraan sa ibaba ay kasinghalaga rin — at maaari kang mag-email sa <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a> kung nais mong mag-donate ngayon.",
+    "give_cta": "Mag-donate",
+    "ways_h": "Iba pang paraan para makatulong",
+    "spread_h": "Ipamalita",
+    "spread_p": "Ang mga pasyenteng pinakanangangailangan nito ang pinakamahirap maabot. Ibahagi ang cobijohealth.org sa isang klinika, isang case worker, isang promotora, isang grupo sa komunidad, o kaninumang tumutulong sa iba na may mga medical bill.",
+    "board_h": "Sumali sa aming founding board",
+    "board_p": "Naghahanap kami ng limang independiyenteng direktor habang nag-a-apply kami para sa 501(c)(3) status — lalo naming tinatanggap ang karanasan sa nonprofit, batas, pananalapi, access sa pangangalagang pangkalusugan, o tiwala ng komunidad. Mag-email sa <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>.",
+    "volunteer_h": "Mag-volunteer o makipagtulungan",
+    "volunteer_p": "Lalo naming kailangan ang mga katutubong nagsasalita na magrepaso sa aming mga pagsasalin sa 10 wika, at mga kasosyo — klinika, legal-aid na grupo, mga organisasyon sa komunidad — na naglilingkod sa mga pasyenteng may mga medical bill.",
+    "oss_h": "Mag-star o mag-ambag sa GitHub",
+    "oss_p": "Ang tool at ang dataset ay libre at open-source. Mag-star o mag-ambag sa <a href=\"https://github.com/iansduncan-oss/cobijo-health\">proyekto sa GitHub</a> — bawat kaunting visibility ay nakakatulong para matagpuan ito ng mga pasyente.",
+    "contact": "I-email kami"
+  },
+  "partners": {
+    "title": "Magdagdag ng libreng tulong sa medical bill sa inyong site — Cobijo Health",
+    "meta_desc": "Mga klinika, tanggapan ng legal-aid, at grupo sa komunidad: i-embed ang libre at maraming-wikang medical-bill na tool ng Cobijo Health sa inyong website gamit ang isang linya ng code.",
+    "h1": "Ilagay ang libreng tulong sa medical bill sa inyong site",
+    "lead": "Kung ang mga taong pinaglilingkuran ninyo ay nahihirapan sa mga medical bill, idagdag ang libreng tool ng Cobijo Health sa inyong website. Gumagana ito mismo sa inyong pahina, sa 10 wika — at walang anumang naitatago.",
+    "why1": "Libre magpakailanman — kami ay nonprofit. Walang bayad, walang account, walang ibinebenta.",
+    "why2": "10 wika — nakakakuha ng tulong ang mga tao sa wikang sinasalita nila.",
+    "why3": "Isang linya ng code — nasa inyong pahina ito; walang kailangang i-maintain.",
+    "how_h": "Idagdag ito sa isang hakbang",
+    "how_p": "I-paste ang linyang ito sa HTML ng inyong site kung saan ninyo gustong lumabas ang tool. Baguhin ang data-lang para buksan sa ibang wika — halimbawa es, zh, o vi.",
+    "copy_btn": "Kopyahin ang code",
+    "preview_h": "Live na preview",
+    "contact": "May tanong, o gusto ng bersyong may sariling brand? Mag-email sa amin sa"
+  },
   "plan": {
     "cc_free": "Malamang na kwalipikado ka para sa **LIBRENG pangangalaga**. Nagbibigay ang {name} ng libre/buong charity care hanggang {free:.0f}% ng Federal Poverty Level{upto}, at ang iyong sambahayan ay nasa ~{pct:.0f}%.",
     "cc_free_upto": " (libre para sa sambahayang {household} na kumikita nang hanggang ~${ceil:,}/taon)",
@@ -135,7 +171,12 @@
     "result_over": "Maaaring lampas ka sa limitasyon sa kita — pero may mga opsyon ka pa rin",
     "cc_unknown": "Hindi namin nabasa ang eksaktong limitasyon sa kita ng {name} mula sa patakaran nito — ngunit ayon sa batas, bawat ospital sa California ay kailangang mag-alok ng libre o may-diskwentong pangangalaga. **Mag-apply pa rin** — sa halos {pct:.0f}% ng Federal Poverty Level, malamang kwalipikado ka.",
     "result_unknown": "Hindi namin makumpirma ang limitasyon ng ospital na ito — ngunit dapat ka pa ring mag-apply",
-    "cc_no_hospital": "Wala pa kami ng detalye ng ospital na ito sa aming direktoryo — ngunit ayon sa batas, bawat ospital sa California ay kailangang mag-alok ng libre o may diskwentong pangangalaga. **Mag-apply pa rin** — sa humigit-kumulang {pct:.0f}% ng Federal Poverty Level, malamang na kwalipikado ka."
+    "cc_no_hospital": "Wala pa kami ng detalye ng ospital na ito sa aming direktoryo — ngunit ayon sa batas, bawat ospital sa California ay kailangang mag-alok ng libre o may diskwentong pangangalaga. **Mag-apply pa rin** — sa humigit-kumulang {pct:.0f}% ng Federal Poverty Level, malamang na kwalipikado ka.",
+    "res_heading": "Kumuha ng libreng tulong — saan pupunta susunod:",
+    "res_medical": "Mag-apply para sa Medi-Cal — libre ito, at maaari nitong masaklaw ang mga kamakailang bill",
+    "res_coveredca": "Kumuha ng libreng lokal na tulong sa pag-enroll sa Covered California",
+    "res_clinic": "Maghanap ng libre o murang klinika malapit sa iyo",
+    "res_legalaid": "Libreng legal na tulong sa mga medical bill, sa anumang wika"
   },
   "landing": {
     "title": "Cobijo Health — libreng tulong sa iyong medical bills",

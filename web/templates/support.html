@@ -21,7 +21,7 @@
   *{box-sizing:border-box}html{scroll-behavior:smooth}
   body{margin:0;background:var(--sand);color:var(--ink);font:17px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
   a{color:var(--teal-d)}
-  .wrap{max-width:720px;margin:0 auto;padding:0 22px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
   nav{position:sticky;top:0;z-index:10;background:rgba(246,241,231,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   .nav-in{max-width:900px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
   .brand{font-size:22px;font-weight:800;letter-spacing:-.4px;text-decoration:none;color:var(--ink)}
@@ -30,12 +30,22 @@
   .langsel{border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);padding:9px 12px;min-height:44px;font:inherit;font-weight:600;cursor:pointer}
   :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
   .cta{display:inline-block;background:var(--teal);color:#fff;border-radius:10px;padding:11px 18px;font-weight:700;text-decoration:none;font-size:16px}
-  h1{font-size:33px;line-height:1.15;color:var(--teal-d);margin:40px 0 6px}
-  .summary{font-size:20px;font-weight:700;color:var(--teal-d);margin:0 0 14px}
-  h2{font-size:20px;color:var(--teal-d);margin:26px 0 6px}
-  p{margin:0 0 12px}ul{margin:0 0 12px;padding-left:20px}li{margin-bottom:6px}
+  .cta:hover{background:var(--teal-d)}
+  h1{font-size:33px;line-height:1.15;color:var(--teal-d);margin:40px 0 10px}
+  .lead{font-size:19px;color:var(--ink);margin:0 0 8px}
+  h2{font-size:23px;color:var(--teal-d);margin:34px 0 8px}
+  p{margin:0 0 12px}
+  ul{margin:0 0 12px;padding-left:20px}li{margin-bottom:6px}
   [dir=rtl] ul{padding-left:0;padding-right:20px}
-  .eff{color:var(--muted);font-size:14px;margin-top:22px}
+  .give{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:20px 22px;margin:22px 0}
+  [dir=rtl] .give{border-left:1px solid var(--line);border-right:4px solid var(--gold)}
+  .give h2{margin-top:0}
+  .soon{font-size:15px;color:var(--muted);margin:6px 0 0}
+  .ways{list-style:none;padding:0;margin:20px 0 0}
+  .ways li{padding:16px 0;border-top:1px solid var(--line)}
+  .ways li:first-child{border-top:0}
+  .ways h3{font-size:18px;color:var(--ink);margin:0 0 4px}
+  .ways p{margin:0}
   .mtnote{font-size:13px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:18px 0 0}
   .mtnote:empty{display:none}
   footer{padding:34px 0 60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:40px}
@@ -53,27 +63,31 @@
 
 <main class="wrap">
   <h1>{{h1}}</h1>
-  <p class="summary">{{summary}}</p>
-  <p>{{intro}}</p>
+  <p class="lead">{{lead}}</p>
 
-  <h2>{{collect_h}}</h2><p>{{collect_p}}</p>
-  <h2>{{use_h}}</h2><p>{{use_p}}</p>
-  <h2>{{dont_h}}</h2>
-  <ul><li>{{dont1}}</li><li>{{dont2}}</li><li>{{dont3}}</li><li>{{dont4}}</li></ul>
-  <h2>{{hipaa_h}}</h2><p>{{hipaa_p}}</p>
-  <h2>{{analytics_h}}</h2><p>{{analytics_p}}</p>
-  <h2>{{third_h}}</h2><p>{{third_p}}</p>
-  <h2>{{changes_h}}</h2><p>{{changes_p}}</p>
-  <h2>{{contact_h}}</h2><p>{{contact_p}}</p>
+  <div class="give">
+    <h2>{{give_h}}</h2>
+    <p>{{give_p}}</p>
+    {{DONATE_CTA}}
+  </div>
 
-  <p class="eff">{{effective}} · {{nonprofit_note}}</p>
+  <h2>{{ways_h}}</h2>
+  <ul class="ways">
+    <li><h3>{{spread_h}}</h3><p>{{spread_p}}</p></li>
+    <li><h3>{{board_h}}</h3><p>{{board_p}}</p></li>
+    <li><h3>{{volunteer_h}}</h3><p>{{volunteer_p}}</p></li>
+    <li><h3>{{oss_h}}</h3><p>{{oss_p}}</p></li>
+  </ul>
+
+  <p style="margin-top:26px"><a class="cta" href="/">{{cta_now}}</a> &nbsp; <a href="mailto:hello@cobijohealth.org">{{contact}}</a></p>
   <p class="mtnote">{{mt_note}}</p>
 </main>
 
 <footer><div class="wrap">
   <div class="fnav">
     <a href="/">{{f_tool}}</a><a href="about">{{f_about}}</a><a href="faq">{{f_faq}}</a>
-    <a href="privacy">{{f_priv}}</a><a href="support">{{f_support}}</a><a href="for-partners">{{f_partners}}</a><a href="/california-hospitals">{{f_dir}}</a>
+    <a href="privacy">{{f_priv}}</a><a href="support">{{f_support}}</a><a href="for-partners">{{f_partners}}</a>
+    <a href="/california-hospitals">{{f_dir}}</a>
     <a href="https://github.com/iansduncan-oss/cobijo-health">{{f_gh}}</a>
   </div>
   <p class="disc">{{foot1}}</p>

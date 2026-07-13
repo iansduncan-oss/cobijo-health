@@ -8,6 +8,8 @@
     "f_about": "Giới thiệu",
     "f_faq": "Câu hỏi thường gặp",
     "f_priv": "Quyền riêng tư",
+    "f_support": "Ủng hộ",
+    "f_partners": "Dành cho đối tác",
     "f_dir": "Tất cả bệnh viện ở California",
     "f_gh": "GitHub",
     "foot1": "<b>Cobijo Health</b> — một tổ chức phi lợi nhuận ở California (đang trong quá trình xin cấp phép 501(c)(3)). Công cụ này cung cấp thông tin, không phải tư vấn pháp lý hay y tế. Miễn phí &amp; mã nguồn mở. · <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>",
@@ -96,6 +98,40 @@
     "q9": "Cobijo hỗ trợ những ngôn ngữ nào?",
     "a9": "Cobijo hoạt động bằng tiếng Anh, tiếng Tây Ban Nha, tiếng Trung, tiếng Việt, tiếng Tagalog, tiếng Hàn, tiếng Armenia, tiếng Farsi, tiếng Ả Rập, và tiếng Nga. Hãy dùng menu ngôn ngữ ở đầu mỗi trang để chuyển đổi."
   },
+  "support": {
+    "title": "Ủng hộ Cobijo Health",
+    "meta_desc": "Giúp bệnh nhân California được nhẹ gánh tài chính từ hóa đơn y tế. Cobijo Health là một tổ chức phi lợi nhuận miễn phí, cởi mở, đang trong quá trình thành lập — đây là cách bạn có thể giúp.",
+    "h1": "Ủng hộ công việc này",
+    "lead": "Cobijo Health miễn phí cho mọi bệnh nhân, và sẽ luôn như vậy. Chúng tôi là một tổ chức phi lợi nhuận California đang trong quá trình thành lập, được xây dựng một cách công khai. Đây là cách bạn giúp chúng tôi tiếp cận nhiều người hơn.",
+    "give_h": "Quyên góp",
+    "give_p": "Sự ủng hộ của bạn chi trả cho những điều thiết yếu — duy trì công cụ hoạt động trực tuyến, cập nhật dữ liệu về chính sách hỗ trợ tài chính của từng bệnh viện tại California, và dịch chúng sang những ngôn ngữ mà bệnh nhân của chúng tôi thực sự sử dụng.",
+    "give_soon": "Chúng tôi đang hoàn tất đơn vị bảo trợ tài chính để các khoản đóng góp được khấu trừ thuế và đến trực tiếp với sứ mệnh. Quyên góp tài chính sẽ sớm mở tại đây. Trong lúc chờ đợi, những cách giúp đỡ dưới đây cũng quan trọng không kém — và bạn có thể gửi email tới <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a> nếu muốn quyên góp ngay bây giờ.",
+    "give_cta": "Quyên góp",
+    "ways_h": "Những cách giúp đỡ khác",
+    "spread_h": "Lan tỏa thông tin",
+    "spread_p": "Những bệnh nhân cần điều này nhất lại là những người khó tiếp cận nhất. Hãy chia sẻ cobijohealth.org với một phòng khám, một nhân viên xã hội, một tuyên truyền viên cộng đồng, một nhóm cộng đồng, hoặc bất kỳ ai giúp đỡ người khác với hóa đơn y tế.",
+    "board_h": "Tham gia hội đồng sáng lập của chúng tôi",
+    "board_p": "Chúng tôi đang tuyển năm giám đốc độc lập trong khi nộp hồ sơ xin quy chế 501(c)(3) — đặc biệt hoan nghênh kinh nghiệm về phi lợi nhuận, pháp lý, tài chính, tiếp cận y tế, hoặc niềm tin cộng đồng. Gửi email tới <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>.",
+    "volunteer_h": "Tình nguyện hoặc hợp tác",
+    "volunteer_p": "Chúng tôi đặc biệt cần người bản ngữ rà soát bản dịch của chúng tôi ở 10 ngôn ngữ, và các đối tác — phòng khám, nhóm trợ giúp pháp lý, tổ chức cộng đồng — phục vụ bệnh nhân đang đối mặt với hóa đơn y tế.",
+    "oss_h": "Gắn sao hoặc đóng góp trên GitHub",
+    "oss_p": "Công cụ và bộ dữ liệu đều miễn phí và mã nguồn mở. Hãy gắn sao hoặc đóng góp cho <a href=\"https://github.com/iansduncan-oss/cobijo-health\">dự án trên GitHub</a> — mỗi chút hiển thị đều giúp bệnh nhân tìm thấy nó.",
+    "contact": "Gửi email cho chúng tôi"
+  },
+  "partners": {
+    "title": "Thêm trợ giúp miễn phí về hóa đơn y tế vào trang của bạn — Cobijo Health",
+    "meta_desc": "Phòng khám, văn phòng trợ giúp pháp lý và nhóm cộng đồng: nhúng công cụ hóa đơn y tế miễn phí, đa ngôn ngữ của Cobijo Health vào trang web của bạn chỉ với một dòng mã.",
+    "h1": "Đưa trợ giúp miễn phí về hóa đơn y tế lên trang của bạn",
+    "lead": "Nếu những người bạn phục vụ gặp khó khăn với hóa đơn y tế, hãy thêm công cụ miễn phí của Cobijo Health vào trang web của bạn. Nó hoạt động ngay trên trang của bạn, bằng 10 ngôn ngữ — và không có gì được lưu lại.",
+    "why1": "Miễn phí mãi mãi — chúng tôi là tổ chức phi lợi nhuận. Không tốn phí, không cần tài khoản, không bán gì cả.",
+    "why2": "10 ngôn ngữ — mọi người nhận trợ giúp bằng ngôn ngữ họ nói.",
+    "why3": "Một dòng mã — nó nằm trên trang của bạn; không cần bảo trì gì cả.",
+    "how_h": "Thêm chỉ trong một bước",
+    "how_p": "Dán dòng này vào HTML trang web của bạn tại nơi bạn muốn công cụ xuất hiện. Đổi data-lang để mở bằng ngôn ngữ khác — ví dụ es, zh hoặc vi.",
+    "copy_btn": "Sao chép mã",
+    "preview_h": "Xem trước trực tiếp",
+    "contact": "Có câu hỏi, hoặc muốn phiên bản gắn thương hiệu chung? Gửi email cho chúng tôi tại"
+  },
   "plan": {
     "cc_free": "Bạn có khả năng đủ điều kiện nhận **CHĂM SÓC MIỄN PHÍ**. {name} cung cấp dịch vụ chăm sóc từ thiện miễn phí/toàn phần lên đến {free:.0f}% Mức Nghèo Liên bang{upto}, và hộ gia đình của bạn ở khoảng ~{pct:.0f}%.",
     "cc_free_upto": " (miễn phí cho một hộ gia đình {household} người có thu nhập lên đến ~${ceil:,}/năm)",
@@ -135,7 +171,12 @@
     "result_over": "Bạn có thể vượt quá giới hạn thu nhập — nhưng bạn vẫn có các lựa chọn",
     "cc_unknown": "Chúng tôi không đọc được mức thu nhập giới hạn chính xác của {name} từ chính sách của họ — nhưng theo luật, mọi bệnh viện ở California đều phải cung cấp dịch vụ miễn phí hoặc giảm giá. **Cứ nộp đơn** — ở mức khoảng {pct:.0f}% Chuẩn Nghèo Liên bang, bạn rất có thể đủ điều kiện.",
     "result_unknown": "Chúng tôi không xác nhận được giới hạn của bệnh viện này — nhưng bạn vẫn nên nộp đơn",
-    "cc_no_hospital": "Chúng tôi chưa có thông tin của bệnh viện này trong danh bạ — nhưng theo luật, mọi bệnh viện ở California đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá. **Hãy cứ nộp đơn** — ở mức khoảng {pct:.0f}% Mức Nghèo Liên bang, bạn rất có thể đủ điều kiện."
+    "cc_no_hospital": "Chúng tôi chưa có thông tin của bệnh viện này trong danh bạ — nhưng theo luật, mọi bệnh viện ở California đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá. **Hãy cứ nộp đơn** — ở mức khoảng {pct:.0f}% Mức Nghèo Liên bang, bạn rất có thể đủ điều kiện.",
+    "res_heading": "Nhận trợ giúp miễn phí — nơi cần đến tiếp theo:",
+    "res_medical": "Nộp đơn xin Medi-Cal — miễn phí và có thể chi trả các hóa đơn gần đây",
+    "res_coveredca": "Nhận trợ giúp miễn phí tại địa phương để ghi danh Covered California",
+    "res_clinic": "Tìm một phòng khám miễn phí hoặc chi phí thấp gần bạn",
+    "res_legalaid": "Trợ giúp pháp lý miễn phí về hóa đơn y tế, bằng mọi ngôn ngữ"
   },
   "landing": {
     "title": "Cobijo Health — hỗ trợ miễn phí cho hóa đơn y tế của bạn",

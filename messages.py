@@ -99,6 +99,12 @@ MESSAGES = {
         "step3": "STEP {n} — Protecting you from the debt:",
         "step4": ("STEP {n} — If a balance remains: bill-error review, payment plan, disease-specific "
                   "funds, and (last resort) a coached crowdfunding campaign."),
+        # --- where-to-get-help routes (resources.py) — free, statewide CA destinations ---
+        "res_heading": "Get free help — where to go next:",
+        "res_medical": "Apply for Medi-Cal — it's free, and it can cover recent bills",
+        "res_coveredca": "Get free local help enrolling in Covered California",
+        "res_clinic": "Find a free or low-cost clinic near you",
+        "res_legalaid": "Free legal help with medical bills, in any language",
         "letter_note_english": ("Note: the request letter below is written in English so the "
                                 "hospital's billing office can process it quickly."),
         # --- result hero headlines (structured web UI) ---
@@ -200,6 +206,12 @@ MESSAGES = {
         "step4": ("PASO {n} — Si queda un saldo: revisión de errores en la factura, plan de pago, "
                   "fondos para enfermedades específicas y (último recurso) una campaña de "
                   "recaudación con acompañamiento."),
+        # --- rutas de ayuda (resources.py) — recursos gratuitos y estatales de California ---
+        "res_heading": "Obtenga ayuda gratuita — a dónde acudir:",
+        "res_medical": "Solicite Medi-Cal — es gratis y puede cubrir facturas recientes",
+        "res_coveredca": "Reciba ayuda local gratuita para inscribirse en Covered California",
+        "res_clinic": "Encuentre una clínica gratuita o de bajo costo cerca de usted",
+        "res_legalaid": "Ayuda legal gratuita con facturas médicas, en cualquier idioma",
         "letter_note_english": ("Nota: la carta de solicitud a continuación está escrita en inglés "
                                 "para que la oficina de facturación del hospital pueda procesarla "
                                 "rápidamente."),

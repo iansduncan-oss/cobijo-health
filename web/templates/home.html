@@ -124,9 +124,18 @@
   .actions button{background:var(--teal);color:#fff;border:0;border-radius:10px;padding:11px 16px;
     font:inherit;font-weight:700;cursor:pointer}
   .actions button.alt{background:var(--ink)}
+  /* --- embed mode: the iframe widget on partner sites. Strip chrome to just the tool + a small
+     attribution back to the full site. All hooks are empty on the normal homepage. --- */
+  body.embed header,body.embed .foot-nav{display:none}
+  body.embed{background:var(--card)}
+  body.embed .wrap{padding-top:6px}
+  .attribution{display:none;text-align:center;margin:16px 0 2px;font-size:13px;color:var(--muted)}
+  body.embed .attribution{display:block}
+  .attribution a{color:var(--teal-d);font-weight:700;text-decoration:none}
 </style>
+{{EMBED_HEAD}}
 </head>
-<body>
+<body class="{{BODY_CLASS}}">
 <a class="skip" href="#main">{{skip}}</a>
 <div class="wrap">
   <header>
@@ -208,7 +217,11 @@
   </main>
 
   <div class="foot">{{foot}}</div>
-  <div class="foot" style="margin-top:6px"><a href="/california-hospitals">{{browse}}</a></div>
+  <div class="foot-nav">
+    <div class="foot" style="margin-top:6px"><a href="/california-hospitals">{{browse}}</a></div>
+    <div class="foot" style="margin-top:6px"><a href="about">{{f_about}}</a> · <a href="support">{{f_support}}</a> · <a href="for-partners">{{f_partners}}</a></div>
+  </div>
+  <div class="attribution"><a href="https://cobijohealth.org/" target="_blank" rel="noopener">{{brand_a}}{{brand_b}} ↗</a></div>
 </div>
 
 <script>
@@ -331,6 +344,18 @@ function renderResult(r){
   if(r.debt&&r.debt.length)
     html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_debt)}</div><ul class="bul">`+
       r.debt.map(d=>`<li>${render(d)}</li>`).join("")+`</ul></div>`;
+  if(r.resources&&r.resources.length){
+    // A titled action panel, deliberately un-numbered (matches the CLI plan) so it doesn't collide
+    // with the closing "STEP N" card — these are doors to walk through, not another ordered step.
+    html+=`<div class="rcard"><div class="rcard-h">${esc(r.res_heading)}</div>`;
+    r.resources.forEach(res=>{
+      html+=`<div class="linkrow">`+
+        `<a class="linkbtn" href="${esc(res.url)}" target="_blank" rel="noopener" onclick="track('resource_clicked')">→ ${esc(res.label)}</a>`+
+        (res.phone?`<a class="callbtn" href="tel:${res.phone.replace(/[^0-9+]/g,"")}" onclick="track('resource_phone_clicked')">📞 ${esc(res.phone)}</a>`:"")+
+        `</div>`;
+    });
+    html+=`</div>`;
+  }
   html+=`<div class="rcard soft">${render(r.closing)}</div>`;
   if(r.lang_note) html+=`<p class="foot" style="text-align:left;margin-top:8px">${esc(r.lang_note)}</p>`;
   document.getElementById("result").innerHTML=html;
@@ -350,5 +375,6 @@ function copyLetter(){
   }catch(_){ fallback(); }
 }
 </script>
+{{EMBED_SCRIPT}}
 </body>
 </html>
