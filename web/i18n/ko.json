@@ -134,7 +134,7 @@
   },
   "plan": {
     "cc_free": "귀하는 **무료 진료** 자격이 될 가능성이 높습니다. {name}은(는) 연방 빈곤선의 {free:.0f}%까지 무료/전액 자선 진료를 제공하며{upto}, 귀하의 가구는 약 {pct:.0f}% 수준입니다.",
-    "cc_free_upto": " (가구원 {household}명이 연 최대 약 ${ceil:,}까지 벌 경우 무료)",
+    "cc_free_upto": " (가구원 {household}명이 연 최대 약 ${ceil:,}까지 버는 경우 무료)",
     "cc_discount_tier": "귀하는 **할인** 자격이 될 가능성이 높습니다. 귀하의 약 {pct:.0f}% FPL은 이 병원의 {lo:.0f}~{hi:.0f}% 구간에 해당합니다: {how}.",
     "cc_how_basis": "{basis} 요율로 할인",
     "cc_how_default": "할인된 요율",

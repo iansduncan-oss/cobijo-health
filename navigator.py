@@ -32,6 +32,7 @@ import time
 
 import policyengine
 import resources
+import state_rules
 from constants import FPL, FPL_EACH_ADDITIONAL
 from messages import t
 
@@ -347,6 +348,41 @@ def build_generic_plan_struct(intake, lang="en"):
         "res_heading": t(lang, "res_heading"),
         "closing": t(lang, "step4", n=closing_n),
         "lang_note": t(lang, "letter_note_english") if lang != "en" else None,
+    }
+
+
+def statutory_tier(pct, rules, rural=False):
+    """The tier a STATUTE-DRIVEN state's law assigns a patient at `pct`% FPL — no per-hospital FAP needed
+    (the law sets the thresholds). Rural/Critical-Access hospitals use the lower bands. free -> discount -> over."""
+    free_pct = rules.free_pct_for(rural)
+    disc_pct = rules.discount_pct_for(rural)
+    if free_pct is not None and pct <= free_pct:
+        return "free"
+    if disc_pct is not None and pct <= disc_pct:
+        return "discount"
+    return "over"
+
+
+def statutory_facts(intake, row):
+    """Language-neutral eligibility FACTS for a statute-driven hospital (T4.1 Phase 2). Derived from
+    state_rules — the law itself — not an extracted policy, so it works for ANY hospital in a statute-driven
+    state (the CMS roster) with zero per-hospital data. A localized renderer turns these facts into
+    patient-facing prose (next Phase-2 increment). Returns None for a non-statutory state/row."""
+    rules = state_rules.rules_for(row.get("state"))
+    if not rules.is_statutory:
+        return None
+    rural = row.get("hospital_type") == "Critical Access Hospitals"
+    pct = fpl_percent(intake["annual_income"], intake["household_size"])
+    return {
+        "state": rules.code,
+        "fap_law": rules.fap_law,
+        "fpl_pct": pct,
+        "tier": statutory_tier(pct, rules, rural),
+        "free_pct": rules.free_pct_for(rural),
+        "discount_pct": rules.discount_pct_for(rural),
+        "income_cap_pct": rules.income_cap_pct,
+        "rural": rural,
+        "hospital": row["hospital"].title(),
     }
 
 

@@ -139,7 +139,7 @@
     "cc_how_basis": "được giảm xuống mức giá {basis}",
     "cc_how_default": "một mức giá được giảm",
     "cc_discount_ceiling": "Bạn nằm trong phạm vi đủ điều kiện được giảm giá của {name} (lên đến {disc_ceiling:.0f}% FPL) — hãy nộp đơn xin mức giảm giá theo thang thu nhập.",
-    "cc_high_cost": "Bạn có bảo hiểm, nhưng {name} có điều khoản về **chi phí y tế cao**: nếu số tiền bạn phải tự trả vượt quá ~{thr:.0f}% thu nhập của bạn thì bạn vẫn có thể đủ điều kiện nhận hỗ trợ. Đáng để nộp đơn.",
+    "cc_high_cost": "Bạn có bảo hiểm, nhưng {name} có điều khoản về **chi phí y tế cao**: nếu số tiền bạn tự phải trả vượt quá ~{thr:.0f}% thu nhập của bạn thì bạn vẫn có thể đủ điều kiện nhận hỗ trợ. Rất đáng để nộp đơn.",
     "cc_over": "Thu nhập của bạn (~{pct:.0f}% FPL) cao hơn mức trần hỗ trợ của {name} (~{ceiling:.0f}% FPL) — nhưng vẫn hãy nộp đơn (chính sách đã thay đổi vào năm 2025), và hãy sử dụng việc rà soát lỗi hóa đơn, thương lượng, và các lựa chọn bên dưới.",
     "ben_insured": "Bạn cho biết mình có bảo hiểm — chúng tôi vẫn sẽ kiểm tra xem có hỗ trợ chia sẻ chi phí và các chương trình phụ hay không.",
     "ben_medicaid_heuristic": "**Medi-Cal (Medicaid California)** — ở mức ~{pct:.0f}% FPL, bạn có khả năng đủ điều kiện về thu nhập để nhận bảo hiểm miễn phí hoặc chi phí thấp, thậm chí có thể áp dụng cho các hóa đơn gần đây. California bao trả cho nhiều người trưởng thành bất kể tình trạng di trú, mặc dù các quy định ghi danh đã thay đổi vào năm 2026 — hãy kiểm tra điều kiện hiện tại của bạn. Việc sử dụng Medi-Cal không bị tính là bất lợi trong bài kiểm tra di trú về gánh nặng xã hội.",

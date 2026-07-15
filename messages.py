@@ -154,8 +154,8 @@ MESSAGES = {
                              "Nivel Federal de Pobreza cae en el rango de {lo:.0f}–{hi:.0f}% de este hospital: {how}."),
         "cc_how_basis": "con descuento a tarifas de {basis}",
         "cc_how_default": "una tarifa con descuento",
-        "cc_discount_ceiling": ("Usted está dentro del rango con derecho a descuento de {name} (hasta "
-                                "{disc_ceiling:.0f}% del Nivel Federal de Pobreza) — solicite el descuento en escala móvil."),
+        "cc_discount_ceiling": ("Usted está dentro del rango que puede recibir descuento de {name} (hasta "
+                                "{disc_ceiling:.0f}% del Nivel Federal de Pobreza) — solicite el descuento de escala móvil."),
         "cc_high_cost": ("Usted tiene seguro, pero {name} tiene un beneficio para **gastos médicos "
                          "altos**: si sus gastos de bolsillo superan ~{thr:.0f}% de sus ingresos, "
                          "aún podría calificar para recibir ayuda. Vale la pena solicitarla."),

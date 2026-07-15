@@ -9,6 +9,7 @@ refactor with zero behavior change for California.
 """
 
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -20,6 +21,31 @@ class StateRules:
     free_care_unusual_pct: int      # free-care ceiling above this -> verify (MEDIUM in qa)
     free_care_implausible_pct: int  # free-care ceiling above this ~= a misread (HIGH in qa)
     fap_law: str                    # the statute a patient-facing plan can cite
+    # --- STATUTE-DRIVEN eligibility (T4.1 Phase 2 "thin national") ---------------------------------
+    # For states whose LAW sets the eligibility thresholds directly (so a correct patient answer needs
+    # no per-hospital FAP extraction — the CA model needs the PDF, these don't). All default None so CA
+    # and the generic §501(r) default are byte-identical: they keep their per-hospital extracted model.
+    statutory_free_pct: Optional[int] = None      # FPL% at/below which state law guarantees 100% free care
+    statutory_discount_pct: Optional[int] = None  # FPL% at/below which state law mandates a discount
+    income_cap_pct: Optional[int] = None          # max % of annual family income the hospital may collect
+    # Rural / Critical-Access-Hospital tier (lower FPL bands than metro). None -> use the metro bands.
+    statutory_free_rural_pct: Optional[int] = None
+    statutory_discount_rural_pct: Optional[int] = None
+
+    @property
+    def is_statutory(self):
+        """True when this state's own law sets the eligibility thresholds (statute-driven / no extraction)."""
+        return self.statutory_discount_pct is not None
+
+    def free_pct_for(self, rural=False):
+        if rural and self.statutory_free_rural_pct is not None:
+            return self.statutory_free_rural_pct
+        return self.statutory_free_pct
+
+    def discount_pct_for(self, rural=False):
+        if rural and self.statutory_discount_rural_pct is not None:
+            return self.statutory_discount_rural_pct
+        return self.statutory_discount_pct
 
 
 # HSC §127405 (Hospital Fair Pricing Act): 400% FPL is a FLOOR, not a cap — hospitals MUST offer charity
@@ -46,7 +72,25 @@ _DEFAULT = StateRules(
     fap_law="Section 501(r) of the Internal Revenue Code",
 )
 
-STATES = {"CA": CA}
+# Illinois — Hospital Uninsured Patient Discount Act (210 ILCS 89). STATUTE-DRIVEN: the law itself sets
+# the eligibility thresholds, so an IL patient gets a correct answer from these numbers alone — no
+# per-hospital FAP extraction needed (unlike CA). Values PINNED from 210 ILCS 89 §5/§10 (metropolitan
+# tier; rural/Critical-Access hospitals use lower FPL bands — 125% free / 300% discount — a Phase-2.x
+# refinement, modeled here at the metro tier that covers the Chicago-dominated majority of IL hospitals):
+#   • 100% free care at/below 200% FPL (§10(a));  • mandated uninsured discount at/below 600% FPL (§10(a));
+#   • the hospital may collect at most 20% of annual family income over 12 months (§10(c)(1)).
+# The extraction-plausibility fields are unused for a statute-driven state (nothing is extracted) but set
+# to sane values for completeness. fpl_floor_pct mirrors the discount ceiling the law guarantees.
+IL = StateRules(
+    code="IL", name="Illinois",
+    fpl_floor_pct=600, discount_implausible_pct=900,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
+    statutory_free_pct=200, statutory_discount_pct=600, income_cap_pct=20,
+    statutory_free_rural_pct=125, statutory_discount_rural_pct=300,   # rural/Critical-Access tier (§10(a))
+)
+
+STATES = {"CA": CA, "IL": IL}
 
 
 def rules_for(state="CA"):
