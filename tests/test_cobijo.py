@@ -625,6 +625,51 @@ class TestLetterName(unittest.TestCase):
         self.assertIn("James Nguyen", letter)
 
 
+class TestBilingualLetter(unittest.TestCase):
+    """S#20: English letter auto-fills the date + optional address/phone; a non-EN patient also gets a
+    translated REFERENCE copy so they can read what they're sending (the English copy is what's mailed)."""
+    import datetime as _dt
+    LANGS = ("en", "es", "zh", "vi", "tl", "ko", "hy", "fa", "ar", "ru")
+
+    def _intake(self, **kw):
+        base = {"full_name": "Maria Lopez", "household_size": 4, "annual_income": 38000,
+                "insurance": "uninsured", "in_collections": True}
+        base.update(kw)
+        return base
+
+    def test_date_auto_filled(self):
+        letter = navigator.generate_letter(self._intake(), make_row(), 180, "free")
+        self.assertNotIn("[today", letter)
+        self.assertIn(f"{self._dt.date.today():%B}", letter)   # current month name present
+
+    def test_address_phone_fill_and_fallback(self):
+        filled = navigator.generate_letter(self._intake(address="123 Main St", phone="(530) 555-0100"),
+                                           make_row(), 180, "free")
+        self.assertIn("123 Main St", filled)
+        self.assertNotIn("[Your address]", filled)
+        blank = navigator.generate_letter(self._intake(), make_row(), 180, "free")   # empty -> bracket kept
+        self.assertIn("[Your address]", blank)
+
+    def test_reference_renders_translated_in_every_lang(self):
+        for lg in self.LANGS:
+            with self.subTest(lang=lg):
+                ref = navigator.letter_reference(self._intake(), make_row(), 180, "free", lg)
+                self.assertTrue(ref["heading"] and ref["warning"] and ref["body"])
+                self.assertIn("38,000", ref["body"])                  # income token filled
+                self.assertNotRegex(ref["body"], r"\{[a-z_]+\}")      # no unfilled {tokens}
+
+    def test_reference_is_actually_translated_not_english(self):
+        en = navigator.letter_reference(self._intake(), make_row(), 180, "free", "en")
+        es = navigator.letter_reference(self._intake(), make_row(), 180, "free", "es")
+        self.assertNotEqual(en["heading"], es["heading"])
+        self.assertNotEqual(en["body"], es["body"])
+
+    def test_ask_reflects_tier(self):
+        free = navigator.letter_reference(self._intake(), make_row(), 180, "free", "es")["body"]
+        disc = navigator.letter_reference(self._intake(), make_row(), 350, "discount", "es")["body"]
+        self.assertNotEqual(free, disc)   # the {ask} phrase differs between free and discount
+
+
 # The web i18n JSONs have NO parity guarantee elsewhere (only messages.py/sms.py do) — a dropped key
 # or renamed {field} in one of 10 languages would ship silently and render literal {{...}} or crash.
 import json as _json

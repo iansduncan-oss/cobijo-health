@@ -176,7 +176,12 @@
     "res_medical": "Medi-Cal 신청하기 — 무료이며 최근 청구서도 보장될 수 있습니다",
     "res_coveredca": "Covered California 가입을 위한 무료 지역 도움 받기",
     "res_clinic": "가까운 무료 또는 저렴한 진료소 찾기",
-    "res_legalaid": "의료비 청구서에 대한 무료 법률 지원, 모든 언어로"
+    "res_legalaid": "의료비 청구서에 대한 무료 법률 지원, 모든 언어로",
+    "letter_ask_free": "무료(전액 자선) 진료",
+    "letter_ask_discount": "자선 진료 할인",
+    "letter_ref_heading": "이 편지의 내용을 당신의 언어로 설명합니다",
+    "letter_ref_warning": "이 번역본이 아니라 위에 있는 영어 편지를 보내세요. 이 사본은 당신이 무엇을 보내는지 이해할 수 있도록 돕기 위한 것입니다.",
+    "letter_ref_template": "{name}\n{address}\n{phone}\n\n날짜: {today}\n\n{hospital}\n담당: 재정 지원 / 사무국\n제목: 재정 지원 요청 (자선 진료)\n계정/청구서 번호: {account}\n진료 날짜: {service_date}\n\n관계자분께:\n\n저는 California's Hospital Fair Pricing Act 및 IRS Section 501(r)에 따라 요구되는 대로, 귀 병원의 재정 지원 정책에 따른 재정 지원을 요청하고자 이 글을 씁니다. 저는 {ask}을(를) 요청합니다.\n\n제 가구원 수는 {household}명이고 연간 가구 소득은 약 ${income:,}로, 이는 연방 빈곤선의 약 {pct:.0f}%에 해당합니다. 귀 병원이 공개한 정책에 따르면, 이로 인해 제가 자격이 있는 것으로 보입니다.\n\n귀 병원의 재정 지원 신청서와 필요한 서류 목록을 저에게 보내주시기 바랍니다. 또한 제 신청서가 검토되는 동안 위 계정에 대한 모든 수금 활동을 중단해 주시고, 이 요청을 이미 청구된 잔액에 소급하여 적용해 주시기를 요청합니다.\n\n또한 제가 정확성을 검토할 수 있도록 항목별로 정리된 청구서 사본을 제공해 주시기 바랍니다.\n\n시간 내주셔서 감사합니다. 위에 적힌 전화번호로 저에게 연락하실 수 있습니다.\n\n감사합니다.\n{name}"
   },
   "landing": {
     "title": "Cobijo Health — 의료비에 대한 무료 도움",
@@ -259,12 +264,17 @@
     "notfound_help": "아직 저희 디렉터리에 그 병원이 없습니다.",
     "notfound_generic_btn": "일반 안내 보기 →",
     "not_in_directory": "이 병원은 아직 저희 디렉터리에 없습니다 — 캘리포니아의 모든 병원에 적용되는 도움말입니다.",
-    "billdetails_summary": "청구서 세부정보 추가 (선택 사항)",
+    "billdetails_summary": "연락처 및 청구서 정보 추가 (선택 사항)",
     "account": "계정 또는 청구서 번호",
     "account_ph": "청구서에 인쇄된 대로",
     "service_date": "진료 날짜",
     "service_date_ph": "예: 03/15/2026",
-    "checking": "확인 중…"
+    "checking": "확인 중…",
+    "letterfill_note": "이 정보는 요청서에 자동으로 입력되어 직접 손으로 쓸 필요가 없습니다.",
+    "youraddress": "귀하의 주소",
+    "youraddress_ph": "도로명, 도시, 주, 우편번호",
+    "yourphone": "귀하의 전화번호",
+    "yourphone_ph": "(555) 555-5555"
   },
   "hospital": {
     "h_home": "홈",

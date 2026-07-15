@@ -73,6 +73,10 @@
     background:var(--sand);border-radius:8px;padding:16px;margin:6px 0 14px;overflow:auto;direction:ltr;text-align:left}
   .copy{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;margin-bottom:14px}
   .copied{color:var(--teal-d);font-weight:700;font-size:14px}
+  /* Bilingual reference copy: shown UNDER the English letter so a non-EN patient can read what they send. */
+  .letterref{margin:0 0 14px}
+  .refwarn{background:#fdf6e3;border:1px solid #c7a233;border-radius:8px;padding:10px 12px;font-size:13.5px;color:#5c4300;margin:0 0 8px}
+  .refbody{direction:inherit;text-align:start;opacity:.95}   /* follow the page language (RTL for ar/fa) */
   .err{color:#a12a1e;font-weight:600;margin-top:14px}
   .recover{margin-top:14px;background:#fbf8f1;border:1px dashed var(--line);border-radius:12px;padding:14px 16px}
   .recover[hidden]{display:none}
@@ -167,7 +171,7 @@
       font-weight:400;font-size:8.5pt;word-break:break-all}
     body.printing-result #letterbox{page-break-before:always;border:0;padding:0;margin:0}
     body.printing-result #letterbox>summary,body.printing-result #letterbox .copy,
-    body.printing-result #letterbox .copied{display:none}
+    body.printing-result #letterbox .copied,body.printing-result #letterref{display:none}
     body.printing-result .letter{background:#fff;border:1px solid #888;overflow:visible;font-size:10pt}
   }
 </style>
@@ -230,6 +234,17 @@
 
       <details class="billdetails">
         <summary>{{billdetails_summary}}</summary>
+        <p class="fieldnote">{{letterfill_note}}</p>
+        <div class="row">
+          <div>
+            <label for="address">{{youraddress}}</label>
+            <input id="address" autocomplete="street-address" maxlength="120" placeholder="{{youraddress_ph}}">
+          </div>
+          <div>
+            <label for="phone">{{yourphone}}</label>
+            <input id="phone" type="tel" autocomplete="tel" maxlength="40" placeholder="{{yourphone_ph}}">
+          </div>
+        </div>
         <div class="row">
           <div>
             <label for="account">{{account}}</label>
@@ -261,6 +276,10 @@
       <button class="copy" onclick="copyLetter()">{{copy}}</button>
       <span class="copied" id="copied" role="status" aria-live="polite"></span>
       <div class="letter" id="letter" lang="en"></div>
+      <div id="letterref" class="letterref" hidden>
+        <p class="refwarn"><strong id="letterref_h"></strong> <span id="letterref_w"></span></p>
+        <div class="letter refbody" id="letterref_body"></div>
+      </div>
     </details>
     <div class="actions">
       <button onclick="window.print()">{{print}}</button>
@@ -305,21 +324,43 @@ function buildReq(){
     household:document.getElementById("household").value,
     insurance:document.getElementById("insurance").value,
     full_name:document.getElementById("fullname").value,
+    address:document.getElementById("address").value,
+    phone:document.getElementById("phone").value,
     account:document.getElementById("account").value,
     service_date:document.getElementById("service_date").value,
     in_collections:document.getElementById("collections").checked};
 }
-// Carry ONLY the hospital across a language switch (the tedious field to re-type). Income/name are
-// never persisted anywhere — honoring the "nothing is saved" promise, safe on shared computers.
-function syncLangSwitchHospital(){
-  presetOshpdid="";                 // user is choosing a hospital themselves — drop the CTA's campus hint
-  const h=document.getElementById("hospital").value.trim();
-  document.querySelectorAll("select.langsel option").forEach(o=>{
-    const base=o.value.split("?")[0];
-    o.value = h ? base+"?hospital="+encodeURIComponent(h) : base;
-  });
+// Carry the WHOLE in-progress form across a language switch so non-English users don't re-type it
+// (the exact people the 10 languages exist for). The snapshot goes to sessionStorage: tab-scoped,
+// one-shot (restored then immediately cleared below), never written to the browser profile, and gone
+// when the tab closes — so it honors the "nothing is saved" promise and is safe on shared computers.
+// (Cleaner than the old ?hospital= URL carry, which leaked the hospital name into browser history.)
+const FORM_KEY="cobijo_form";
+function snapshotForm(){
+  try{ sessionStorage.setItem(FORM_KEY, JSON.stringify({
+    hospital:document.getElementById("hospital").value, oshpdid:presetOshpdid,
+    income:document.getElementById("income").value, income_freq:document.getElementById("income_freq").value,
+    household:document.getElementById("household").value, insurance:document.getElementById("insurance").value,
+    fullname:document.getElementById("fullname").value, account:document.getElementById("account").value,
+    service_date:document.getElementById("service_date").value,
+    address:document.getElementById("address").value, phone:document.getElementById("phone").value,
+    collections:document.getElementById("collections").checked})); }catch(_){/* storage off -> just switch */}
 }
-document.getElementById("hospital").addEventListener("input", syncLangSwitchHospital);
+// Capture phase -> runs BEFORE the <select>'s inline onchange navigates away.
+document.querySelectorAll("select.langsel").forEach(s=>s.addEventListener("change", snapshotForm, {capture:true}));
+// Restore a snapshot carried across a language switch (one-shot: cleared the moment it's read).
+(function(){ let raw; try{ raw=sessionStorage.getItem(FORM_KEY); if(raw) sessionStorage.removeItem(FORM_KEY); }catch(_){ return; }
+  if(!raw) return; let s; try{ s=JSON.parse(raw); }catch(_){ return; }
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el&&v!=null&&v!=="") el.value=v; };
+  set("hospital",s.hospital); set("income",s.income); set("income_freq",s.income_freq);
+  set("household",s.household); set("insurance",s.insurance); set("fullname",s.fullname);
+  set("account",s.account); set("service_date",s.service_date);
+  set("address",s.address); set("phone",s.phone);
+  if(s.collections){ const c=document.getElementById("collections"); if(c) c.checked=true; }
+  if(s.oshpdid) presetOshpdid=s.oshpdid; })();
+// The SEO CTA's exact-campus hint is only valid for the hospital it shipped with -> drop it once the
+// user edits the hospital field themselves (the server then resolves by name).
+document.getElementById("hospital").addEventListener("input", ()=>{ presetOshpdid=""; });
 // Funnel entry: fire once when the user first engages the form (measures SEO/hospital-page -> tool).
 (function(){ let fired=false;
   const mark=()=>{ if(fired) return; fired=true; track('tool_started',{referred: presetOshpdid?"hospital_page":"direct"}); };
@@ -350,6 +391,11 @@ async function runPlan(){
     renderResult(d.result);
     track('plan_generated',{tier:d.result.tier, language:lang, hospital:d.result.hospital.name});
     document.getElementById("letter").textContent=d.letter;
+    { const ref=d.letter_ref, rb=document.getElementById("letterref");   // translated reference (non-EN only)
+      if(ref){ document.getElementById("letterref_h").textContent=ref.heading;
+        document.getElementById("letterref_w").textContent=ref.warning;
+        document.getElementById("letterref_body").textContent=ref.body; rb.hidden=false; }
+      else if(rb){ rb.hidden=true; } }
     { const c=document.getElementById("copied"); if(c) c.textContent=""; }   // clear stale "Copied ✓"
     out.style.display="block";
     out.focus({preventScroll:true});

@@ -107,6 +107,36 @@ MESSAGES = {
         "res_legalaid": "Free legal help with medical bills, in any language",
         "letter_note_english": ("Note: the request letter below is written in English so the "
                                 "hospital's billing office can process it quickly."),
+        # --- bilingual reference letter: a translation shown UNDER the English letter so a non-English
+        # patient can read exactly what they're sending. The English copy above is what actually gets
+        # sent; this is understand-only. Law names stay in English so the reference matches the sent copy.
+        "letter_ask_free": "free (fully charity) care",
+        "letter_ask_discount": "a charity-care discount",
+        "letter_ref_heading": "What this letter says, in your language",
+        "letter_ref_warning": ("Send the English letter above — not this translation. This copy is only "
+                               "so you can understand what you're sending."),
+        "letter_ref_template": (
+            "{name}\n{address}\n{phone}\n\n"
+            "Date: {today}\n\n"
+            "{hospital}\n"
+            "Attn: Financial Assistance / Business Office\n"
+            "Re: Request for Financial Assistance (Charity Care)\n"
+            "Account/Bill #: {account}\n"
+            "Date(s) of service: {service_date}\n\n"
+            "To whom it may concern:\n\n"
+            "I am writing to request financial assistance under your hospital's Financial Assistance "
+            "Policy, as required by California's Hospital Fair Pricing Act and IRS Section 501(r). I am "
+            "requesting {ask}.\n\n"
+            "My household size is {household} and my annual household income is approximately "
+            "${income:,}, which is about {pct:.0f}% of the Federal Poverty Level. Based on your "
+            "published policy, this appears to make me eligible.\n\n"
+            "Please send me your Financial Assistance application and a list of the documents you "
+            "require. I am also requesting that any collection activity on the above account be paused "
+            "while my application is reviewed, and that this request be applied retroactively to the "
+            "balance already billed.\n\n"
+            "Please also provide an itemized copy of my bill so I can review it for accuracy.\n\n"
+            "Thank you for your time. You can reach me at the phone number above.\n\n"
+            "Sincerely,\n{name}\n"),
         # --- result hero headlines (structured web UI) ---
         "result_free": "Good news — you likely qualify for FREE care",
         "result_discount": "You likely qualify for a discount",
@@ -215,6 +245,35 @@ MESSAGES = {
         "letter_note_english": ("Nota: la carta de solicitud a continuación está escrita en inglés "
                                 "para que la oficina de facturación del hospital pueda procesarla "
                                 "rápidamente."),
+        # --- carta de referencia bilingüe (traducción mostrada DEBAJO de la carta en inglés) ---
+        "letter_ask_free": "atención gratuita (totalmente caritativa)",
+        "letter_ask_discount": "un descuento por atención caritativa",
+        "letter_ref_heading": "Lo que dice esta carta, en su idioma",
+        "letter_ref_warning": ("Envíe la carta en inglés de arriba, no esta traducción. Esta copia es "
+                               "solo para que usted entienda lo que está enviando."),
+        "letter_ref_template": (
+            "{name}\n{address}\n{phone}\n\n"
+            "Fecha: {today}\n\n"
+            "{hospital}\n"
+            "Atención: Asistencia Financiera / Oficina Administrativa\n"
+            "Asunto: Solicitud de Asistencia Financiera (Atención Caritativa)\n"
+            "N.º de cuenta/factura: {account}\n"
+            "Fecha(s) de servicio: {service_date}\n\n"
+            "A quien corresponda:\n\n"
+            "Escribo para solicitar asistencia financiera conforme a la Política de Asistencia "
+            "Financiera de su hospital, según lo exige la California's Hospital Fair Pricing Act y la "
+            "Sección 501(r) del IRS. Solicito {ask}.\n\n"
+            "El tamaño de mi hogar es {household} y mi ingreso familiar anual es de aproximadamente "
+            "${income:,}, lo que equivale a cerca del {pct:.0f}% del Nivel Federal de Pobreza. Según "
+            "su política publicada, esto parece hacerme elegible.\n\n"
+            "Por favor, envíeme su solicitud de Asistencia Financiera y una lista de los documentos que "
+            "requiere. También solicito que se suspenda cualquier gestión de cobro sobre la cuenta "
+            "anterior mientras se revisa mi solicitud, y que esta solicitud se aplique retroactivamente "
+            "al saldo ya facturado.\n\n"
+            "Por favor, proporcióneme también una copia detallada de mi factura para poder revisar su "
+            "exactitud.\n\n"
+            "Gracias por su tiempo. Puede comunicarse conmigo al número de teléfono indicado arriba.\n\n"
+            "Atentamente,\n{name}\n"),
         # --- result hero headlines (structured web UI) ---
         "result_free": "Buenas noticias — usted probablemente califica para atención GRATUITA",
         "result_discount": "Usted probablemente califica para un descuento",

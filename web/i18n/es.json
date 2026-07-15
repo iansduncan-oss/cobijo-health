@@ -254,12 +254,17 @@
     "notfound_help": "Todavía no tenemos ese hospital en nuestro directorio.",
     "notfound_generic_btn": "Ver orientación general →",
     "not_in_directory": "Este hospital aún no está en nuestro directorio; aquí tiene ayuda que se aplica a todo hospital de California.",
-    "billdetails_summary": "Agregar detalles de la factura (opcional)",
+    "billdetails_summary": "Agregar sus datos de contacto y de la factura (opcional)",
     "account": "Número de cuenta o de factura",
     "account_ph": "Como aparece impreso en su factura",
     "service_date": "Fecha(s) del servicio",
     "service_date_ph": "ej. 03/15/2026",
-    "checking": "Verificando…"
+    "checking": "Verificando…",
+    "letterfill_note": "Estos completan su carta de solicitud para que no tenga que escribirlos a mano.",
+    "youraddress": "Su dirección",
+    "youraddress_ph": "Calle, Ciudad, Estado, Código postal",
+    "yourphone": "Su teléfono",
+    "yourphone_ph": "(555) 555-5555"
   },
   "hospital": {
     "h_home": "Inicio",

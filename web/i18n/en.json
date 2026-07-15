@@ -254,12 +254,17 @@
     "notfound_help": "We don't have that hospital in our directory yet.",
     "notfound_generic_btn": "Show general guidance instead →",
     "not_in_directory": "This hospital isn't in our directory yet — here's help that applies to every California hospital.",
-    "billdetails_summary": "Add bill details (optional)",
+    "billdetails_summary": "Add your contact & bill details (optional)",
     "account": "Account or bill number",
     "account_ph": "As printed on your bill",
     "service_date": "Date(s) of service",
     "service_date_ph": "e.g. 03/15/2026",
-    "checking": "Checking…"
+    "checking": "Checking…",
+    "letterfill_note": "These fill in your request letter so you don't have to write them by hand.",
+    "youraddress": "Your address",
+    "youraddress_ph": "Street, City, State ZIP",
+    "yourphone": "Your phone",
+    "yourphone_ph": "(555) 555-5555"
   },
   "hospital": {
     "h_home": "Home",

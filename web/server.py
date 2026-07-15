@@ -271,10 +271,16 @@ class Handler(BaseHTTPRequestHandler):
             # completes (generate_letter uses .get(key, "[...]"), so only set the key when non-empty).
             acct = (req.get("account") or "").strip()[:40]
             svc = (req.get("service_date") or "").strip()[:40]
+            addr = (req.get("address") or "").strip()[:120]
+            phone = (req.get("phone") or "").strip()[:40]
             if acct:
                 intake["account"] = acct
             if svc:
                 intake["service_date"] = svc
+            if addr:
+                intake["address"] = addr
+            if phone:
+                intake["phone"] = phone
         except (ValueError, TypeError):
             return self._send(400, json.dumps({"error": "income and household must be numbers"}))
 
@@ -285,15 +291,18 @@ class Handler(BaseHTTPRequestHandler):
             result = navigator.build_generic_plan_struct(intake, lang=lang)
             syn_row = {"hospital": intake["hospital_name"] or "[Hospital name]"}
             letter = navigator.generate_letter(intake, syn_row, result["fpl_pct"], "unknown")
+            # A translated reference copy the patient reads (English letter above is what they send).
+            ref = navigator.letter_reference(intake, syn_row, result["fpl_pct"], "unknown", lang) if lang != "en" else None
             return self._send(200, json.dumps({
-                "tier": "unknown", "plan": None, "result": result, "letter": letter,
+                "tier": "unknown", "plan": None, "result": result, "letter": letter, "letter_ref": ref,
                 "hospital": result["hospital"]["name"] or "",
             }))
         pct, tier, plan = navigator.build_plan(intake, row, lang=lang)
         result = navigator.build_plan_struct(intake, row, lang=lang)   # structured, for the rich UI
         letter = navigator.generate_letter(intake, row, pct, tier)     # always English (for the hospital)
+        ref = navigator.letter_reference(intake, row, pct, tier, lang) if lang != "en" else None
         self._send(200, json.dumps({
-            "tier": tier, "plan": plan, "result": result, "letter": letter,
+            "tier": tier, "plan": plan, "result": result, "letter": letter, "letter_ref": ref,
             "hospital": row["hospital"].title(),
         }))
 

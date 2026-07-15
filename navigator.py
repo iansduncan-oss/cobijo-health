@@ -359,11 +359,13 @@ def generate_letter(intake, row, pct, tier):
     if name is None:                       # CLI intake carries first/last, not full_name
         name = f"{intake.get('first_name', '')} {intake.get('last_name', '')}".strip()
     name = (name or "").strip() or "[Your full name]"
+    _t = datetime.date.today()                      # auto-fill the date so it's one less [bracket] to complete
+    today = f"{_t:%B} {_t.day}, {_t.year}"          # e.g. "July 14, 2026" (English, for the hospital)
     return f"""{name}
 {intake.get('address', '[Your address]')}
 {intake.get('phone', '[Your phone]')}
 
-Date: [today's date]
+Date: {today}
 
 {row['hospital'].title()}
 Attn: Financial Assistance / Business Office
@@ -393,6 +395,35 @@ Thank you for your time. You can reach me at the phone number above.
 Sincerely,
 {name}
 """
+
+
+def letter_reference(intake, row, pct, tier, lang):
+    """A translation of the English request letter, shown UNDER it so a non-English patient can read
+    exactly what they're sending. Returns {heading, warning, body} in `lang`. Mirrors generate_letter's
+    field resolution 1:1 (same brackets when a field is empty) so the reference matches the sent copy.
+    Callers skip this for en (the reference would be identical to the letter already shown)."""
+    name = intake.get("full_name")
+    if name is None:                       # CLI intake carries first/last, not full_name
+        name = f"{intake.get('first_name', '')} {intake.get('last_name', '')}".strip()
+    name = (name or "").strip() or "[Your full name]"
+    _t = datetime.date.today()
+    today = f"{_t:%B} {_t.day}, {_t.year}"
+    ask_key = "letter_ask_free" if tier == "free" else "letter_ask_discount"
+    body = t(lang, "letter_ref_template",
+             name=name,
+             address=intake.get("address", "[Your address]"),
+             phone=intake.get("phone", "[Your phone]"),
+             today=today,
+             hospital=row["hospital"].title(),
+             account=intake.get("account", "[account number if known]"),
+             service_date=intake.get("service_date", "[date of service]"),
+             ask=t(lang, ask_key),
+             household=intake["household_size"],
+             income=intake["annual_income"],
+             pct=pct)
+    return {"heading": t(lang, "letter_ref_heading"),
+            "warning": t(lang, "letter_ref_warning"),
+            "body": body}
 
 
 DEMO_SCENARIOS = [

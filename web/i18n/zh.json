@@ -176,7 +176,12 @@
     "res_medical": "申请 Medi-Cal——它是免费的，还可以涵盖近期的账单",
     "res_coveredca": "获得免费的本地帮助，注册 Covered California",
     "res_clinic": "寻找您附近的免费或低价诊所",
-    "res_legalaid": "关于医疗账单的免费法律帮助，提供任何语言"
+    "res_legalaid": "关于医疗账单的免费法律帮助，提供任何语言",
+    "letter_ask_free": "免费（全额慈善）医疗照护",
+    "letter_ask_discount": "慈善照护折扣",
+    "letter_ref_heading": "这封信的内容，用您的语言说明",
+    "letter_ref_warning": "请寄出上面那封英文信，不要寄这份译文。这份译文只是让您明白自己寄出的是什么内容。",
+    "letter_ref_template": "{name}\n{address}\n{phone}\n\n日期：{today}\n\n{hospital}\n收件人：财务援助部 / 商务办公室\n事由：申请财务援助（慈善照护）\n账户 / 账单编号：{account}\n就诊日期：{service_date}\n\n敬启者：\n\n我写此信是想根据贵院的财务援助政策申请财务援助，这是 California's Hospital Fair Pricing Act 和 IRS Section 501(r) 所要求的。我申请的是 {ask}。\n\n我的家庭人数为 {household}，家庭年收入约为 ${income:,}，大约是联邦贫困线的 {pct:.0f}%。根据贵院公布的政策，我似乎符合申请资格。\n\n请把贵院的财务援助申请表以及所需文件清单寄给我。我还请求在审核我的申请期间，暂停对上述账户的任何催收行动，并请把这项申请追溯适用于已经开出的账单余额。\n\n也请提供一份我账单的逐项明细，以便我核对是否准确。\n\n感谢您抽出时间。您可以拨打上面的电话号码与我联系。\n\n此致\n{name}"
   },
   "landing": {
     "title": "Cobijo Health — 免费帮您处理医疗账单",
@@ -259,12 +264,17 @@
     "notfound_help": "我们的目录中还没有这家医院。",
     "notfound_generic_btn": "改为查看通用指南 →",
     "not_in_directory": "这家医院还不在我们的目录中 — 以下是适用于加利福尼亚州所有医院的帮助。",
-    "billdetails_summary": "添加账单详情（可选）",
+    "billdetails_summary": "添加您的联系方式和账单信息（可选）",
     "account": "账户号或账单号",
     "account_ph": "按账单上印的内容填写",
     "service_date": "就诊日期",
     "service_date_ph": "例如 03/15/2026",
-    "checking": "正在查询…"
+    "checking": "正在查询…",
+    "letterfill_note": "这些信息会填入您的申请信中，这样您就不必手写了。",
+    "youraddress": "您的地址",
+    "youraddress_ph": "街道、城市、州、邮编",
+    "yourphone": "您的电话",
+    "yourphone_ph": "(555) 555-5555"
   },
   "hospital": {
     "h_home": "首页",

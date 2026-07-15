@@ -176,7 +176,12 @@
     "res_medical": "Mag-apply para sa Medi-Cal — libre ito, at maaari nitong masaklaw ang mga kamakailang bill",
     "res_coveredca": "Kumuha ng libreng lokal na tulong sa pag-enroll sa Covered California",
     "res_clinic": "Maghanap ng libre o murang klinika malapit sa iyo",
-    "res_legalaid": "Libreng legal na tulong sa mga medical bill, sa anumang wika"
+    "res_legalaid": "Libreng legal na tulong sa mga medical bill, sa anumang wika",
+    "letter_ask_free": "libreng (ganap na charity) na pangangalaga",
+    "letter_ask_discount": "diskwento sa charity-care",
+    "letter_ref_heading": "Ang sinasabi ng liham na ito, sa iyong wika",
+    "letter_ref_warning": "Ipadala ang liham na nakasulat sa Ingles sa itaas — hindi ang saling ito. Ang kopyang ito ay para lang maintindihan mo kung ano ang iyong ipinapadala.",
+    "letter_ref_template": "{name}\n{address}\n{phone}\n\nPetsa: {today}\n\n{hospital}\nPara kay: Financial Assistance / Business Office\nUkol sa: Kahilingan para sa Tulong Pinansyal (Charity Care)\nAccount/Bill #: {account}\nPetsa ng serbisyo: {service_date}\n\nSa kinauukulan:\n\nSumusulat ako upang humiling ng tulong pinansyal sa ilalim ng Financial Assistance Policy ng inyong ospital, gaya ng iniaatas ng California's Hospital Fair Pricing Act at IRS Section 501(r). Hinihiling ko ang {ask}.\n\nAng bilang ng aming sambahayan ay {household} at ang taunang kita ng aming sambahayan ay humigit-kumulang ${income:,}, na mga {pct:.0f}% ng Federal Poverty Level. Batay sa inyong nailathalang patakaran, mukhang kwalipikado ako.\n\nPakipadala sa akin ang inyong aplikasyon para sa Financial Assistance at listahan ng mga dokumentong kailangan ninyo. Hinihiling ko rin na ipatigil muna ang anumang paniningil sa nasabing account habang sinusuri ang aking aplikasyon, at na ipatupad ang kahilingang ito nang paatras sa balanseng nasingil na.\n\nPakibigay din sa akin ang isang kopya ng aking bill na nakadetalye bawat item upang masuri ko ang katumpakan nito.\n\nSalamat sa inyong oras. Maaari ninyo akong tawagan sa numero ng telepono sa itaas.\n\nTaos-puso,\n{name}"
   },
   "landing": {
     "title": "Cobijo Health — libreng tulong sa iyong medical bills",
@@ -259,12 +264,17 @@
     "notfound_help": "Wala pa sa aming direktoryo ang ospital na iyon.",
     "notfound_generic_btn": "Ipakita ang pangkalahatang gabay →",
     "not_in_directory": "Wala pa sa aming direktoryo ang ospital na ito — narito ang tulong na naaangkop sa bawat ospital sa California.",
-    "billdetails_summary": "Magdagdag ng detalye ng bill (opsyonal)",
+    "billdetails_summary": "Idagdag ang iyong contact at detalye ng bill (opsyonal)",
     "account": "Account o bill number",
     "account_ph": "Gaya ng nakalimbag sa inyong bill",
     "service_date": "Petsa ng serbisyo",
     "service_date_ph": "hal. 03/15/2026",
-    "checking": "Tinitingnan…"
+    "checking": "Tinitingnan…",
+    "letterfill_note": "Ilalagay ang mga ito sa iyong sulat ng kahilingan para hindi mo na kailangang isulat nang kamay.",
+    "youraddress": "Ang iyong address",
+    "youraddress_ph": "Kalye, Lungsod, Estado, ZIP",
+    "yourphone": "Ang iyong telepono",
+    "yourphone_ph": "(555) 555-5555"
   },
   "hospital": {
     "h_home": "Home",
