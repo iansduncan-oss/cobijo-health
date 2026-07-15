@@ -42,6 +42,17 @@ MESSAGES = {
         "cc_no_hospital": ("We don't have this hospital's details in our directory yet — but every "
                            "California hospital is required by law to offer free or discounted care. "
                            "**Apply anyway** — at ~{pct:.0f}% of the Federal Poverty Level you may well qualify."),
+        # --- statute-driven states (T4.1 Phase 2): the plan cites the state LAW, not a per-hospital FAP.
+        # {law} is the statute name (kept in English, like a proper noun, across translations). ---
+        "cc_statutory_free": ("Under {law}, **{name}** must provide FREE care to patients at or below "
+                              "{free_pct}% of the Federal Poverty Level — and at ~{pct:.0f}%, you qualify. "
+                              "Apply below."),
+        "cc_statutory_discount": ("Under {law}, **{name}** must give you a discount: your ~{pct:.0f}% of the "
+                                  "Federal Poverty Level falls in the {free_pct}%–{discount_pct}% range, and "
+                                  "the hospital may collect no more than {cap}% of your yearly income."),
+        "cc_statutory_over": ("Your income (~{pct:.0f}% of the Federal Poverty Level) is above the "
+                              "{discount_pct}% limit {name} must offer under {law} — but apply anyway, request "
+                              "a payment plan, and use the bill-error review and negotiation options below."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("You reported having insurance — we'd still check for cost-sharing help and "
                         "secondary programs."),
@@ -171,6 +182,17 @@ MESSAGES = {
                            "todo hospital de California está obligado por ley a ofrecer atención gratuita o "
                            "con descuento. **Solicítela de todos modos** — con ~{pct:.0f}% del Nivel Federal "
                            "de Pobreza es muy posible que califique."),
+        # --- estados con ley propia (T4.1 Phase 2): {law} = nombre de la ley (se mantiene en inglés) ---
+        "cc_statutory_free": ("Según {law}, **{name}** debe brindar atención GRATUITA a pacientes con ingresos "
+                              "iguales o inferiores al {free_pct}% del Nivel Federal de Pobreza — y con "
+                              "~{pct:.0f}%, usted califica. Solicítela abajo."),
+        "cc_statutory_discount": ("Según {law}, **{name}** debe otorgarle un descuento: su ~{pct:.0f}% del Nivel "
+                                  "Federal de Pobreza está en el rango de {free_pct}%–{discount_pct}%, y el "
+                                  "hospital no puede cobrar más del {cap}% de su ingreso anual."),
+        "cc_statutory_over": ("Sus ingresos (~{pct:.0f}% del Nivel Federal de Pobreza) superan el límite del "
+                              "{discount_pct}% que {name} debe ofrecer según {law} — pero solicítela de todos "
+                              "modos, pida un plan de pago y use las opciones de revisión de errores en la "
+                              "factura y negociación a continuación."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("Usted indicó que tiene seguro — de todos modos revisaríamos ayuda con los "
                         "gastos compartidos y programas secundarios."),

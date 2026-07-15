@@ -386,6 +386,39 @@ def statutory_facts(intake, row):
     }
 
 
+def build_statutory_plan_struct(intake, row, lang="en"):
+    """A statute-driven plan (T4.1 Phase 2) — same struct shape as build_plan_struct so the web/CLI
+    renderers need no changes. Eligibility comes from the state's LAW (statutory_facts), not a per-hospital
+    FAP, so it works for any hospital in a statute-driven state with zero extracted data. Benefit screening
+    is CA-only (PolicyEngine) so it's omitted here; the federal debt-defense guidance + the letter stay."""
+    facts = statutory_facts(intake, row)
+    tier = facts["tier"]
+    msg_key = {"free": "cc_statutory_free", "discount": "cc_statutory_discount",
+               "over": "cc_statutory_over"}[tier]
+    message = t(lang, msg_key, name=facts["hospital"], law=facts["fap_law"], pct=facts["fpl_pct"],
+                free_pct=facts["free_pct"], discount_pct=facts["discount_pct"], cap=facts["income_cap_pct"])
+    debt = debt_defense(intake.get("in_collections"), lang=lang)
+    return {
+        "fpl_pct": facts["fpl_pct"],
+        "tier": tier,
+        "statutory": True,
+        "headline": t(lang, "result_" + tier),
+        "hospital": {"name": facts["hospital"], "phone": row.get("phone"),
+                     "effective_date": None, "needs_review": False,
+                     "policy_url": None, "application_url": None, "discount_policy_url": None},
+        "patient": {"first": intake.get("first_name", "there"), "household": intake["household_size"],
+                    "income": intake["annual_income"]},
+        "charity": {"message": message, "income_ceiling": None,
+                    "apply": [t(lang, "step1_apply_nophone"), t(lang, "step1_retroactive")]},
+        "benefits": [],                                   # CA-only PolicyEngine/Medi-Cal — omitted off-CA
+        "debt": debt,
+        "resources": [],                                  # CA-specific routes — a later per-state increment
+        "res_heading": t(lang, "res_heading"),
+        "closing": t(lang, "step4", n=2 + (1 if debt else 0)),
+        "lang_note": t(lang, "letter_note_english") if lang != "en" else None,
+    }
+
+
 def generate_letter(intake, row, pct, tier):
     ask = "free (fully charity) care" if tier == "free" else "a charity-care discount"
     # Name: prefer an explicit full_name (the web always sets it, possibly ""), else first+last (CLI);
@@ -397,6 +430,9 @@ def generate_letter(intake, row, pct, tier):
     name = (name or "").strip() or "[Your full name]"
     _t = datetime.date.today()                      # auto-fill the date so it's one less [bracket] to complete
     today = f"{_t:%B} {_t.day}, {_t.year}"          # e.g. "July 14, 2026" (English, for the hospital)
+    # Cite the governing law: CA stays byte-identical; a statute-driven state cites its own act.
+    _state = (row.get("state") or "CA").upper()
+    law = "California's Hospital Fair Pricing Act" if _state == "CA" else state_rules.rules_for(_state).fap_law
     return f"""{name}
 {intake.get('address', '[Your address]')}
 {intake.get('phone', '[Your phone]')}
@@ -412,7 +448,7 @@ Date(s) of service: {intake.get('service_date', '[date of service]')}
 To whom it may concern:
 
 I am writing to request financial assistance under your hospital's Financial
-Assistance Policy, as required by California's Hospital Fair Pricing Act and
+Assistance Policy, as required by {law} and
 IRS Section 501(r). I am requesting {ask}.
 
 My household size is {intake['household_size']} and my annual household income is

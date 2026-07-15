@@ -181,7 +181,10 @@
     "letter_ask_discount": "慈善医疗折扣",
     "letter_ref_heading": "这封信的内容，用您的语言说明",
     "letter_ref_warning": "请寄出上面那封英文信，不要寄这份译文。这份译文只是让您明白自己寄出的是什么内容。",
-    "letter_ref_template": "{name}\n{address}\n{phone}\n\n日期：{today}\n\n{hospital}\n收件人：经济援助部 / 业务办公室\n事由：申请经济援助（慈善医疗）\n账户 / 账单编号：{account}\n就诊日期：{service_date}\n\n敬启者：\n\n我写此信是想根据贵院的经济援助政策申请经济援助，这是 California's Hospital Fair Pricing Act 和 IRS Section 501(r) 所要求的。我申请的是 {ask}。\n\n我的家庭人数为 {household}，家庭年收入约为 ${income:,}，大约是联邦贫困线的 {pct:.0f}%。根据贵院公布的政策，我似乎符合申请资格。\n\n请把贵院的经济援助申请表以及所需文件清单寄给我。我还请求在审核我的申请期间，暂停对上述账户的任何催收行动，并请把这项申请追溯适用于已经开出的账单余额。\n\n也请提供一份我账单的逐项明细，以便我核对是否准确。\n\n感谢您抽出时间。您可以拨打上面的电话号码与我联系。\n\n此致\n{name}"
+    "letter_ref_template": "{name}\n{address}\n{phone}\n\n日期：{today}\n\n{hospital}\n收件人：经济援助部 / 业务办公室\n事由：申请经济援助（慈善医疗）\n账户 / 账单编号：{account}\n就诊日期：{service_date}\n\n敬启者：\n\n我写此信是想根据贵院的经济援助政策申请经济援助，这是 California's Hospital Fair Pricing Act 和 IRS Section 501(r) 所要求的。我申请的是 {ask}。\n\n我的家庭人数为 {household}，家庭年收入约为 ${income:,}，大约是联邦贫困线的 {pct:.0f}%。根据贵院公布的政策，我似乎符合申请资格。\n\n请把贵院的经济援助申请表以及所需文件清单寄给我。我还请求在审核我的申请期间，暂停对上述账户的任何催收行动，并请把这项申请追溯适用于已经开出的账单余额。\n\n也请提供一份我账单的逐项明细，以便我核对是否准确。\n\n感谢您抽出时间。您可以拨打上面的电话号码与我联系。\n\n此致\n{name}",
+    "cc_statutory_free": "根据 {law}，**{name}** 必须为收入在联邦贫困线 {free_pct}% 或以下的患者提供免费医疗——您的收入约为 {pct:.0f}%，符合资格。请在下方申请。",
+    "cc_statutory_discount": "根据 {law}，**{name}** 必须给您折扣：您约 {pct:.0f}% 的联邦贫困线收入落在 {free_pct}%–{discount_pct}% 的范围内，医院向您收取的费用不得超过您年收入的 {cap}%。",
+    "cc_statutory_over": "您的收入（约为联邦贫困线的 {pct:.0f}%）高于 {name} 根据 {law} 必须提供帮助的 {discount_pct}% 上限——但仍请提出申请、要求分期付款，并使用下方的账单错误审查和协商选项。"
   },
   "landing": {
     "title": "Cobijo Health — 免费帮您处理医疗账单",

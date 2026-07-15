@@ -201,6 +201,46 @@ class TestStatutoryFacts(unittest.TestCase):
         self.assertLessEqual(rural["free_pct"], metro["free_pct"])
 
 
+class TestStatutoryPlanStruct(unittest.TestCase):
+    """The statute-driven plan renders the same struct shape as build_plan_struct, deriving eligibility
+    from the law (no per-hospital FAP), and the letter cites the state's own act (CA stays byte-identical)."""
+
+    def _intake(self, income, **kw):
+        base = {"first_name": "there", "full_name": "Maria Lopez", "household_size": 2,
+                "annual_income": income, "insurance": "uninsured", "in_collections": True}
+        base.update(kw)
+        return base
+
+    def _il_row(self):
+        return {"hospital": "ADVOCATE CHRIST", "state": "IL", "hospital_type": "Acute Care Hospitals",
+                "phone": "(708) 555-0100"}
+
+    def test_struct_shape_and_law_cited(self):
+        p = navigator.build_statutory_plan_struct(self._intake(45000), self._il_row(), "en")
+        for k in ("fpl_pct", "tier", "headline", "hospital", "charity", "debt", "closing"):
+            self.assertIn(k, p)
+        self.assertTrue(p["statutory"])
+        self.assertEqual(p["tier"], "discount")                 # ~225% FPL, in 200–600 band
+        self.assertIn("210 ILCS 89", p["charity"]["message"])
+        self.assertNotRegex(p["charity"]["message"], r"\{[a-z_]+\}")   # no unfilled tokens
+        self.assertEqual(p["benefits"], [])                     # CA-only screening omitted off-CA
+        self.assertEqual(p["hospital"]["phone"], "(708) 555-0100")
+
+    def test_tiers_pick_the_right_message(self):
+        free = navigator.build_statutory_plan_struct(self._intake(18000), self._il_row(), "en")
+        over = navigator.build_statutory_plan_struct(self._intake(130000), self._il_row(), "en")
+        self.assertEqual(free["tier"], "free")
+        self.assertEqual(over["tier"], "over")
+        self.assertNotEqual(free["charity"]["message"], over["charity"]["message"])
+
+    def test_letter_cites_state_law_ca_byte_identical(self):
+        ca = navigator.generate_letter(self._intake(30000), {"hospital": "ADVENTIST HEALTH"}, 180, "free")
+        self.assertIn("California's Hospital Fair Pricing Act and", ca)   # unchanged
+        il = navigator.generate_letter(self._intake(30000), self._il_row(), 180, "free")
+        self.assertIn("210 ILCS 89", il)
+        self.assertNotIn("California's Hospital Fair Pricing Act", il)
+
+
 class TestCmsNormalize(unittest.TestCase):
     """cms_hospitals normalizes a CMS roster row to the app's statute-driven dataset shape (no network)."""
 
