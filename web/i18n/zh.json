@@ -160,7 +160,7 @@
     "step1_apply_phone": "通过医院业务办公室申请：{phone}。我们会为您生成申请信（见下方）。",
     "step1_apply_nophone": "我们会为您生成申请信（见下方）——请将其发送到医院的经济援助／业务办公室。",
     "step1_retroactive": "即使账单已经寄到或已进入催收，您仍然可以申请（可追溯）。",
-    "step1_interest_free": "如果仍有余额，这家医院提供**免息分期付款计划**——请指名要求。",
+    "step1_interest_free": "如果仍有余额，这家医院提供**免息分期付款计划**——请直接向医院提出这项要求。",
     "step2": "第 {n} 步 — 您今后可能符合条件的保险：",
     "step3": "第 {n} 步 — 保护您免受债务困扰：",
     "step4": "第 {n} 步 — 如果仍有余额：账单错误核查、分期付款计划、特定疾病基金，以及（作为最后手段）一场有专人指导的众筹活动。",
@@ -176,12 +176,12 @@
     "res_medical": "申请 Medi-Cal——它是免费的，还可以涵盖近期的账单",
     "res_coveredca": "获得免费的本地帮助，注册 Covered California",
     "res_clinic": "寻找您附近的免费或低价诊所",
-    "res_legalaid": "关于医疗账单的免费法律帮助，提供任何语言",
-    "letter_ask_free": "免费（全额慈善）医疗照护",
-    "letter_ask_discount": "慈善照护折扣",
+    "res_legalaid": "关于医疗账单的免费法律帮助，任何语言均可",
+    "letter_ask_free": "免费（全额慈善）医疗",
+    "letter_ask_discount": "慈善医疗折扣",
     "letter_ref_heading": "这封信的内容，用您的语言说明",
     "letter_ref_warning": "请寄出上面那封英文信，不要寄这份译文。这份译文只是让您明白自己寄出的是什么内容。",
-    "letter_ref_template": "{name}\n{address}\n{phone}\n\n日期：{today}\n\n{hospital}\n收件人：财务援助部 / 商务办公室\n事由：申请财务援助（慈善照护）\n账户 / 账单编号：{account}\n就诊日期：{service_date}\n\n敬启者：\n\n我写此信是想根据贵院的财务援助政策申请财务援助，这是 California's Hospital Fair Pricing Act 和 IRS Section 501(r) 所要求的。我申请的是 {ask}。\n\n我的家庭人数为 {household}，家庭年收入约为 ${income:,}，大约是联邦贫困线的 {pct:.0f}%。根据贵院公布的政策，我似乎符合申请资格。\n\n请把贵院的财务援助申请表以及所需文件清单寄给我。我还请求在审核我的申请期间，暂停对上述账户的任何催收行动，并请把这项申请追溯适用于已经开出的账单余额。\n\n也请提供一份我账单的逐项明细，以便我核对是否准确。\n\n感谢您抽出时间。您可以拨打上面的电话号码与我联系。\n\n此致\n{name}"
+    "letter_ref_template": "{name}\n{address}\n{phone}\n\n日期：{today}\n\n{hospital}\n收件人：经济援助部 / 业务办公室\n事由：申请经济援助（慈善医疗）\n账户 / 账单编号：{account}\n就诊日期：{service_date}\n\n敬启者：\n\n我写此信是想根据贵院的经济援助政策申请经济援助，这是 California's Hospital Fair Pricing Act 和 IRS Section 501(r) 所要求的。我申请的是 {ask}。\n\n我的家庭人数为 {household}，家庭年收入约为 ${income:,}，大约是联邦贫困线的 {pct:.0f}%。根据贵院公布的政策，我似乎符合申请资格。\n\n请把贵院的经济援助申请表以及所需文件清单寄给我。我还请求在审核我的申请期间，暂停对上述账户的任何催收行动，并请把这项申请追溯适用于已经开出的账单余额。\n\n也请提供一份我账单的逐项明细，以便我核对是否准确。\n\n感谢您抽出时间。您可以拨打上面的电话号码与我联系。\n\n此致\n{name}"
   },
   "landing": {
     "title": "Cobijo Health — 免费帮您处理医疗账单",

@@ -147,20 +147,20 @@ MESSAGES = {
     "es": {
         # --- match_charity_care ---
         "cc_free": ("Usted probablemente califica para **ATENCIÓN GRATUITA**. {name} ofrece "
-                    "atención caritativa gratuita/completa hasta el {free:.0f}% del Nivel Federal "
+                    "atención de caridad gratuita/completa hasta el {free:.0f}% del Nivel Federal "
                     "de Pobreza{upto}, y su hogar está en ~{pct:.0f}%."),
         "cc_free_upto": " (gratis para un hogar de {household} que gane hasta ~${ceil:,}/año)",
         "cc_discount_tier": ("Usted probablemente califica para un **DESCUENTO**. Su ~{pct:.0f}% del "
-                             "NFP cae en el rango de {lo:.0f}–{hi:.0f}% de este hospital: {how}."),
+                             "Nivel Federal de Pobreza cae en el rango de {lo:.0f}–{hi:.0f}% de este hospital: {how}."),
         "cc_how_basis": "con descuento a tarifas de {basis}",
         "cc_how_default": "una tarifa con descuento",
         "cc_discount_ceiling": ("Usted está dentro del rango con derecho a descuento de {name} (hasta "
-                                "{disc_ceiling:.0f}% del NFP) — solicite el descuento en escala móvil."),
-        "cc_high_cost": ("Usted tiene seguro, pero {name} tiene una cláusula de **altos costos "
-                         "médicos**: si sus gastos de bolsillo superan ~{thr:.0f}% de sus ingresos, "
+                                "{disc_ceiling:.0f}% del Nivel Federal de Pobreza) — solicite el descuento en escala móvil."),
+        "cc_high_cost": ("Usted tiene seguro, pero {name} tiene un beneficio para **gastos médicos "
+                         "altos**: si sus gastos de bolsillo superan ~{thr:.0f}% de sus ingresos, "
                          "aún podría calificar para recibir ayuda. Vale la pena solicitarla."),
-        "cc_over": ("Sus ingresos (~{pct:.0f}% del NFP) están por encima del límite de asistencia de "
-                    "{name} (~{ceiling:.0f}% del NFP) — pero solicítela de todos modos (las políticas "
+        "cc_over": ("Sus ingresos (~{pct:.0f}% del Nivel Federal de Pobreza) están por encima del límite de asistencia de "
+                    "{name} (~{ceiling:.0f}% del Nivel Federal de Pobreza) — pero solicítela de todos modos (las políticas "
                     "cambiaron en 2025), y use la revisión de errores en la factura, la negociación y "
                     "las opciones a continuación."),
         "cc_unknown": ("No pudimos leer los límites de ingresos exactos de {name} en su política — pero "
@@ -174,14 +174,14 @@ MESSAGES = {
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("Usted indicó que tiene seguro — de todos modos revisaríamos ayuda con los "
                         "gastos compartidos y programas secundarios."),
-        "ben_medicaid_heuristic": ("**Medi-Cal (Medicaid de California)** — con ~{pct:.0f}% del NFP "
+        "ben_medicaid_heuristic": ("**Medi-Cal (Medicaid de California)** — con ~{pct:.0f}% del Nivel Federal de Pobreza "
                                    "usted probablemente es elegible por ingresos para cobertura "
                                    "gratuita o de bajo costo, que puede aplicarse a facturas "
                                    "recientes. California cubre a muchos adultos sin importar su "
                                    "estatus migratorio, aunque las reglas de inscripción cambiaron "
                                    "en 2026 — verifique su elegibilidad actual. Usar Medi-Cal no "
                                    "cuenta en su contra en la prueba migratoria de carga pública."),
-        "ben_aca_heuristic": ("**Covered California (subsidios de ACA)** — con ~{pct:.0f}% del NFP "
+        "ben_aca_heuristic": ("**Covered California (subsidios de ACA)** — con ~{pct:.0f}% del Nivel Federal de Pobreza "
                               "usted probablemente califica para ayuda con la prima. (Los subsidios "
                               "ampliados iban a expirar después de 2025 — verifique las reglas de "
                               "2026; PolicyEngine refleja la ley vigente.)"),
@@ -206,7 +206,7 @@ MESSAGES = {
         # --- debt_defense ---
         "debt_rights": ("Como una factura está en cobranza: usted tiene derechos bajo la FDCPA y la "
                         "ley de California — puede disputar la deuda y solicitar su validación."),
-        "debt_retroactive": ("La atención caritativa a menudo puede aplicarse de forma "
+        "debt_retroactive": ("La atención de caridad a menudo puede aplicarse de forma "
                              "**retroactiva** para eliminar una factura que ya está en cobranza — "
                              "haga eso primero."),
         "debt_legalaid": ("Ante cualquier demanda o amenaza de embargo de salario, lo conectaremos "
@@ -247,7 +247,7 @@ MESSAGES = {
                                 "rápidamente."),
         # --- carta de referencia bilingüe (traducción mostrada DEBAJO de la carta en inglés) ---
         "letter_ask_free": "atención gratuita (totalmente caritativa)",
-        "letter_ask_discount": "un descuento por atención caritativa",
+        "letter_ask_discount": "un descuento por atención de caridad",
         "letter_ref_heading": "Lo que dice esta carta, en su idioma",
         "letter_ref_warning": ("Envíe la carta en inglés de arriba, no esta traducción. Esta copia es "
                                "solo para que usted entienda lo que está enviando."),
@@ -256,7 +256,7 @@ MESSAGES = {
             "Fecha: {today}\n\n"
             "{hospital}\n"
             "Atención: Asistencia Financiera / Oficina Administrativa\n"
-            "Asunto: Solicitud de Asistencia Financiera (Atención Caritativa)\n"
+            "Asunto: Solicitud de Asistencia Financiera (Atención de Caridad)\n"
             "N.º de cuenta/factura: {account}\n"
             "Fecha(s) de servicio: {service_date}\n\n"
             "A quien corresponda:\n\n"
@@ -279,7 +279,7 @@ MESSAGES = {
         "result_discount": "Usted probablemente califica para un descuento",
         "result_high_cost": "Podría calificar por sus altos costos médicos",
         "result_over": "Es posible que supere el límite de ingresos, pero aún tiene opciones",
-        "result_unknown": "No pudimos confirmar los límites de este hospital — pero aún debería solicitar",
+        "result_unknown": "No pudimos confirmar los límites de este hospital — pero aún así debería solicitarla",
     },
 }
 
