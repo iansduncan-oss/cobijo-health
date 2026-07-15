@@ -92,6 +92,7 @@ MESSAGES = {
                              "under $500."),
         # --- build_plan ---
         "plan_greeting": "Hi {first} — here's your personalized plan for the bill from {name}.",
+        "plan_greeting_anon": "Hi there — here's your personalized plan for the bill from {name}.",
         "plan_household": ("(Household of {household}, income ${income:,}/yr ≈ {pct:.0f}% of the "
                            "Federal Poverty Level.)"),
         "plan_effective": "[Based on {name}'s policy effective {date}.]",
@@ -238,6 +239,7 @@ MESSAGES = {
                              "cobranzas pagadas y las menores de $500."),
         # --- build_plan ---
         "plan_greeting": "Hola {first} — aquí está su plan personalizado para la factura de {name}.",
+        "plan_greeting_anon": "Hola — aquí está su plan personalizado para la factura de {name}.",
         "plan_household": ("(Hogar de {household}, ingreso de ${income:,}/año ≈ {pct:.0f}% del Nivel "
                            "Federal de Pobreza.)"),
         "plan_effective": "[Basado en la política de {name} vigente desde {date}.]",

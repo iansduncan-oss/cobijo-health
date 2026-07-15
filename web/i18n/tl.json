@@ -153,6 +153,7 @@
     "debt_legalaid": "Para sa anumang banta ng demanda o pagkumpiska ng sahod, ikokonekta ka namin sa **libreng legal aid** (hindi kami nagbibigay ng legal na payo).",
     "debt_credit_note": "Tandaan (2026): ang pederal na tuntunin na nag-aalis ng medikal na utang mula sa credit reports ay ibinasura, pero inaalis pa rin ng mga bureau ang mga bayad na collections at ang mga wala pang $500.",
     "plan_greeting": "Kumusta {first} — narito ang iyong personalisadong plano para sa bill mula sa {name}.",
+    "plan_greeting_anon": "Kumusta — narito ang iyong personalisadong plano para sa bill mula sa {name}.",
     "plan_household": "(Sambahayang {household}, kita na ${income:,}/taon ≈ {pct:.0f}% ng Federal Poverty Level.)",
     "plan_effective": "[Batay sa patakaran ng {name} na may bisa {date}.]",
     "plan_needs_review": "[⚠ Ang datos ng ospital na ito ay na-flag para sa beripikasyon ng staff — ituring ang mga numero bilang isang malakas na palatandaan, hindi pinal.]",

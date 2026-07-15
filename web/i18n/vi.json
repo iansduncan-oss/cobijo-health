@@ -153,6 +153,7 @@
     "debt_legalaid": "Đối với bất kỳ lời đe dọa kiện tụng hay tịch thu lương nào, chúng tôi sẽ kết nối bạn với **trợ giúp pháp lý miễn phí** (chúng tôi không đưa ra tư vấn pháp lý).",
     "debt_credit_note": "Lưu ý (2026): quy định liên bang về việc xóa nợ y tế khỏi báo cáo tín dụng đã bị bác bỏ, nhưng các cơ quan tín dụng vẫn loại bỏ các khoản nợ đã thanh toán và những khoản dưới $500.",
     "plan_greeting": "Chào {first} — đây là kế hoạch riêng của bạn cho hóa đơn từ {name}.",
+    "plan_greeting_anon": "Chào bạn — đây là kế hoạch riêng của bạn cho hóa đơn từ {name}.",
     "plan_household": "(Hộ gia đình {household} người, thu nhập ${income:,}/năm ≈ {pct:.0f}% Mức Nghèo Liên bang.)",
     "plan_effective": "[Dựa trên chính sách của {name} có hiệu lực từ {date}.]",
     "plan_needs_review": "[⚠ Dữ liệu của bệnh viện này được đánh dấu cần nhân viên xác minh — hãy coi các con số là một manh mối mạnh, chưa phải là kết luận cuối cùng.]",

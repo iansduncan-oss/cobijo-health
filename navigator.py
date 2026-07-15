@@ -233,7 +233,10 @@ def build_plan(intake, row, lang="en"):
     pol = row["policy"]
     name = row["hospital"].title()
 
-    L = [t(lang, "plan_greeting", first=intake["first_name"], name=name),
+    first = (intake.get("first_name") or "").strip()
+    greeting = (t(lang, "plan_greeting", first=first, name=name) if first and first != "there"
+                else t(lang, "plan_greeting_anon", name=name))   # no name → localized greeting, not the English "there"
+    L = [greeting,
          t(lang, "plan_household", household=intake["household_size"],
            income=intake["annual_income"], pct=pct), ""]
     eff = effective_date_display(row)
