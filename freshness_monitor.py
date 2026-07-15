@@ -17,17 +17,23 @@ each unchanged hospital's policy corpus and hashes it (the exact sha extract_llm
 `source_sha256`), flagging any whose live content no longer matches what we last extracted.
 
 Workflow:
-  1. Refresh the source:   python3 hcai_lookup_scraper.py        (rewrites data/dataset_current.json)
+  1. Refresh the source:   python3 hcai_lookup_scraper.py --out data/dataset_current.json
+                           (the --out is REQUIRED — without it the scraper prints to stdout and
+                            dataset_current.json never updates, so the diff silently sees no change)
   2. See what changed:     python3 freshness_monitor.py           (fast, offline: URL/date diff)
-  3. Deep check (weekly):  python3 freshness_monitor.py --content (re-hash PDFs: catch same-URL edits)
+  3. Deep check (weekly):  python3 freshness_monitor.py --content (re-hash PDFs: catch same-URL edits;
+                            needs pdftotext + a writable data/pdfs/, and download_pdf caches by URL —
+                            clear data/pdfs/ before the run for a truly-live re-fetch)
   4. Re-extract only the CHANGED/NEW hospitals, then:
      python3 freshness_monitor.py --update                       (adopt current as the new baseline)
 
 Read-only unless --update. Exit code 1 if any change is detected (so a cron job can alert). The
 default run is offline (dataset_current.json only); only --content touches the network.
 
-Cron (weekly deep check; alert on exit 1):
-  0 7 * * 1  cd /opt/cobijo && python3 hcai_lookup_scraper.py && python3 freshness_monitor.py --content
+Cron (installed on prod as /etc/cron.d/cobijo-freshness — weekly offline URL/date diff, runs as the
+cobijo user, logs to /var/log/cobijo/freshness.log):
+  0 7 * * 1  cobijo  cd /opt/cobijo/app && python3 hcai_lookup_scraper.py --out data/dataset_current.json \
+                     && python3 freshness_monitor.py
 """
 import argparse
 import hashlib
@@ -79,7 +85,8 @@ def _live_sha(rec):
     """sha256 of a hospital's live policy corpus — the exact digest extract_llm.py stores as
     source_sha256 — so an unchanged URL hiding new content shows up as a content_sha change."""
     import extract_llm
-    corpus, _ = extract_llm.build_corpus(rec)
+    corpus, _ = extract_llm.build_corpus(rec, force=True)   # force a live re-fetch, not the cached PDF —
+    #                                                         else a same-URL silent re-upload is missed
     if len(corpus.strip()) < 500:      # scanned/empty: no reliable text hash (extract flags needs_ocr)
         return None
     return hashlib.sha256(corpus.encode()).hexdigest()
