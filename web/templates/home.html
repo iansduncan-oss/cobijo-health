@@ -192,7 +192,7 @@
 
   <noscript>
     <div class="mtnote" style="border-style:solid">{{noscript}}
-      <a href="/california-hospitals">{{browse}}</a></div>
+      <a href="/find">{{browse_states}}</a></div>
   </noscript>
 
   <main id="main">
@@ -263,7 +263,7 @@
       <div class="recover" id="recover" hidden>
         <p>{{notfound_help}}</p>
         <button type="button" class="recbtn" onclick="runGeneric()">{{notfound_generic_btn}}</button>
-        <a href="/california-hospitals">{{browse}}</a>
+        <a href="/find">{{browse_states}}</a>
       </div>
     </form>
   </div>
@@ -290,7 +290,7 @@
 
   <div class="foot">{{foot}}</div>
   <div class="foot-nav">
-    <div class="foot" style="margin-top:6px"><a href="/california-hospitals">{{browse}}</a></div>
+    <div class="foot" style="margin-top:6px"><a href="/find">{{browse_states}}</a></div>
     <div class="foot" style="margin-top:6px"><a href="about">{{f_about}}</a> · <a href="support">{{f_support}}</a> · <a href="for-partners">{{f_partners}}</a></div>
   </div>
   <div class="attribution"><a href="https://cobijohealth.org/" target="_blank" rel="noopener">{{brand_a}}{{brand_b}} ↗</a></div>
@@ -301,18 +301,18 @@ window.plausible=window.plausible||function(){(window.plausible.q=window.plausib
 function track(n,p){ try{ window.plausible(n, p?{props:p}:undefined); }catch(_){} }
 function okUrl(u){ return typeof u==="string" && /^https?:\/\//i.test(u); }
 const UI = { "{{LANG}}": {{TOOL_STRINGS_JSON}} };
-let lang="{{LANG}}", lastReq=null, lastResult=null, lastLetter="", presetOshpdid="", presetIl="";
+let lang="{{LANG}}", lastReq=null, lastResult=null, lastLetter="", presetOshpdid="", presetSt="", presetSid="";
 fetch("/hospitals").then(r=>r.json()).then(list=>{
   document.getElementById("hospitals").innerHTML=list.map(h=>`<option value="${h.replace(/"/g,'&quot;')}">`).join("");
 });
 (function(){ const q=new URLSearchParams(location.search);
-  const name=q.get("hospital"), oid=q.get("h"), il=q.get("il");
+  const name=q.get("hospital"), oid=q.get("h"), st=q.get("st"), sid=q.get("sid");
   // The SEO hospital-page CTA passes h=<oshpdid> so a shared hospital name resolves to the exact
   // campus. It's cleared the moment the user edits the hospital field (they may pick a different one).
   if(oid) presetOshpdid=oid;
-  // A statute-driven state's page (e.g. Illinois) passes il=<ccn> instead — the server derives the
-  // whole plan from state law for that CCN. Cleared on hospital-field edit, like the oshpdid hint.
-  if(il) presetIl=il;
+  // A statute-driven state's page (Illinois, New York, …) passes st=<state>&sid=<ccn> instead — the
+  // server derives the whole plan from that state's law. Cleared on hospital-field edit, like oshpdid.
+  if(st) presetSt=st; if(sid) presetSid=sid;
   if(name){ const el=document.getElementById("hospital"); if(el){ el.value=name; setTimeout(()=>document.getElementById("income").focus(),150);} } })();
 function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 function render(text){return esc(text).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");}
@@ -323,7 +323,7 @@ function annualIncome(){          // convert monthly -> yearly so hourly/weekly 
 function buildReq(){
   return {hospital:document.getElementById("hospital").value,
     oshpdid:presetOshpdid,          // exact-campus hint from the SEO CTA; server falls back to name
-    il:presetIl,                    // statute-driven-state CCN hint (e.g. Illinois); server derives plan from law
+    st:presetSt, sid:presetSid,     // statute-driven-state hint (state code + CCN); server derives plan from law
     income:annualIncome(),
     household:document.getElementById("household").value,
     insurance:document.getElementById("insurance").value,
@@ -342,7 +342,7 @@ function buildReq(){
 const FORM_KEY="cobijo_form";
 function snapshotForm(){
   try{ sessionStorage.setItem(FORM_KEY, JSON.stringify({
-    hospital:document.getElementById("hospital").value, oshpdid:presetOshpdid, il:presetIl,
+    hospital:document.getElementById("hospital").value, oshpdid:presetOshpdid, st:presetSt, sid:presetSid,
     income:document.getElementById("income").value, income_freq:document.getElementById("income_freq").value,
     household:document.getElementById("household").value, insurance:document.getElementById("insurance").value,
     fullname:document.getElementById("fullname").value, account:document.getElementById("account").value,
@@ -361,10 +361,10 @@ document.querySelectorAll("select.langsel").forEach(s=>s.addEventListener("chang
   set("account",s.account); set("service_date",s.service_date);
   set("address",s.address); set("phone",s.phone);
   if(s.collections){ const c=document.getElementById("collections"); if(c) c.checked=true; }
-  if(s.oshpdid) presetOshpdid=s.oshpdid; if(s.il) presetIl=s.il; })();
+  if(s.oshpdid) presetOshpdid=s.oshpdid; if(s.st) presetSt=s.st; if(s.sid) presetSid=s.sid; })();
 // The SEO CTA's exact-campus hint is only valid for the hospital it shipped with -> drop it once the
 // user edits the hospital field themselves (the server then resolves by name).
-document.getElementById("hospital").addEventListener("input", ()=>{ presetOshpdid=""; presetIl=""; });
+document.getElementById("hospital").addEventListener("input", ()=>{ presetOshpdid=""; presetSt=""; presetSid=""; });
 // Funnel entry: fire once when the user first engages the form (measures SEO/hospital-page -> tool).
 (function(){ let fired=false;
   const mark=()=>{ if(fired) return; fired=true; track('tool_started',{referred: presetOshpdid?"hospital_page":"direct"}); };
@@ -413,7 +413,7 @@ function submitForm(e){
   return false;
 }
 function restart(){
-  document.getElementById("out").style.display="none"; lastReq=null; presetOshpdid=""; presetIl="";
+  document.getElementById("out").style.display="none"; lastReq=null; presetOshpdid=""; presetSt=""; presetSid="";
   document.getElementById("err").textContent=""; showRecover(false);
   document.getElementById("f").reset(); window.scrollTo({top:0,behavior:"smooth"});
 }

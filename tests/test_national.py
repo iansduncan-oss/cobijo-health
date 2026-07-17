@@ -336,7 +336,7 @@ class TestServerILPlan(unittest.TestCase):
         return status, (json.loads(resp) if resp else None)
 
     def test_il_ccn_resolves_to_statutory_plan(self):
-        st, d = self._post({"il": self.ccn, "income": 18000, "household": 4,
+        st, d = self._post({"st": "IL", "sid": self.ccn, "income": 18000, "household": 4,
                             "insurance": "uninsured", "lang": "en", "full_name": "Maria Lopez"})
         self.assertEqual(st, 200)
         self.assertEqual(d["tier"], "free")                        # 18k / 4 is well under 200% FPL
@@ -346,7 +346,7 @@ class TestServerILPlan(unittest.TestCase):
         self.assertIsNone(d["plan"])                               # CLI text unused by the web UI
 
     def test_il_plan_localizes_and_reference_cites_il_law(self):
-        st, d = self._post({"il": self.ccn, "income": 18000, "household": 4,
+        st, d = self._post({"st": "IL", "sid": self.ccn, "income": 18000, "household": 4,
                             "insurance": "uninsured", "lang": "es", "full_name": "Maria Lopez"})
         self.assertEqual(st, 200)
         self.assertIn("210 ILCS 89", d["result"]["charity"]["message"])
@@ -354,7 +354,7 @@ class TestServerILPlan(unittest.TestCase):
         self.assertIn("210 ILCS 89", d["letter_ref"]["body"])
 
     def test_invalid_il_ccn_is_404(self):
-        st, _ = self._post({"il": "000000", "income": 18000, "household": 4})
+        st, _ = self._post({"st": "IL", "sid": "000000", "income": 18000, "household": 4})
         self.assertEqual(st, 404)
 
     def test_il_hospitals_stay_out_of_ca_autocomplete(self):
@@ -407,7 +407,8 @@ class TestILSeoPages(unittest.TestCase):
         for lang in ("en", "es", "zh", "ar"):
             html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
             self.assertIn("210 ILCS 89", html, f"{lang}: IL act not cited")
-            self.assertIn("?il=140208", html, f"{lang}: tool CTA missing the CCN")
+            self.assertIn("?st=IL", html, f"{lang}: tool CTA missing the state code")
+            self.assertIn("sid=140208", html, f"{lang}: tool CTA missing the CCN")
             self.assertIn(self._hp._url(lang, slug, "hospital", "IL"), html, f"{lang}: /il/ canonical missing")
             self.assertIn("200", html, f"{lang}: metro free band (200% FPL) missing")
             self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on the page")
@@ -449,6 +450,32 @@ class TestILSeoPages(unittest.TestCase):
         self.assertTrue(all("/il/hospitals/" in u for u in cp))
 
 
+class TestStatesHub(unittest.TestCase):
+    """The /find multi-state hub ('choose your state, then your hospital'): lists each state linking to
+    its directory, shows live counts, self-canonicalizes at /find, no unfilled tokens in any language."""
+    import hospital_pages as _hp
+
+    def _states(self):
+        return [{"name": "California", "code": "CA", "count": 466},
+                {"name": "Illinois", "code": "IL", "count": 189}]
+
+    def test_hub_lists_states_linking_to_their_directories(self):
+        for lang in ("en", "es", "ar"):
+            html = self._hp.render_states_hub(self._states(), lang)
+            self.assertIn(f'href="{self._hp._path(lang, None, "hospital", "CA")}"', html)   # CA directory
+            self.assertIn(f'href="{self._hp._path(lang, None, "hospital", "IL")}"', html)   # IL directory
+            self.assertIn("466", html)
+            self.assertIn("189", html)
+            self.assertIn(self._hp._find_path(lang), html)                                   # self /find canonical
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on the hub")
+
+    def test_find_paths_cover_all_langs(self):
+        paths = self._hp.find_paths()
+        self.assertEqual(len(paths), len(self._hp.i18n.LANGS))
+        self.assertTrue(any(p.endswith("/find") for p in paths))            # en at /find
+        self.assertTrue(any(p.endswith("/es/find") for p in paths))         # localized
+
+
 class TestSitemapIndex(unittest.TestCase):
     """/sitemap.xml is now a sitemap INDEX pointing at per-state child sitemaps; IL URLs live in
     /sitemap-il.xml, CA in /sitemap-ca.xml. Guards the national-scale structure."""
@@ -488,7 +515,7 @@ class TestSitemapIndex(unittest.TestCase):
         st, body = self._get("/sitemap.xml")
         self.assertEqual(st, 200)
         self.assertIn("<sitemapindex", body)
-        for child in ("sitemap-pages.xml", "sitemap-ca.xml", "sitemap-il.xml"):
+        for child in ("sitemap-pages.xml", "sitemap-ca.xml", "sitemap-il.xml", "sitemap-ny.xml"):
             self.assertIn(child, body)
 
     def test_il_child_has_namespaced_urls(self):
@@ -503,6 +530,82 @@ class TestSitemapIndex(unittest.TestCase):
         self.assertEqual(st, 200)
         self.assertIn("/california-hospitals", body)
         self.assertNotIn("/il/", body)                      # CA sitemap must not carry IL URLs
+
+
+class TestNewYorkStatutory(unittest.TestCase):
+    """New York (3rd state) exercises the generalized statutory model: statewide bands (NO rural
+    distinction) and a charge cap on the Medicare rate (NO % -of-income cap) — so the income-cap clause
+    is omitted from both the page and the plan, and the rural note never shows even for a CAH."""
+    import hospital_pages as _hp
+
+    def _ny(self, rural=False):
+        return {"hospital": "MOUNT SINAI HOSPITAL", "ccn": "330024", "city": "NEW YORK",
+                "county": "New York", "state": "NY", "phone": "(212) 555-0100",
+                "hospital_type": "Critical Access Hospitals" if rural else "Acute Care Hospitals",
+                "status": "statutory", "policy": None}
+
+    def test_state_rules_ny_pinned(self):
+        ny = state_rules.rules_for("NY")
+        self.assertEqual((ny.statutory_free_pct, ny.statutory_discount_pct), (200, 400))
+        self.assertIsNone(ny.income_cap_pct)                 # charge cap is % of Medicare, not income
+        self.assertFalse(ny.has_rural_bands)                 # statewide bands
+        self.assertTrue(state_rules.rules_for("IL").has_rural_bands)   # IL contrast
+
+    def test_ny_page_omits_income_cap_and_rural_note(self):
+        idx = self._hp.build_index([self._ny(), self._ny(rural=True)])[0]
+        for slug, row in idx.items():
+            for lang in ("en", "es", "zh"):
+                html = self._hp.render_statutory_hospital(row, slug, idx, lang)
+                self.assertIn("2807-k", html)                            # NY act cited
+                self.assertIn("200", html)                               # free band
+                self.assertIn("400", html)                               # discount band
+                self.assertIn("?st=NY", html)                            # generic CTA
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token")
+                if lang == "en":
+                    self.assertNotIn("yearly family income", html)       # no income-cap sentence
+                    self.assertNotIn("Critical Access", html)            # no rural-lower-limits note
+
+    def test_ny_page_surfaces_immigration_protection(self):
+        self.assertTrue(state_rules.rules_for("NY").immigration_excluded)
+        self.assertFalse(state_rules.rules_for("IL").immigration_excluded)
+        idx = self._hp.build_index([self._ny()])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "ar"):
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on NY page")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("immigration status", en.lower())          # the reassurance is shown
+        self.assertIn("New York", en)                            # {state} filled
+
+    def test_il_page_has_no_immigration_note(self):
+        # IL law doesn't carry the explicit exclusion, so the note must NOT appear (no false claim).
+        idx = self._hp.build_index([{"hospital": "ADVOCATE CHRIST", "ccn": "140208", "city": "OAK LAWN",
+                                     "county": "Cook", "state": "IL", "phone": "(708) 555-0100",
+                                     "hospital_type": "Acute Care Hospitals", "status": "statutory",
+                                     "policy": None}])[0]
+        slug = next(iter(idx))
+        self.assertNotIn("immigration status", self._hp.render_statutory_hospital(idx[slug], slug, idx, "en").lower())
+
+    def test_ny_discount_plan_drops_cap_clause(self):
+        import navigator
+        intake = {"first_name": "there", "full_name": "A B", "household_size": 2,
+                  "annual_income": 55000, "insurance": "uninsured", "in_collections": False}
+        p = navigator.build_statutory_plan_struct(intake, self._ny(), "en")   # ~340% FPL -> discount
+        self.assertEqual(p["tier"], "discount")
+        msg = p["charity"]["message"]
+        self.assertIn("2807-k", msg)
+        self.assertNotIn("None", msg)                        # no "None%" from a null cap
+        self.assertNotIn("yearly income", msg)               # cap clause dropped
+
+    def test_il_still_cites_income_cap(self):
+        # Regression: IL keeps its % -of-income cap (the cap-bearing path still works).
+        idx = self._hp.build_index([{"hospital": "ADVOCATE CHRIST", "ccn": "140208", "city": "OAK LAWN",
+                                     "county": "Cook", "state": "IL", "phone": "(708) 555-0100",
+                                     "hospital_type": "Acute Care Hospitals", "status": "statutory",
+                                     "policy": None}])[0]
+        slug = next(iter(idx))
+        html = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("yearly family income", html)          # IL income-cap sentence present
 
 
 if __name__ == "__main__":

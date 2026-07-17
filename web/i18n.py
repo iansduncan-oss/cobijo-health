@@ -195,6 +195,11 @@ def statutory_strings(lang):
     return _section(lang, "statutory")
 
 
+def states_strings(lang):
+    """The 'states' section: the /find multi-state hub ('choose your state, then your hospital')."""
+    return _section(lang, "states")
+
+
 # --- Evergreen explainer guides (T3.3): /guides/<slug> + /<lang>/guides/<slug> ------------------- #
 # slug -> i18n section. One shared template (templates/guide.html); each guide's copy is its section.
 GUIDES = {

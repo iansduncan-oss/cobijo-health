@@ -185,7 +185,8 @@
     "letter_ref_template": "{name}\n{address}\n{phone}\n\nPetsa: {today}\n\n{hospital}\nPara kay: Financial Assistance / Business Office\nUkol sa: Kahilingan para sa Tulong Pinansyal (Charity Care)\nAccount/Bill #: {account}\nPetsa(s) ng serbisyo: {service_date}\n\nSa kinauukulan:\n\nSumusulat ako upang humiling ng tulong pinansyal sa ilalim ng Financial Assistance Policy ng inyong ospital, gaya ng iniaatas ng {law} at IRS Section 501(r). Hinihiling ko ang {ask}.\n\nAng bilang ng aming sambahayan ay {household} at ang taunang kita ng aming sambahayan ay humigit-kumulang ${income:,}, na mga {pct:.0f}% ng Federal Poverty Level. Batay sa inyong nailathalang patakaran, mukhang kwalipikado ako.\n\nPakipadala sa akin ang inyong aplikasyon para sa Financial Assistance at listahan ng mga dokumentong kailangan ninyo. Hinihiling ko rin na ipatigil muna ang anumang paniningil sa nasabing account habang sinusuri ang aking aplikasyon, at na ipatupad ang kahilingang ito nang paatras sa balanseng nasingil na.\n\nPakibigay din sa akin ang isang kopya ng aking bill na nakadetalye bawat item upang masuri ko ang katumpakan nito.\n\nSalamat sa inyong oras. Maaari ninyo akong tawagan sa numero ng telepono sa itaas.\n\nTaos-puso,\n{name}",
     "cc_statutory_free": "Sa ilalim ng {law}, ang **{name}** ay dapat magbigay ng LIBRENG pangangalaga sa mga pasyenteng may kita na katumbas o mas mababa sa {free_pct}% ng Federal Poverty Level — at sa mga {pct:.0f}%, kwalipikado ka. Mag-apply sa ibaba.",
     "cc_statutory_discount": "Sa ilalim ng {law}, ang **{name}** ay dapat magbigay sa iyo ng diskwento: ang iyong kita na mga {pct:.0f}% ng Federal Poverty Level ay nasa saklaw na {free_pct}%–{discount_pct}%, at hindi maaaring maningil ang ospital ng higit sa {cap}% ng iyong taunang kita.",
-    "cc_statutory_over": "Ang iyong kita (mga {pct:.0f}% ng Federal Poverty Level) ay mas mataas sa limitasyong {discount_pct}% na dapat ialok ng {name} sa ilalim ng {law} — pero mag-apply pa rin, humingi ng payment plan, at gamitin ang mga opsyon sa pagsusuri ng maling bill at negosasyon sa ibaba."
+    "cc_statutory_over": "Ang iyong kita (mga {pct:.0f}% ng Federal Poverty Level) ay mas mataas sa limitasyong {discount_pct}% na dapat ialok ng {name} sa ilalim ng {law} — pero mag-apply pa rin, humingi ng payment plan, at gamitin ang mga opsyon sa pagsusuri ng maling bill at negosasyon sa ibaba.",
+    "cc_statutory_discount_nocap": "Sa ilalim ng {law}, ang **{name}** ay dapat magbigay sa iyo ng diskwento: ang iyong kita na mga {pct:.0f}% ng Federal Poverty Level ay nasa saklaw na {free_pct}%–{discount_pct}%, kaya kwalipikado ka para sa nabawasang singil. Mag-apply sa ibaba."
   },
   "landing": {
     "title": "Cobijo Health — libreng tulong sa iyong medical bills",
@@ -278,7 +279,8 @@
     "youraddress": "Ang iyong address",
     "youraddress_ph": "Kalye, Lungsod, Estado, ZIP",
     "yourphone": "Ang iyong telepono",
-    "yourphone_ph": "(555) 555-5555"
+    "yourphone_ph": "(555) 555-5555",
+    "browse_states": "Maghanap ng mga ospital ayon sa estado →"
   },
   "hospital": {
     "h_home": "Home",
@@ -640,6 +642,18 @@
     "s_dir_meta": "Tingnan ang tulong pinansyal at charity care para sa bawat ospital sa {state}. Libre, pribado, at maraming-wika — walang account na kailangan.",
     "s_dir_h1": "Direktoryo ng tulong pinansyal ng mga ospital sa {state}",
     "s_dir_lead": "Bawat ospital sa {state} ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga pasyenteng kwalipikado sa ilalim ng {law}. Pumili ng ospital para makita ang mga limitasyon sa kita at kung paano mag-apply.",
-    "s_foot": "Ang Cobijo Health ay isang libreng nonprofit na tool (California 501(c)(3) na ginagawa pa lang). Hindi kami kaakibat ng ospital na ito at ito ay pangkalahatang impormasyon, hindi legal, medikal, o pinansyal na payo. Palaging kumpirmahin ang mga detalye sa ospital at sa opisyal nitong patakaran sa tulong pinansyal."
+    "s_foot": "Ang Cobijo Health ay isang libreng nonprofit na tool (California 501(c)(3) na ginagawa pa lang). Hindi kami kaakibat ng ospital na ito at ito ay pangkalahatang impormasyon, hindi legal, medikal, o pinansyal na payo. Palaging kumpirmahin ang mga detalye sa ospital at sa opisyal nitong patakaran sa tulong pinansyal.",
+    "s_law_p_nocap": "Sa ilalim ng {law}, ang {name} ay kailangang magbigay ng LIBRENG pangangalaga sa mga pasyenteng walang insurance na nasa o mas mababa sa {free_pct}% ng Federal Poverty Level, at may diskwentong pangangalaga para sa mga pasyente hanggang {discount_pct}%.",
+    "s_immigration": "Hindi maaaring gamitin ang iyong immigration status para magpasya kung kwalipikado ka — ipinagbabawal ng batas ng {state} sa mga ospital na isaalang-alang ito. Ang pagiging kwalipikado ay nakadepende lamang sa kita ng iyong pamilya."
+  },
+  "states": {
+    "st_title": "Maghanap ng Tulong Pinansyal para sa Iyong Bill sa Ospital ayon sa Estado | Cobijo Health",
+    "st_meta": "Piliin ang iyong estado para makita ang mga ospital na saklaw ng Cobijo Health at suriin kung kwalipikado ka para sa libre o may diskwentong pangangalaga. Libre, pribado, at maraming wika.",
+    "st_h1": "Maghanap ng tulong pinansyal para sa iyong bill sa ospital",
+    "st_lead": "Ang Cobijo Health ay libre at pribado — walang itinatago sa anumang inilalagay mo. Piliin ang iyong estado para makita ang mga ospital na saklaw namin at suriin kung kwalipikado ka para sa libre o may diskwentong pangangalaga.",
+    "st_choose": "Piliin ang iyong estado",
+    "st_card": "{count} na ospital · libre o may diskwentong pangangalaga sa ilalim ng batas ng estado",
+    "st_more": "Malapit nang magkaroon ng higit pang mga estado. Bawat nonprofit na ospital sa U.S. ay kailangang mag-alok ng tulong pinansyal, kaya kung wala pa sa listahan ang iyong estado, maaari ka pa ring makakuha ng pangkalahatang gabay.",
+    "st_general_btn": "Kumuha ng pangkalahatang gabay"
   }
 }

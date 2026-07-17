@@ -264,7 +264,8 @@
     "youraddress": "Your address",
     "youraddress_ph": "Street, City, State ZIP",
     "yourphone": "Your phone",
-    "yourphone_ph": "(555) 555-5555"
+    "yourphone_ph": "(555) 555-5555",
+    "browse_states": "Browse hospitals by state →"
   },
   "hospital": {
     "h_home": "Home",
@@ -626,6 +627,18 @@
     "s_dir_meta": "Browse financial assistance and charity care for every {state} hospital. Free, private, and multilingual — no account needed.",
     "s_dir_h1": "{state} hospital financial assistance directory",
     "s_dir_lead": "Every {state} hospital must offer free or discounted care to patients who qualify under {law}. Choose a hospital to see the income limits and how to apply.",
-    "s_foot": "Cobijo Health is a free nonprofit tool (a California 501(c)(3) in formation). We are not affiliated with this hospital, and this is general information — not legal, medical, or financial advice. Always confirm the details with the hospital and in its official financial-assistance policy."
+    "s_foot": "Cobijo Health is a free nonprofit tool (a California 501(c)(3) in formation). We are not affiliated with this hospital, and this is general information — not legal, medical, or financial advice. Always confirm the details with the hospital and in its official financial-assistance policy.",
+    "s_law_p_nocap": "Under {law}, {name} must provide FREE care to uninsured patients at or below {free_pct}% of the Federal Poverty Level, and discounted care for patients up to {discount_pct}%.",
+    "s_immigration": "Your immigration status cannot be used to decide if you qualify — {state} law bars hospitals from considering it. Eligibility depends only on your household income."
+  },
+  "states": {
+    "st_title": "Find Financial Help for Your Hospital Bill by State | Cobijo Health",
+    "st_meta": "Choose your state to see the hospitals Cobijo Health covers and check if you qualify for free or discounted care. Free, private, and multilingual.",
+    "st_h1": "Find financial help for your hospital bill",
+    "st_lead": "Cobijo Health is free and private — nothing you enter is saved. Choose your state to see the hospitals we cover and check if you qualify for free or discounted care.",
+    "st_choose": "Choose your state",
+    "st_card": "{count} hospitals · free or discounted care under state law",
+    "st_more": "More states are coming soon. Every U.S. nonprofit hospital must offer financial assistance, so if your state isn't listed yet you can still get general guidance.",
+    "st_general_btn": "Get general guidance"
   }
 }

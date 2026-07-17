@@ -408,6 +408,10 @@ def build_statutory_plan_struct(intake, row, lang="en"):
     tier = facts["tier"]
     msg_key = {"free": "cc_statutory_free", "discount": "cc_statutory_discount",
                "over": "cc_statutory_over"}[tier]
+    # A state that caps charges on the Medicare rate rather than a % of income (NY) has no income-cap
+    # clause to cite, so the discount message drops it (income_cap_pct is None).
+    if tier == "discount" and facts["income_cap_pct"] is None:
+        msg_key = "cc_statutory_discount_nocap"
     message = t(lang, msg_key, name=facts["hospital"], law=facts["fap_law"], pct=facts["fpl_pct"],
                 free_pct=facts["free_pct"], discount_pct=facts["discount_pct"], cap=facts["income_cap_pct"])
     debt = debt_defense(intake.get("in_collections"), lang=lang)

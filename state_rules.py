@@ -31,11 +31,21 @@ class StateRules:
     # Rural / Critical-Access-Hospital tier (lower FPL bands than metro). None -> use the metro bands.
     statutory_free_rural_pct: Optional[int] = None
     statutory_discount_rural_pct: Optional[int] = None
+    # True when the state's statute EXPLICITLY bars using immigration status as an eligibility criterion
+    # (NY §2807-k(9-a)). Surfaced on the page as a reassurance for immigrant patients — set only where the
+    # law says so in terms, not merely where §501(r) is silent on citizenship.
+    immigration_excluded: bool = False
 
     @property
     def is_statutory(self):
         """True when this state's own law sets the eligibility thresholds (statute-driven / no extraction)."""
         return self.statutory_discount_pct is not None
+
+    @property
+    def has_rural_bands(self):
+        """True when the state's law sets LOWER FPL bands for rural/Critical-Access hospitals (IL does;
+        NY doesn't — its 200/400 bands are statewide). Gates the 'rural hospital → lower limits' note."""
+        return self.statutory_free_rural_pct is not None or self.statutory_discount_rural_pct is not None
 
     def free_pct_for(self, rural=False):
         if rural and self.statutory_free_rural_pct is not None:
@@ -90,7 +100,24 @@ IL = StateRules(
     statutory_free_rural_pct=125, statutory_discount_rural_pct=300,   # rural/Critical-Access tier (§10(a))
 )
 
-STATES = {"CA": CA, "IL": IL}
+# New York — Hospital Financial Assistance Law (Public Health Law §2807-k), as amended (eff. 2024–25).
+# STATUTE-DRIVEN and STATEWIDE (no rural/Critical-Access distinction — the bands apply to every DOH-licensed
+# hospital). Source-verified vs NY DOH implementation guidance + HCFANY + NYC Bar (2026-07):
+#   • 100% free care (all charges waived) at/below 200% FPL;
+#   • sliding-scale discount 200%–400% FPL, charges capped at ~20% of the MEDICARE rate (a charge cap, NOT
+#     a % of the patient's income — so income_cap_pct stays None; the plan/page omit the income-cap clause);
+#   • immigration status may NOT be used as an eligibility criterion (§2807-k) — surfaced to Cobijo's audience.
+# No collection lawsuits against patients ≤400% FPL. fpl_floor_pct mirrors the 400% discount ceiling.
+NY = StateRules(
+    code="NY", name="New York",
+    fpl_floor_pct=400, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="New York Hospital Financial Assistance Law (Public Health Law §2807-k)",
+    statutory_free_pct=200, statutory_discount_pct=400, income_cap_pct=None,   # charge cap is % of Medicare, not income
+    immigration_excluded=True,   # §2807-k(9-a): immigration status may NOT be an eligibility criterion (eff. 2024-10-20)
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY}
 
 
 def rules_for(state="CA"):

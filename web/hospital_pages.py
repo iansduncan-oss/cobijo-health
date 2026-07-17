@@ -74,7 +74,7 @@ def _fill(s, **kw):
 # --- localized URL + hreflang + switcher helpers ------------------------------------------------- #
 # A statute-driven state (T4.1 Phase 2) lives under an /<state>/ namespace (e.g. /il/hospital/<slug>),
 # so its pages never collide with California's, which stays at the un-prefixed root (byte-identical).
-_DIR_SLUG = {"CA": "california-hospitals", "IL": "illinois-hospitals"}
+_DIR_SLUG = {"CA": "california-hospitals", "IL": "illinois-hospitals", "NY": "new-york-hospitals"}
 
 
 def _path(lang, slug=None, kind="hospital", state="CA"):
@@ -178,14 +178,15 @@ def _print_qr(kind, slug, caption):
             f'<div><strong>{_e(caption)}</strong><br><span>cobijohealth.org</span></div></div>')
 
 
-def _head(title, desc, canonical, lang, slug=None, jsonld="", kind="hospital", state="CA"):
+def _head(title, desc, canonical, lang, slug=None, jsonld="", kind="hospital", state="CA", head_links=None):
     d = i18n.LANGS.get(lang, ("", "ltr"))[1]
     og = _og_image(kind, slug)
+    links = head_links if head_links is not None else _head_links(lang, slug, kind, state)
     return f"""<!DOCTYPE html><html lang="{lang}" dir="{d}"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{_e(title)}</title>
 <meta name="description" content="{_e(desc)}">
-{_head_links(lang, slug, kind, state)}
+{links}
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#1f6f54">
 <meta property="og:type" content="article"><meta property="og:title" content="{_e(title)}">
@@ -506,7 +507,7 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     """A per-hospital page for a statute-driven state. Same chrome as the CA hospital page, but the body
     cites the state law's guaranteed bands (honest legal floor) rather than an extracted per-hospital policy."""
     S = {**i18n.hospital_strings(lang), **i18n.statutory_strings(lang)}
-    _, state, state_name, rural, free_pct, disc_pct, cap, law = _statutory_bands(row)
+    rules, state, state_name, rural, free_pct, disc_pct, cap, law = _statutory_bands(row)
     name = _title(row["hospital"])
     city = (row.get("city") or "").title()
     county = row.get("county")
@@ -542,11 +543,18 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     out.append(f'<p class="lead">{_e(_fill(S["s_h_lead"], name=name, state=state_name))}</p>')
 
     # What the law guarantees — the statutory bands (rural-adjusted), + an honest "legal minimum" caveat.
+    # States with an income-based collection cap (IL) cite it; states that cap on the Medicare rate
+    # instead (NY) use the cap-less text. The rural note shows only where the law sets distinct rural bands.
+    law_key = "s_law_p" if cap is not None else "s_law_p_nocap"
     out.append(f'<div class="card"><h2>{_e(_fill(S["s_law_h"], state=state_name))}</h2>'
-               f'<p>{_e(_fill(S["s_law_p"], name=name, law=law, free_pct=free_pct, discount_pct=disc_pct, cap=cap))}</p>')
-    if rural:
+               f'<p>{_e(_fill(S[law_key], name=name, law=law, free_pct=free_pct, discount_pct=disc_pct, cap=cap))}</p>')
+    if rural and rules.has_rural_bands:
         out.append(f'<p>{_e(_fill(S["s_rural_note"], name=name, state=state_name, free_pct=free_pct, discount_pct=disc_pct))}</p>')
-    out.append(f'<p class="note">{_e(_fill(S["s_minimum_note"], name=name))}</p></div>')
+    out.append(f'<p class="note">{_e(_fill(S["s_minimum_note"], name=name))}</p>')
+    # Where the statute bars using immigration status (NY §2807-k(9-a)) — a reassurance for the audience.
+    if rules.immigration_excluded:
+        out.append(f'<p class="note"><strong>{_e(_fill(S["s_immigration"], state=state_name))}</strong></p>')
+    out.append('</div>')
 
     # How to apply — reuse the CA chrome (phone + call script).
     out.append(f'<div class="card"><h2>{_e(S["h_apply_h"])}</h2>')
@@ -556,9 +564,10 @@ def render_statutory_hospital(row, slug, index, lang="en"):
                    f'<p class="script">{_e(S["h_call_script"])}</p>')
     out.append('</div>')
 
-    # CTA into the tool — carry the CCN via ?il= so the plan is derived from state law for THIS hospital.
+    # CTA into the tool — carry state + CCN via ?st=&sid= so the plan is derived from state law for THIS
+    # hospital (one generic param that scales to every statute-driven state, not a per-state key).
     tool_home = "/" if lang == "en" else f"/{lang}/"
-    cta_q = f'{tool_home}?il={_urlq(str(row.get("ccn") or ""))}&hospital={_urlq(name)}'
+    cta_q = f'{tool_home}?st={state}&sid={_urlq(str(row.get("ccn") or ""))}&hospital={_urlq(name)}'
     out.append(f'<div class="card cta"><h2>{_e(S["h_cta_h"])}</h2><p>{_e(S["h_cta_p"])}</p>'
                f'<a href="{_e(cta_q)}" onclick="plausible(\'hospital_cta_clicked\')">{_e(_fill(S["h_cta_btn"], name=name))}</a></div>')
 
@@ -672,6 +681,48 @@ def statutory_hospital_paths(index, state="IL"):
 
 def statutory_county_paths(index, state="IL"):
     return [_url(lang, cslug, "county", state) for cslug in county_index(index) for lang in i18n.LANGS]
+
+
+# --- Multi-state entry point (/find): choose your state -> that state's directory -> hospital -> tool -- #
+def _find_path(lang):
+    return "/find" if lang == "en" else f"/{lang}/find"
+
+
+def render_states_hub(states, lang="en"):
+    """The 'pick your state, then your hospital' hub at /find. `states` = [{"name","code","count"}, …];
+    each card links to that state's directory. Reuses the shared chrome + the state-generic s_foot."""
+    S = {**i18n.hospital_strings(lang), **i18n.statutory_strings(lang), **i18n.states_strings(lang)}
+    canonical = BASE + _find_path(lang)
+    head_links = "\n".join(
+        [f'<link rel="alternate" hreflang="{c}" href="{BASE + _find_path(c)}">' for c in i18n.LANGS]
+        + [f'<link rel="alternate" hreflang="x-default" href="{BASE + _find_path("en")}">',
+           f'<link rel="canonical" href="{canonical}">'])
+    home = "/" if lang == "en" else f"/{lang}/"
+    langsel = ('<select class="langsel" aria-label="Language" onchange="location.href=this.value">'
+               + "".join(f'<option value="{_find_path(c)}"{" selected" if c == lang else ""}>{n}</option>'
+                         for c, (n, _) in i18n.LANGS.items()) + "</select>")
+    out = [_head(S["st_title"], S["st_meta"], canonical, lang, None, "", "hospital", "CA", head_links=head_links)]
+    out.append(f'<header><a class="brand" href="{home}">Cobijo<span>Health</span></a>'
+               f'<div class="hnav"><a href="{home}" style="font-weight:700;text-decoration:none">{_e(S["h_nav_cta"])}</a>'
+               f'{langsel}</div></header>')
+    out.append(f'<p class="crumb"><a href="{home}">{_e(S["h_home"])}</a> › {_e(S["st_choose"])}</p>')
+    out.append(f'<h1>{_e(S["st_h1"])}</h1>')
+    out.append(f'<p class="lead">{_e(S["st_lead"])}</p>')
+    out.append(f'<h2 style="margin:20px 0 2px">{_e(S["st_choose"])}</h2>')
+    for st in states:
+        dir_path = _path(lang, None, "hospital", st["code"])
+        out.append(f'<a class="card" href="{dir_path}" style="display:block;text-decoration:none">'
+                   f'<h2>{_e(st["name"])} →</h2>'
+                   f'<p class="note">{_e(_fill(S["st_card"], count=st["count"]))}</p></a>')
+    out.append(f'<div class="card"><p>{_e(S["st_more"])}</p>'
+               f'<a class="linkbtn alt" href="{home}">{_e(S["st_general_btn"])}</a></div>')
+    out.append(_foot(S, lang))
+    return "".join(out)
+
+
+def find_paths():
+    """Absolute URLs for the /find hub, every language (sitemap)."""
+    return [BASE + _find_path(lang) for lang in i18n.LANGS]
 
 
 # --- tiny helpers (stdlib only) ---

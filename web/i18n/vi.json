@@ -185,7 +185,8 @@
     "letter_ref_template": "{name}\n{address}\n{phone}\n\nNgày: {today}\n\n{hospital}\nKính gửi: Bộ phận Hỗ trợ Tài chính / Văn phòng Kinh doanh\nV/v: Yêu cầu Hỗ trợ Tài chính (Chăm sóc Từ thiện)\nSố tài khoản / hóa đơn: {account}\nNgày khám chữa bệnh: {service_date}\n\nKính gửi quý vị có liên quan:\n\nTôi viết thư này để xin hỗ trợ tài chính theo Chính sách Hỗ trợ Tài chính của bệnh viện, như luật {law} và IRS Section 501(r) yêu cầu. Tôi xin {ask}.\n\nSố người trong gia đình tôi là {household} và thu nhập hằng năm của gia đình khoảng ${income:,}, tức khoảng {pct:.0f}% Mức Nghèo Liên bang. Dựa trên chính sách quý vị đã công bố, tôi có vẻ đủ điều kiện.\n\nXin gửi cho tôi đơn xin Hỗ trợ Tài chính và danh sách các giấy tờ quý vị yêu cầu. Tôi cũng xin quý vị tạm ngưng mọi hoạt động thu nợ trên tài khoản nói trên trong khi đơn của tôi đang được xem xét, và áp dụng yêu cầu này cho cả số dư đã lập hóa đơn trước đó.\n\nXin quý vị cũng cung cấp một bản sao hóa đơn có ghi chi tiết từng khoản để tôi kiểm tra tính chính xác.\n\nCảm ơn quý vị đã dành thời gian. Quý vị có thể liên hệ với tôi qua số điện thoại ghi ở trên.\n\nTrân trọng,\n{name}",
     "cc_statutory_free": "Theo {law}, **{name}** phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên Bang — và ở khoảng {pct:.0f}%, bạn đủ điều kiện. Hãy nộp đơn bên dưới.",
     "cc_statutory_discount": "Theo {law}, **{name}** phải giảm giá cho bạn: mức thu nhập khoảng {pct:.0f}% Mức Nghèo Liên Bang của bạn nằm trong khoảng {free_pct}%–{discount_pct}%, và bệnh viện không được thu quá {cap}% thu nhập hằng năm của bạn.",
-    "cc_statutory_over": "Thu nhập của bạn (khoảng {pct:.0f}% Mức Nghèo Liên Bang) cao hơn giới hạn {discount_pct}% mà {name} phải cung cấp theo {law} — nhưng bạn vẫn cứ nộp đơn, xin trả góp, và dùng các lựa chọn xem xét lỗi hóa đơn và thương lượng bên dưới."
+    "cc_statutory_over": "Thu nhập của bạn (khoảng {pct:.0f}% Mức Nghèo Liên Bang) cao hơn giới hạn {discount_pct}% mà {name} phải cung cấp theo {law} — nhưng bạn vẫn cứ nộp đơn, xin trả góp, và dùng các lựa chọn xem xét lỗi hóa đơn và thương lượng bên dưới.",
+    "cc_statutory_discount_nocap": "Theo {law}, **{name}** phải giảm giá cho bạn: mức thu nhập khoảng {pct:.0f}% Mức Nghèo Liên Bang của bạn nằm trong khoảng {free_pct}%–{discount_pct}%, vì vậy bạn đủ điều kiện được giảm chi phí. Hãy nộp đơn bên dưới."
   },
   "landing": {
     "title": "Cobijo Health — hỗ trợ miễn phí cho hóa đơn y tế của bạn",
@@ -278,7 +279,8 @@
     "youraddress": "Địa chỉ của bạn",
     "youraddress_ph": "Đường, Thành phố, Tiểu bang, Mã ZIP",
     "yourphone": "Số điện thoại của bạn",
-    "yourphone_ph": "(555) 555-5555"
+    "yourphone_ph": "(555) 555-5555",
+    "browse_states": "Xem bệnh viện theo tiểu bang →"
   },
   "hospital": {
     "h_home": "Trang chủ",
@@ -640,6 +642,18 @@
     "s_dir_meta": "Xem thông tin hỗ trợ tài chính và chăm sóc từ thiện của mọi bệnh viện ở {state}. Miễn phí, riêng tư, và đa ngôn ngữ — không cần tạo tài khoản.",
     "s_dir_h1": "Danh bạ hỗ trợ tài chính của bệnh viện ở {state}",
     "s_dir_lead": "Mọi bệnh viện ở {state} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo {law}. Hãy chọn một bệnh viện để xem giới hạn thu nhập và cách nộp đơn.",
-    "s_foot": "Cobijo Health là một công cụ phi lợi nhuận miễn phí (California 501(c)(3) đang trong quá trình thành lập). Chúng tôi không liên kết với bệnh viện này và đây là thông tin chung, không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận các chi tiết với bệnh viện và trong chính sách hỗ trợ tài chính chính thức của bệnh viện."
+    "s_foot": "Cobijo Health là một công cụ phi lợi nhuận miễn phí (California 501(c)(3) đang trong quá trình thành lập). Chúng tôi không liên kết với bệnh viện này và đây là thông tin chung, không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận các chi tiết với bệnh viện và trong chính sách hỗ trợ tài chính chính thức của bệnh viện.",
+    "s_law_p_nocap": "Theo {law}, {name} phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang, và chăm sóc giảm giá cho bệnh nhân có thu nhập lên đến {discount_pct}%.",
+    "s_immigration": "Tình trạng nhập cư của bạn không thể được dùng để quyết định bạn có đủ điều kiện hay không — luật {state} cấm bệnh viện xem xét điều đó. Việc đủ điều kiện chỉ phụ thuộc vào thu nhập của gia đình bạn."
+  },
+  "states": {
+    "st_title": "Tìm hỗ trợ tài chính cho hóa đơn bệnh viện của bạn theo tiểu bang | Cobijo Health",
+    "st_meta": "Chọn tiểu bang của bạn để xem các bệnh viện mà Cobijo Health hỗ trợ và kiểm tra xem bạn có đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá không. Miễn phí, riêng tư và đa ngôn ngữ.",
+    "st_h1": "Tìm hỗ trợ tài chính cho hóa đơn bệnh viện của bạn",
+    "st_lead": "Cobijo Health miễn phí và riêng tư — không có gì bạn nhập được lưu lại. Chọn tiểu bang của bạn để xem các bệnh viện chúng tôi hỗ trợ và kiểm tra xem bạn có đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá không.",
+    "st_choose": "Chọn tiểu bang của bạn",
+    "st_card": "{count} bệnh viện · chăm sóc miễn phí hoặc giảm giá theo luật tiểu bang",
+    "st_more": "Sắp có thêm nhiều tiểu bang. Mọi bệnh viện phi lợi nhuận ở Hoa Kỳ đều phải cung cấp hỗ trợ tài chính, vì vậy nếu tiểu bang của bạn chưa được liệt kê, bạn vẫn có thể nhận hướng dẫn chung.",
+    "st_general_btn": "Nhận hướng dẫn chung"
   }
 }

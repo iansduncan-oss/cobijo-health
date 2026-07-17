@@ -50,6 +50,10 @@ MESSAGES = {
         "cc_statutory_discount": ("Under {law}, **{name}** must give you a discount: your ~{pct:.0f}% of the "
                                   "Federal Poverty Level falls in the {free_pct}%–{discount_pct}% range, and "
                                   "the hospital may collect no more than {cap}% of your yearly income."),
+        # Cap-less variant (states that cap charges on the Medicare rate, not a % of income — e.g. NY).
+        "cc_statutory_discount_nocap": ("Under {law}, **{name}** must give you a discount: your ~{pct:.0f}% of the "
+                                        "Federal Poverty Level falls in the {free_pct}%–{discount_pct}% range, so "
+                                        "you qualify for reduced charges. Apply below."),
         "cc_statutory_over": ("Your income (~{pct:.0f}% of the Federal Poverty Level) is above the "
                               "{discount_pct}% limit {name} must offer under {law} — but apply anyway, request "
                               "a payment plan, and use the bill-error review and negotiation options below."),
@@ -190,6 +194,9 @@ MESSAGES = {
         "cc_statutory_discount": ("Según {law}, **{name}** debe otorgarle un descuento: su ~{pct:.0f}% del Nivel "
                                   "Federal de Pobreza está en el rango de {free_pct}%–{discount_pct}%, y el "
                                   "hospital no puede cobrar más del {cap}% de su ingreso anual."),
+        "cc_statutory_discount_nocap": ("Según {law}, **{name}** debe otorgarle un descuento: su ~{pct:.0f}% del "
+                                        "Nivel Federal de Pobreza está en el rango de {free_pct}%–{discount_pct}%, "
+                                        "por lo que usted califica para cargos reducidos. Solicítela abajo."),
         "cc_statutory_over": ("Sus ingresos (~{pct:.0f}% del Nivel Federal de Pobreza) superan el límite del "
                               "{discount_pct}% que {name} debe ofrecer según {law} — pero solicítela de todos "
                               "modos, pida un plan de pago y use las opciones de revisión de errores en la "

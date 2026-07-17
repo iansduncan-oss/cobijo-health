@@ -27,6 +27,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 import navigator
 import hospital_pages
 import i18n
+import state_rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DS, SRC = navigator.load_dataset()
@@ -39,6 +40,19 @@ IL_BY_CCN = {str(r["ccn"]): r for r in IL_ROWS if r.get("ccn")}
 # Per-hospital SEO pages for the statute-driven IL roster (slug->row) + its per-county hubs.
 IL_HOSPITAL_INDEX, _ = hospital_pages.build_index(IL_ROWS)
 IL_COUNTY_INDEX = hospital_pages.county_index(IL_HOSPITAL_INDEX)
+NY_ROWS = navigator.load_statutory_dataset("dataset_ny.json")
+NY_BY_CCN = {str(r["ccn"]): r for r in NY_ROWS if r.get("ccn")}
+NY_HOSPITAL_INDEX, _ = hospital_pages.build_index(NY_ROWS)
+NY_COUNTY_INDEX = hospital_pages.county_index(NY_HOSPITAL_INDEX)
+# Registry of statute-driven states, keyed by USPS code. ONE place that drives the /<state>/ page
+# routing, the /plan resolution (?st=&sid=), the per-state sitemap children, and the /find hub — so
+# adding the next state is one state_rules row + a CMS roster + (nothing here; it's discovered below).
+STATUTORY_STATES = {}
+for _code, _by_ccn, _hidx, _cidx in (("IL", IL_BY_CCN, IL_HOSPITAL_INDEX, IL_COUNTY_INDEX),
+                                     ("NY", NY_BY_CCN, NY_HOSPITAL_INDEX, NY_COUNTY_INDEX)):
+    if _hidx:                                          # only expose a state whose roster actually loaded
+        STATUTORY_STATES[_code] = {"by_ccn": _by_ccn, "hospitals": _hidx, "counties": _cidx,
+                                   "dir": hospital_pages._DIR_SLUG[_code], "ns": _code.lower()}
 # Disambiguated, de-duplicated labels for the autocomplete: a name shared by two campuses shows as
 # "Name (City)" (or collapses to one entry when it's the same hospital double-listed). find_hospital
 # resolves these labels back to the row. See navigator._build_name_index.
@@ -47,6 +61,11 @@ HOSPITALS = sorted({r.get("_display") or r["hospital"].title() for r in DS["rows
 HOSPITAL_INDEX, OSHPDID_TO_SLUG = hospital_pages.build_index(DS["rows"])
 # Per-county hub pages: county-slug -> canonical county name (built once at startup)
 COUNTY_INDEX = hospital_pages.county_index(HOSPITAL_INDEX)
+# The /find multi-state hub ("choose your state, then your hospital"). Each entry links to that state's
+# directory. Counts come from the live indexes so they can't drift from the actual page set.
+STATES_HUB = [{"name": "California", "code": "CA", "count": len(HOSPITAL_INDEX)}]
+STATES_HUB += [{"name": state_rules.rules_for(c).name, "code": c, "count": len(v["hospitals"])}
+               for c, v in STATUTORY_STATES.items()]
 
 # --- Security headers applied to every response (defense-in-depth; also set at the CF edge) ---
 SECURITY_HEADERS = {
@@ -96,20 +115,22 @@ def _urlset(urls):
 # Split into per-state child sitemaps behind a sitemap INDEX at /sitemap.xml. National scale (6k hospitals
 # × 10 langs) will exceed Google's 50k-URL/file limit, so the index is the forward-compatible structure;
 # GSC's already-submitted /sitemap.xml transparently becomes the index (Google follows it to the children).
-SITEMAP_PAGES = _urlset(i18n.sitemap_paths())                 # home/landing/about/privacy/faq/guides × 10 langs
+SITEMAP_PAGES = _urlset(i18n.sitemap_paths()                  # home/landing/about/privacy/faq/guides × 10 langs
+                        + hospital_pages.find_paths())        # the /find states hub × 10 langs
 SITEMAP_CA = _urlset(hospital_pages.hospital_paths(HOSPITAL_INDEX)
                      + hospital_pages.county_paths(HOSPITAL_INDEX))
-SITEMAP_IL = _urlset(hospital_pages.statutory_hospital_paths(IL_HOSPITAL_INDEX, "IL")
-                     + hospital_pages.statutory_county_paths(IL_HOSPITAL_INDEX, "IL"))
-_CHILD_SITEMAPS = ["/sitemap-pages.xml", "/sitemap-ca.xml"] + (["/sitemap-il.xml"] if IL_HOSPITAL_INDEX else [])
+# One child sitemap per statute-driven state (/sitemap-il.xml, /sitemap-ny.xml, …).
+_STATE_SITEMAPS = {f"/sitemap-{v['ns']}.xml": _urlset(
+    hospital_pages.statutory_hospital_paths(v["hospitals"], c)
+    + hospital_pages.statutory_county_paths(v["hospitals"], c)) for c, v in STATUTORY_STATES.items()}
+_CHILD_SITEMAPS = ["/sitemap-pages.xml", "/sitemap-ca.xml"] + sorted(_STATE_SITEMAPS)
 SITEMAP_INDEX = (
     '<?xml version="1.0" encoding="UTF-8"?>\n'
     '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     + "".join("  <sitemap><loc>%s%s</loc></sitemap>\n" % (BASE_URL, s) for s in _CHILD_SITEMAPS)
     + "</sitemapindex>\n"
 )
-_SITEMAP_FILES = {"/sitemap-pages.xml": SITEMAP_PAGES, "/sitemap-ca.xml": SITEMAP_CA,
-                  "/sitemap-il.xml": SITEMAP_IL}
+_SITEMAP_FILES = {"/sitemap-pages.xml": SITEMAP_PAGES, "/sitemap-ca.xml": SITEMAP_CA, **_STATE_SITEMAPS}
 
 # --- Simple in-memory per-IP rate limit for POST /plan (abuse guard; CF rate-limiting is the outer layer) ---
 RATE_LIMIT = 30          # max requests
@@ -234,23 +255,25 @@ class Handler(BaseHTTPRequestHandler):
         lang, rest = "en", parts
         if parts and parts[0] in i18n.LANGS and parts[0] != "en":
             lang, rest = parts[0], parts[1:]
-        # Statute-driven state namespace: /il/... (and /<lang>/il/...). IL hospital + county hubs +
-        # directory are derived from state law, so they render via the statutory renderers.
-        if rest and rest[0] == "il":
-            ilr = rest[1:]
-            if ilr == ["illinois-hospitals"]:
-                return self._send(200, hospital_pages.render_statutory_directory(IL_HOSPITAL_INDEX, lang, "IL"),
+        # Statute-driven state namespace: /<state>/... (and /<lang>/<state>/...), e.g. /il/…, /ny/….
+        # Hospital + county hubs + directory are derived from state law via the statutory renderers.
+        if rest and rest[0].upper() in STATUTORY_STATES:
+            sc = rest[0].upper()
+            st = STATUTORY_STATES[sc]
+            sr = rest[1:]
+            if sr == [st["dir"]]:
+                return self._send(200, hospital_pages.render_statutory_directory(st["hospitals"], lang, sc),
                                   "text/html; charset=utf-8")
-            if len(ilr) == 2 and ilr[0] == "hospital":
-                row = IL_HOSPITAL_INDEX.get(ilr[1])
+            if len(sr) == 2 and sr[0] == "hospital":
+                row = st["hospitals"].get(sr[1])
                 if row:
-                    return self._send(200, hospital_pages.render_statutory_hospital(row, ilr[1], IL_HOSPITAL_INDEX, lang),
+                    return self._send(200, hospital_pages.render_statutory_hospital(row, sr[1], st["hospitals"], lang),
                                       "text/html; charset=utf-8")
                 return self._send(404, json.dumps({"error": "hospital not found"}))
-            if len(ilr) == 2 and ilr[0] == "hospitals":
-                county = IL_COUNTY_INDEX.get(ilr[1])
+            if len(sr) == 2 and sr[0] == "hospitals":
+                county = st["counties"].get(sr[1])
                 if county:
-                    return self._send(200, hospital_pages.render_statutory_county(county, IL_HOSPITAL_INDEX, lang, "IL"),
+                    return self._send(200, hospital_pages.render_statutory_county(county, st["hospitals"], lang, sc),
                                       "text/html; charset=utf-8")
                 return self._send(404, json.dumps({"error": "county not found"}))
             return self._send(404, json.dumps({"error": "not found"}))
@@ -263,6 +286,8 @@ class Handler(BaseHTTPRequestHandler):
                               extra_headers=EMBED_HEADERS)
         # Localized SEO pages (this block also serves English, since /guides/… and /hospitals/… fall
         # through to here with lang="en"): the directory, per-hospital, per-county hubs, and guides.
+        if rest == ["find"]:                              # the multi-state hub: choose your state first
+            return self._send(200, hospital_pages.render_states_hub(STATES_HUB, lang), "text/html; charset=utf-8")
         if rest == ["california-hospitals"]:
             return self._send(200, hospital_pages.render_directory(HOSPITAL_INDEX, lang), "text/html; charset=utf-8")
         if len(rest) == 2 and rest[0] == "hospital":
@@ -297,13 +322,14 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, TypeError):
             return self._send(400, json.dumps({"error": "invalid JSON"}))
 
-        # A statute-driven state (IL) is looked up ONLY by the `il=<ccn>` hint its SEO pages send — never
-        # by name, so it can't shadow a same-named CA hospital. Otherwise resolve from the CA dataset:
-        # prefer an explicit oshpdid (the SEO hospital-page CTA sends it) so a shared hospital name
+        # A statute-driven state (IL, NY, …) is looked up ONLY by the `st=<code>&sid=<ccn>` hint its SEO
+        # pages send — never by name, so it can't shadow a same-named CA hospital. Otherwise resolve from
+        # the CA dataset: prefer an explicit oshpdid (the SEO hospital-page CTA sends it) so a shared name
         # resolves to the exact campus the patient was reading about; fall back to the typed name.
-        il_id = (req.get("il") or "").strip()
-        if il_id:
-            row, statutory = IL_BY_CCN.get(il_id), True
+        st_code = (req.get("st") or "").strip().upper()
+        sid = (req.get("sid") or "").strip()
+        if st_code in STATUTORY_STATES and sid:
+            row, statutory = STATUTORY_STATES[st_code]["by_ccn"].get(sid), True
         else:
             row = navigator.find_hospital(DS, oshpdid=(req.get("oshpdid") or "").strip() or None,
                                           name=(req.get("hospital") or "").strip())

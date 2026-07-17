@@ -264,7 +264,8 @@
     "youraddress": "Su dirección",
     "youraddress_ph": "Calle, Ciudad, Estado, Código postal",
     "yourphone": "Su teléfono",
-    "yourphone_ph": "(555) 555-5555"
+    "yourphone_ph": "(555) 555-5555",
+    "browse_states": "Buscar hospitales por estado →"
   },
   "hospital": {
     "h_home": "Inicio",
@@ -626,6 +627,18 @@
     "s_dir_meta": "Explore la ayuda económica y la atención caritativa de cada hospital de {state}. Gratis, privado y en varios idiomas — no necesita crear una cuenta.",
     "s_dir_h1": "Directorio de ayuda económica de hospitales de {state}",
     "s_dir_lead": "Todo hospital de {state} debe ofrecer atención gratuita o con descuento a los pacientes que califican según {law}. Elija un hospital para ver los límites de ingresos y cómo solicitarla.",
-    "s_foot": "Cobijo Health es una herramienta gratuita sin fines de lucro (California 501(c)(3) en formación). No estamos afiliados a este hospital y esto es información general, no asesoría legal, médica ni financiera. Confirme siempre los detalles con el hospital y en su política oficial de asistencia financiera."
+    "s_foot": "Cobijo Health es una herramienta gratuita sin fines de lucro (California 501(c)(3) en formación). No estamos afiliados a este hospital y esto es información general, no asesoría legal, médica ni financiera. Confirme siempre los detalles con el hospital y en su política oficial de asistencia financiera.",
+    "s_law_p_nocap": "Según {law}, {name} debe ofrecer atención GRATUITA a los pacientes sin seguro que estén en o por debajo del {free_pct}% del Nivel Federal de Pobreza, y atención con descuento a los pacientes de hasta el {discount_pct}%.",
+    "s_immigration": "Su estatus migratorio no puede usarse para decidir si usted califica: la ley de {state} prohíbe a los hospitales tomarlo en cuenta. La elegibilidad depende únicamente del ingreso de su familia."
+  },
+  "states": {
+    "st_title": "Encuentre ayuda económica para su factura de hospital por estado | Cobijo Health",
+    "st_meta": "Elija su estado para ver los hospitales que cubre Cobijo Health y averigüe si califica para atención gratuita o con descuento. Gratis, privado y en varios idiomas.",
+    "st_h1": "Encuentre ayuda económica para su factura de hospital",
+    "st_lead": "Cobijo Health es gratis y privado — nada de lo que usted escribe se guarda. Elija su estado para ver los hospitales que cubrimos y averigüe si califica para atención gratuita o con descuento.",
+    "st_choose": "Elija su estado",
+    "st_card": "{count} hospitales · atención gratuita o con descuento según la ley estatal",
+    "st_more": "Pronto habrá más estados. Todo hospital sin fines de lucro de EE. UU. está obligado a ofrecer ayuda económica, así que si su estado todavía no aparece, aún puede recibir orientación general.",
+    "st_general_btn": "Obtener orientación general"
   }
 }
