@@ -189,6 +189,12 @@ def county_strings(lang):
     return _section(lang, "county")
 
 
+def statutory_strings(lang):
+    """The 'statutory' section (T4.1 Phase 2): state-law prose for statute-driven states (IL), merged over
+    hospital/county strings. State-generic via {state}/{law}/{free_pct}/{discount_pct}/{cap} tokens."""
+    return _section(lang, "statutory")
+
+
 # --- Evergreen explainer guides (T3.3): /guides/<slug> + /<lang>/guides/<slug> ------------------- #
 # slug -> i18n section. One shared template (templates/guide.html); each guide's copy is its section.
 GUIDES = {

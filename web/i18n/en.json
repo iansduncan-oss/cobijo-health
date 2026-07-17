@@ -609,5 +609,23 @@
     "cta_p": "Answer a few questions to see whether you qualify for charity care or a discount, and get a letter to send your hospital — free.",
     "cta_btn": "Check if you qualify →",
     "nav_label": "Hospital payment plan rights"
+  },
+  "statutory": {
+    "s_dir": "{state} hospitals",
+    "s_meta": "See if you qualify for free or discounted hospital care at {name} under {state} law. Free and private — no account needed.",
+    "s_h_lead": "Under {state} law, {name} must offer free or discounted care to eligible low-income and uninsured patients. Here's what the law guarantees — and how to apply.",
+    "s_law_h": "What {state} law guarantees",
+    "s_law_p": "Under {law}, {name} must provide FREE care to uninsured patients at or below {free_pct}% of the Federal Poverty Level, and discounted care for patients up to {discount_pct}%. The hospital may collect no more than {cap}% of your yearly family income.",
+    "s_rural_note": "Because {name} is a Critical Access (rural) hospital, {state} law sets lower limits: free care up to {free_pct}% and discounts up to {discount_pct}% of the Federal Poverty Level.",
+    "s_minimum_note": "This is the legal minimum — {name} may offer more generous help. The only way to know is to apply, and applying is always free.",
+    "s_c_h1": "Hospital Financial Assistance in {county} County, {state}",
+    "s_c_meta": "Every hospital in {county} County, {state} must offer free or discounted care to low-income and uninsured patients. See your rights and how to apply.",
+    "s_c_lead": "Every hospital in {county} County must offer free or discounted care to eligible patients under {state} law. Find your hospital below.",
+    "s_c_law_p": "Under {law}, hospitals in {county} County must provide free care to uninsured patients at or below {free_pct}% of the Federal Poverty Level and discounts for patients up to {discount_pct}%.",
+    "s_dir_title": "{state} Hospital Financial Assistance & Charity Care Directory | Cobijo Health",
+    "s_dir_meta": "Browse financial assistance and charity care for every {state} hospital. Free, private, and multilingual — no account needed.",
+    "s_dir_h1": "{state} hospital financial assistance directory",
+    "s_dir_lead": "Every {state} hospital must offer free or discounted care to patients who qualify under {law}. Choose a hospital to see the income limits and how to apply.",
+    "s_foot": "Cobijo Health is a free nonprofit tool (a California 501(c)(3) in formation). We are not affiliated with this hospital, and this is general information — not legal, medical, or financial advice. Always confirm the details with the hospital and in its official financial-assistance policy."
   }
 }

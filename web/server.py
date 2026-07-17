@@ -30,6 +30,15 @@ import i18n
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DS, SRC = navigator.load_dataset()
+# Statute-driven states (T4.1 Phase 2): eligibility comes from the state's LAW, not a per-hospital FAP,
+# so any hospital in the CMS roster gets a correct answer with zero extracted data. IL is reached via the
+# `il=<ccn>` hint the IL SEO pages send into the tool (kept out of the CA autocomplete for launch, so a
+# name shared across states can't resolve to the wrong one). Additive: absent file -> empty -> CA-only.
+IL_ROWS = navigator.load_statutory_dataset("dataset_il.json")
+IL_BY_CCN = {str(r["ccn"]): r for r in IL_ROWS if r.get("ccn")}
+# Per-hospital SEO pages for the statute-driven IL roster (slug->row) + its per-county hubs.
+IL_HOSPITAL_INDEX, _ = hospital_pages.build_index(IL_ROWS)
+IL_COUNTY_INDEX = hospital_pages.county_index(IL_HOSPITAL_INDEX)
 # Disambiguated, de-duplicated labels for the autocomplete: a name shared by two campuses shows as
 # "Name (City)" (or collapses to one entry when it's the same hospital double-listed). find_hospital
 # resolves these labels back to the row. See navigator._build_name_index.
@@ -73,16 +82,34 @@ STATIC = {
     "/icon-512.png": ("icon-512.png", "image/png"),
     "/og-image.png": ("og-image.png", "image/png"),
 }
-ROBOTS = "User-agent: *\nAllow: /\nSitemap: https://cobijohealth.org/sitemap.xml\n"
-_SITEMAP_URLS = (i18n.sitemap_paths()                         # home + landing + about/privacy/faq + guides × 10 languages
-                 + hospital_pages.hospital_paths(HOSPITAL_INDEX)
-                 + hospital_pages.county_paths(HOSPITAL_INDEX))   # 56 county hubs × 10 languages
-SITEMAP = (
+BASE_URL = "https://cobijohealth.org"
+ROBOTS = f"User-agent: *\nAllow: /\nSitemap: {BASE_URL}/sitemap.xml\n"
+
+
+def _urlset(urls):
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            + "".join("  <url><loc>%s</loc></url>\n" % u for u in urls)
+            + "</urlset>\n")
+
+
+# Split into per-state child sitemaps behind a sitemap INDEX at /sitemap.xml. National scale (6k hospitals
+# × 10 langs) will exceed Google's 50k-URL/file limit, so the index is the forward-compatible structure;
+# GSC's already-submitted /sitemap.xml transparently becomes the index (Google follows it to the children).
+SITEMAP_PAGES = _urlset(i18n.sitemap_paths())                 # home/landing/about/privacy/faq/guides × 10 langs
+SITEMAP_CA = _urlset(hospital_pages.hospital_paths(HOSPITAL_INDEX)
+                     + hospital_pages.county_paths(HOSPITAL_INDEX))
+SITEMAP_IL = _urlset(hospital_pages.statutory_hospital_paths(IL_HOSPITAL_INDEX, "IL")
+                     + hospital_pages.statutory_county_paths(IL_HOSPITAL_INDEX, "IL"))
+_CHILD_SITEMAPS = ["/sitemap-pages.xml", "/sitemap-ca.xml"] + (["/sitemap-il.xml"] if IL_HOSPITAL_INDEX else [])
+SITEMAP_INDEX = (
     '<?xml version="1.0" encoding="UTF-8"?>\n'
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    + "".join("  <url><loc>%s</loc></url>\n" % u for u in _SITEMAP_URLS)
-    + "</urlset>\n"
+    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    + "".join("  <sitemap><loc>%s%s</loc></sitemap>\n" % (BASE_URL, s) for s in _CHILD_SITEMAPS)
+    + "</sitemapindex>\n"
 )
+_SITEMAP_FILES = {"/sitemap-pages.xml": SITEMAP_PAGES, "/sitemap-ca.xml": SITEMAP_CA,
+                  "/sitemap-il.xml": SITEMAP_IL}
 
 # --- Simple in-memory per-IP rate limit for POST /plan (abuse guard; CF rate-limiting is the outer layer) ---
 RATE_LIMIT = 30          # max requests
@@ -197,7 +224,9 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/robots.txt":
             return self._send(200, ROBOTS, "text/plain; charset=utf-8")
         if path == "/sitemap.xml":
-            return self._send(200, SITEMAP, "application/xml; charset=utf-8")
+            return self._send(200, SITEMAP_INDEX, "application/xml; charset=utf-8")
+        if path in _SITEMAP_FILES:
+            return self._send(200, _SITEMAP_FILES[path], "application/xml; charset=utf-8")
         # Localized routes: /<lang>/ (the tool) and /<lang>/<page> (e.g. /es/about, /fa/landing).
         # English lives at / and /<page>; other languages are prefixed. Home is served at the root
         # of each language (never /home) so the canonical URL stays /<lang>/.
@@ -205,6 +234,26 @@ class Handler(BaseHTTPRequestHandler):
         lang, rest = "en", parts
         if parts and parts[0] in i18n.LANGS and parts[0] != "en":
             lang, rest = parts[0], parts[1:]
+        # Statute-driven state namespace: /il/... (and /<lang>/il/...). IL hospital + county hubs +
+        # directory are derived from state law, so they render via the statutory renderers.
+        if rest and rest[0] == "il":
+            ilr = rest[1:]
+            if ilr == ["illinois-hospitals"]:
+                return self._send(200, hospital_pages.render_statutory_directory(IL_HOSPITAL_INDEX, lang, "IL"),
+                                  "text/html; charset=utf-8")
+            if len(ilr) == 2 and ilr[0] == "hospital":
+                row = IL_HOSPITAL_INDEX.get(ilr[1])
+                if row:
+                    return self._send(200, hospital_pages.render_statutory_hospital(row, ilr[1], IL_HOSPITAL_INDEX, lang),
+                                      "text/html; charset=utf-8")
+                return self._send(404, json.dumps({"error": "hospital not found"}))
+            if len(ilr) == 2 and ilr[0] == "hospitals":
+                county = IL_COUNTY_INDEX.get(ilr[1])
+                if county:
+                    return self._send(200, hospital_pages.render_statutory_county(county, IL_HOSPITAL_INDEX, lang, "IL"),
+                                      "text/html; charset=utf-8")
+                return self._send(404, json.dumps({"error": "county not found"}))
+            return self._send(404, json.dumps({"error": "not found"}))
         if len(rest) == 0 and lang != "en":
             return self._send(200, i18n.render("home", lang), "text/html; charset=utf-8")
         if len(rest) == 1 and rest[0] in ("landing", "about", "privacy", "faq", "support", "for-partners"):
@@ -248,10 +297,17 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, TypeError):
             return self._send(400, json.dumps({"error": "invalid JSON"}))
 
-        # Prefer an explicit oshpdid (the SEO hospital-page CTA sends it) so a shared hospital name
+        # A statute-driven state (IL) is looked up ONLY by the `il=<ccn>` hint its SEO pages send — never
+        # by name, so it can't shadow a same-named CA hospital. Otherwise resolve from the CA dataset:
+        # prefer an explicit oshpdid (the SEO hospital-page CTA sends it) so a shared hospital name
         # resolves to the exact campus the patient was reading about; fall back to the typed name.
-        row = navigator.find_hospital(DS, oshpdid=(req.get("oshpdid") or "").strip() or None,
-                                      name=(req.get("hospital") or "").strip())
+        il_id = (req.get("il") or "").strip()
+        if il_id:
+            row, statutory = IL_BY_CCN.get(il_id), True
+        else:
+            row = navigator.find_hospital(DS, oshpdid=(req.get("oshpdid") or "").strip() or None,
+                                          name=(req.get("hospital") or "").strip())
+            statutory = False
         # Not in our dataset: a bare miss stays a 404 (so the UI can nudge "pick from the list" for a
         # typo). But if the user opted into general guidance (`generic`), don't dead-end — every CA
         # hospital owes charity care and the benefit/debt screen is hospital-agnostic.
@@ -285,6 +341,17 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(400, json.dumps({"error": "income and household must be numbers"}))
 
         lang = req.get("lang") if req.get("lang") in i18n.LANGS else "en"
+        if statutory:
+            # IL & other statute-driven states: the plan is derived from the state LAW (state_rules), not
+            # a per-hospital FAP. Same response shape as the CA path (the rich UI renders `result`).
+            result = navigator.build_statutory_plan_struct(intake, row, lang=lang)
+            pct, tier = result["fpl_pct"], result["tier"]
+            letter = navigator.generate_letter(intake, row, pct, tier)     # English, cites the state's act
+            ref = navigator.letter_reference(intake, row, pct, tier, lang) if lang != "en" else None
+            return self._send(200, json.dumps({
+                "tier": tier, "plan": None, "result": result, "letter": letter, "letter_ref": ref,
+                "hospital": row["hospital"].title(),
+            }))
         if not row:
             # Hospital-independent recovery plan (charity tier = unknown, "apply anyway").
             intake["hospital_name"] = (req.get("hospital") or "").strip()

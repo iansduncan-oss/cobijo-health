@@ -10,6 +10,7 @@ NOT be flagged when the row's state isn't CA.
 
 Run (from repo root):  python3 -m unittest tests.test_national
 """
+import json
 import os
 import sys
 import unittest
@@ -260,6 +261,248 @@ class TestCmsNormalize(unittest.TestCase):
         self.assertEqual(n["state"], "IL")
         self.assertEqual(n["status"], "statutory")
         self.assertIsNone(n["policy"])                     # statute-driven: no extracted policy
+
+
+class TestLetterReferenceLaw(unittest.TestCase):
+    """The translated reference letter (letter_reference) parameterizes the governing law via a {law}
+    token: CA stays byte-identical (short act name kept in English inside the translation), a statute-
+    driven state cites its own act. Guards against a regression that would either hardcode CA back in or
+    leave a {law} token unfilled on a non-EN page."""
+
+    _CA_LAW = "California's Hospital Fair Pricing Act"
+    _IL_LAW = "210 ILCS 89"
+    _LANGS = ["en", "es", "zh", "ar", "ru", "vi", "ko", "fa", "hy", "tl"]
+
+    def _intake(self, income=18000):
+        return {"first_name": "Maria", "full_name": "Maria Lopez", "household_size": 4,
+                "annual_income": income, "insurance": "uninsured", "in_collections": True}
+
+    def test_ca_reference_still_cites_ca_act_in_every_language(self):
+        ca_row = {"hospital": "ADVENTIST HEALTH", "state": "CA"}
+        for lang in self._LANGS:
+            body = navigator.letter_reference(self._intake(), ca_row, 75.0, "free", lang)["body"]
+            self.assertIn(self._CA_LAW, body, f"{lang}: CA reference dropped the CA act name")
+            self.assertNotRegex(body, r"\{law\}", f"{lang}: unfilled {{law}} token")
+
+    def test_il_reference_cites_il_act_not_ca(self):
+        il_row = {"hospital": "ADVOCATE CHRIST", "state": "IL", "hospital_type": "Acute Care Hospitals"}
+        for lang in self._LANGS:
+            body = navigator.letter_reference(self._intake(), il_row, 75.0, "free", lang)["body"]
+            self.assertIn(self._IL_LAW, body, f"{lang}: IL reference didn't cite the IL act")
+            self.assertNotIn(self._CA_LAW, body, f"{lang}: IL reference wrongly cited the CA act")
+            self.assertNotRegex(body, r"\{law\}", f"{lang}: unfilled {{law}} token")
+
+
+class TestServerILPlan(unittest.TestCase):
+    """End-to-end wiring (T4.1 Phase 2 increment 2b): an IL patient reaches the statute-driven plan via
+    the `il=<ccn>` hint the IL SEO pages send, gets a correct law-based answer + a letter citing the IL
+    act, and IL is deliberately kept OUT of the CA autocomplete so a cross-state name can't misresolve."""
+
+    @classmethod
+    def setUpClass(cls):
+        import http.server
+        import threading
+        web = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
+        if web not in sys.path:
+            sys.path.insert(0, web)
+        import server as _srv
+        cls.srv = _srv
+        cls.httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _srv.Handler)
+        cls.port = cls.httpd.server_address[1]
+        threading.Thread(target=cls.httpd.serve_forever, daemon=True).start()
+        # A real metro (acute-care) IL CCN from the loaded roster.
+        cls.ccn = next(c for c, r in _srv.IL_BY_CCN.items()
+                       if r.get("hospital_type") == "Acute Care Hospitals")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.httpd.shutdown()
+
+    def _post(self, payload):
+        import socket
+        body = json.dumps(payload).encode()
+        s = socket.create_connection(("127.0.0.1", self.port), timeout=5)
+        s.sendall(b"POST /plan HTTP/1.1\r\nHost: x\r\nContent-Type: application/json\r\n"
+                  b"Content-Length: %d\r\nConnection: close\r\n\r\n%s" % (len(body), body))
+        buf = b""
+        while True:
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            buf += chunk
+        s.close()
+        head, _, resp = buf.partition(b"\r\n\r\n")
+        status = int(head.decode("latin1").split("\r\n")[0].split()[1])
+        return status, (json.loads(resp) if resp else None)
+
+    def test_il_ccn_resolves_to_statutory_plan(self):
+        st, d = self._post({"il": self.ccn, "income": 18000, "household": 4,
+                            "insurance": "uninsured", "lang": "en", "full_name": "Maria Lopez"})
+        self.assertEqual(st, 200)
+        self.assertEqual(d["tier"], "free")                        # 18k / 4 is well under 200% FPL
+        self.assertTrue(d["result"]["statutory"])
+        self.assertIn("210 ILCS 89", d["result"]["charity"]["message"])
+        self.assertIn("210 ILCS 89", d["letter"])                  # the English letter cites the IL act
+        self.assertIsNone(d["plan"])                               # CLI text unused by the web UI
+
+    def test_il_plan_localizes_and_reference_cites_il_law(self):
+        st, d = self._post({"il": self.ccn, "income": 18000, "household": 4,
+                            "insurance": "uninsured", "lang": "es", "full_name": "Maria Lopez"})
+        self.assertEqual(st, 200)
+        self.assertIn("210 ILCS 89", d["result"]["charity"]["message"])
+        self.assertTrue(d["letter_ref"], "a non-EN IL plan should carry a translated reference letter")
+        self.assertIn("210 ILCS 89", d["letter_ref"]["body"])
+
+    def test_invalid_il_ccn_is_404(self):
+        st, _ = self._post({"il": "000000", "income": 18000, "household": 4})
+        self.assertEqual(st, 404)
+
+    def test_il_hospitals_stay_out_of_ca_autocomplete(self):
+        # Launch decision: IL reachable only via its own pages, so the CA datalist must not carry it.
+        il_names = {r["hospital"].title() for r in self.srv.IL_BY_CCN.values()}
+        self.assertTrue(self.srv.IL_BY_CCN, "IL roster failed to load")
+        self.assertFalse(il_names & set(self.srv.HOSPITALS),
+                         "an IL hospital leaked into the CA autocomplete")
+
+    def test_healthz_counts_ca_only(self):
+        # IL is a separate statute-driven roster; it must not inflate the CA readiness count.
+        import socket
+        s = socket.create_connection(("127.0.0.1", self.port), timeout=5)
+        s.sendall(b"GET /healthz HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n")
+        buf = b""
+        while True:
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            buf += chunk
+        s.close()
+        payload = json.loads(buf.partition(b"\r\n\r\n")[2])
+        self.assertEqual(payload["hospitals"], len(self.srv.DS["rows"]))       # CA count only
+        self.assertGreater(len(self.srv.IL_BY_CCN), 0)                          # IL loaded separately
+        self.assertLess(payload["hospitals"], len(self.srv.DS["rows"]) + len(self.srv.IL_BY_CCN))
+
+
+class TestILSeoPages(unittest.TestCase):
+    """The statute-driven IL SEO pages (T4.1 Phase 2 increment 2c): cite IL law + the statutory bands
+    (rural-adjusted), route into the tool via ?il=<ccn>, live under the /il/ namespace, and leave every
+    CA URL byte-identical. Rendered directly (no server)."""
+    import hospital_pages as _hp
+
+    def _il_rows(self):
+        return [
+            {"hospital": "ADVOCATE CHRIST HOSPITAL", "ccn": "140208", "city": "OAK LAWN",
+             "county": "Cook", "state": "IL", "phone": "(708) 684-8000",
+             "hospital_type": "Acute Care Hospitals", "status": "statutory", "policy": None},
+            {"hospital": "ABRAHAM LINCOLN MEMORIAL HOSPITAL", "ccn": "141322", "city": "LINCOLN",
+             "county": "Logan", "state": "IL", "phone": "(217) 732-2161",
+             "hospital_type": "Critical Access Hospitals", "status": "statutory", "policy": None},
+        ]
+
+    def _idx(self):
+        return self._hp.build_index(self._il_rows())[0]
+
+    def test_metro_hospital_cites_law_bands_cta_no_unfilled_tokens(self):
+        idx = self._idx()
+        slug = next(s for s, r in idx.items() if r["ccn"] == "140208")
+        for lang in ("en", "es", "zh", "ar"):
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            self.assertIn("210 ILCS 89", html, f"{lang}: IL act not cited")
+            self.assertIn("?il=140208", html, f"{lang}: tool CTA missing the CCN")
+            self.assertIn(self._hp._url(lang, slug, "hospital", "IL"), html, f"{lang}: /il/ canonical missing")
+            self.assertIn("200", html, f"{lang}: metro free band (200% FPL) missing")
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on the page")
+
+    def test_rural_hospital_uses_lower_bands(self):
+        idx = self._idx()
+        slug = next(s for s, r in idx.items() if r["ccn"] == "141322")
+        html = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("125", html)                          # rural free band
+        self.assertIn("300", html)                          # rural discount band
+        self.assertNotRegex(html, r"\{[a-z_]+\}")
+
+    def test_county_and_directory_render(self):
+        idx = self._idx()
+        county = self._hp.render_statutory_county("Cook", idx, "en", "IL")
+        self.assertIn("210 ILCS 89", county)
+        self.assertIn("Advocate Christ", county)            # the county's hospital is listed
+        self.assertNotRegex(county, r"\{[a-z_]+\}")
+        directory = self._hp.render_statutory_directory(idx, "en", "IL")
+        self.assertIn("Illinois", directory)
+        self.assertIn("Cook", directory)
+        self.assertNotRegex(directory, r"\{[a-z_]+\}")
+
+    def test_url_helpers_state_aware_ca_byte_identical(self):
+        # CA (the default) stays exactly as before; IL gets the /il/ namespace.
+        self.assertEqual(self._hp._path("en", "x", "hospital", "CA"), "/hospital/x")
+        self.assertEqual(self._hp._path("es", "x", "hospital", "CA"), "/es/hospital/x")
+        self.assertEqual(self._hp._path("en", None, "hospital", "CA"), "/california-hospitals")
+        self.assertEqual(self._hp._path("en", "x", "hospital", "IL"), "/il/hospital/x")
+        self.assertEqual(self._hp._path("es", "cook", "county", "IL"), "/es/il/hospitals/cook")
+        self.assertEqual(self._hp._path("en", None, "hospital", "IL"), "/il/illinois-hospitals")
+
+    def test_sitemap_paths_are_il_namespaced(self):
+        idx = self._idx()
+        hp = self._hp.statutory_hospital_paths(idx, "IL")
+        self.assertTrue(all("/il/" in u for u in hp))
+        self.assertTrue(any(u.endswith("/il/illinois-hospitals") for u in hp))
+        cp = self._hp.statutory_county_paths(idx, "IL")
+        self.assertTrue(all("/il/hospitals/" in u for u in cp))
+
+
+class TestSitemapIndex(unittest.TestCase):
+    """/sitemap.xml is now a sitemap INDEX pointing at per-state child sitemaps; IL URLs live in
+    /sitemap-il.xml, CA in /sitemap-ca.xml. Guards the national-scale structure."""
+
+    @classmethod
+    def setUpClass(cls):
+        import http.server
+        import threading
+        web = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
+        if web not in sys.path:
+            sys.path.insert(0, web)
+        import server as _srv
+        cls.srv = _srv
+        cls.httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _srv.Handler)
+        cls.port = cls.httpd.server_address[1]
+        threading.Thread(target=cls.httpd.serve_forever, daemon=True).start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.httpd.shutdown()
+
+    def _get(self, path):
+        import socket
+        s = socket.create_connection(("127.0.0.1", self.port), timeout=5)
+        s.sendall(f"GET {path} HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n".encode())
+        buf = b""
+        while True:
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            buf += chunk
+        s.close()
+        head, _, body = buf.partition(b"\r\n\r\n")
+        return int(head.decode("latin1").split("\r\n")[0].split()[1]), body.decode("utf-8")
+
+    def test_index_lists_children(self):
+        st, body = self._get("/sitemap.xml")
+        self.assertEqual(st, 200)
+        self.assertIn("<sitemapindex", body)
+        for child in ("sitemap-pages.xml", "sitemap-ca.xml", "sitemap-il.xml"):
+            self.assertIn(child, body)
+
+    def test_il_child_has_namespaced_urls(self):
+        st, body = self._get("/sitemap-il.xml")
+        self.assertEqual(st, 200)
+        self.assertIn("<urlset", body)
+        self.assertIn("/il/hospital/", body)
+        self.assertIn("/il/illinois-hospitals", body)
+
+    def test_ca_child_still_has_ca_urls(self):
+        st, body = self._get("/sitemap-ca.xml")
+        self.assertEqual(st, 200)
+        self.assertIn("/california-hospitals", body)
+        self.assertNotIn("/il/", body)                      # CA sitemap must not carry IL URLs
 
 
 if __name__ == "__main__":

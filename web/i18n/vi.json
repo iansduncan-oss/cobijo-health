@@ -182,7 +182,7 @@
     "letter_ask_discount": "giảm giá theo diện chăm sóc từ thiện",
     "letter_ref_heading": "Nội dung của lá thư này, bằng ngôn ngữ của bạn",
     "letter_ref_warning": "Hãy gửi lá thư tiếng Anh ở trên — không phải bản dịch này. Bản dịch này chỉ để bạn hiểu mình đang gửi gì.",
-    "letter_ref_template": "{name}\n{address}\n{phone}\n\nNgày: {today}\n\n{hospital}\nKính gửi: Bộ phận Hỗ trợ Tài chính / Văn phòng Kinh doanh\nV/v: Yêu cầu Hỗ trợ Tài chính (Chăm sóc Từ thiện)\nSố tài khoản / hóa đơn: {account}\nNgày khám chữa bệnh: {service_date}\n\nKính gửi quý vị có liên quan:\n\nTôi viết thư này để xin hỗ trợ tài chính theo Chính sách Hỗ trợ Tài chính của bệnh viện, như luật California's Hospital Fair Pricing Act và IRS Section 501(r) yêu cầu. Tôi xin {ask}.\n\nSố người trong gia đình tôi là {household} và thu nhập hằng năm của gia đình khoảng ${income:,}, tức khoảng {pct:.0f}% Mức Nghèo Liên bang. Dựa trên chính sách quý vị đã công bố, tôi có vẻ đủ điều kiện.\n\nXin gửi cho tôi đơn xin Hỗ trợ Tài chính và danh sách các giấy tờ quý vị yêu cầu. Tôi cũng xin quý vị tạm ngưng mọi hoạt động thu nợ trên tài khoản nói trên trong khi đơn của tôi đang được xem xét, và áp dụng yêu cầu này cho cả số dư đã lập hóa đơn trước đó.\n\nXin quý vị cũng cung cấp một bản sao hóa đơn có ghi chi tiết từng khoản để tôi kiểm tra tính chính xác.\n\nCảm ơn quý vị đã dành thời gian. Quý vị có thể liên hệ với tôi qua số điện thoại ghi ở trên.\n\nTrân trọng,\n{name}",
+    "letter_ref_template": "{name}\n{address}\n{phone}\n\nNgày: {today}\n\n{hospital}\nKính gửi: Bộ phận Hỗ trợ Tài chính / Văn phòng Kinh doanh\nV/v: Yêu cầu Hỗ trợ Tài chính (Chăm sóc Từ thiện)\nSố tài khoản / hóa đơn: {account}\nNgày khám chữa bệnh: {service_date}\n\nKính gửi quý vị có liên quan:\n\nTôi viết thư này để xin hỗ trợ tài chính theo Chính sách Hỗ trợ Tài chính của bệnh viện, như luật {law} và IRS Section 501(r) yêu cầu. Tôi xin {ask}.\n\nSố người trong gia đình tôi là {household} và thu nhập hằng năm của gia đình khoảng ${income:,}, tức khoảng {pct:.0f}% Mức Nghèo Liên bang. Dựa trên chính sách quý vị đã công bố, tôi có vẻ đủ điều kiện.\n\nXin gửi cho tôi đơn xin Hỗ trợ Tài chính và danh sách các giấy tờ quý vị yêu cầu. Tôi cũng xin quý vị tạm ngưng mọi hoạt động thu nợ trên tài khoản nói trên trong khi đơn của tôi đang được xem xét, và áp dụng yêu cầu này cho cả số dư đã lập hóa đơn trước đó.\n\nXin quý vị cũng cung cấp một bản sao hóa đơn có ghi chi tiết từng khoản để tôi kiểm tra tính chính xác.\n\nCảm ơn quý vị đã dành thời gian. Quý vị có thể liên hệ với tôi qua số điện thoại ghi ở trên.\n\nTrân trọng,\n{name}",
     "cc_statutory_free": "Theo {law}, **{name}** phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên Bang — và ở khoảng {pct:.0f}%, bạn đủ điều kiện. Hãy nộp đơn bên dưới.",
     "cc_statutory_discount": "Theo {law}, **{name}** phải giảm giá cho bạn: mức thu nhập khoảng {pct:.0f}% Mức Nghèo Liên Bang của bạn nằm trong khoảng {free_pct}%–{discount_pct}%, và bệnh viện không được thu quá {cap}% thu nhập hằng năm của bạn.",
     "cc_statutory_over": "Thu nhập của bạn (khoảng {pct:.0f}% Mức Nghèo Liên Bang) cao hơn giới hạn {discount_pct}% mà {name} phải cung cấp theo {law} — nhưng bạn vẫn cứ nộp đơn, xin trả góp, và dùng các lựa chọn xem xét lỗi hóa đơn và thương lượng bên dưới."
@@ -623,5 +623,23 @@
     "cta_p": "Trả lời vài câu hỏi để xem bạn có đủ điều kiện nhận chăm sóc từ thiện hoặc được giảm giá không, và nhận một lá thư để gửi cho bệnh viện của bạn — miễn phí.",
     "cta_btn": "Kiểm tra xem bạn có đủ điều kiện →",
     "nav_label": "Quyền được trả góp viện phí"
+  },
+  "statutory": {
+    "s_dir": "Bệnh viện ở {state}",
+    "s_meta": "Hãy xem bạn có đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá tại {name} theo luật {state} hay không. Miễn phí và riêng tư — không cần tạo tài khoản.",
+    "s_h_lead": "Theo luật {state}, {name} phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân thu nhập thấp và không có bảo hiểm đủ điều kiện. Dưới đây là những gì luật pháp bảo đảm cho bạn — và cách nộp đơn.",
+    "s_law_h": "Những gì luật {state} bảo đảm cho bạn",
+    "s_law_p": "Theo {law}, {name} phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang, và chăm sóc giảm giá cho bệnh nhân có thu nhập lên đến {discount_pct}%. Bệnh viện không được thu quá {cap}% thu nhập hằng năm của gia đình bạn.",
+    "s_rural_note": "Vì {name} là bệnh viện Tiếp cận Thiết yếu (ở vùng nông thôn), luật {state} đặt ra các giới hạn thấp hơn: chăm sóc miễn phí lên đến {free_pct}% và giảm giá lên đến {discount_pct}% Mức Nghèo Liên bang.",
+    "s_minimum_note": "Đây chỉ là mức tối thiểu theo luật — {name} có thể hỗ trợ hào phóng hơn thế. Cách duy nhất để biết là nộp đơn, và nộp đơn thì luôn miễn phí.",
+    "s_c_h1": "Hỗ trợ tài chính của bệnh viện ở Hạt {county}, {state}",
+    "s_c_meta": "Mọi bệnh viện ở Hạt {county}, {state} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân thu nhập thấp và không có bảo hiểm. Hãy xem các quyền của bạn và cách nộp đơn.",
+    "s_c_lead": "Mọi bệnh viện ở Hạt {county} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo luật {state}. Hãy tìm bệnh viện của bạn ở bên dưới.",
+    "s_c_law_p": "Theo {law}, các bệnh viện ở Hạt {county} phải cung cấp dịch vụ chăm sóc miễn phí cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang, và giảm giá cho bệnh nhân có thu nhập lên đến {discount_pct}%.",
+    "s_dir_title": "Danh bạ Hỗ trợ Tài chính & Chăm sóc Từ thiện của Bệnh viện ở {state} | Cobijo Health",
+    "s_dir_meta": "Xem thông tin hỗ trợ tài chính và chăm sóc từ thiện của mọi bệnh viện ở {state}. Miễn phí, riêng tư, và đa ngôn ngữ — không cần tạo tài khoản.",
+    "s_dir_h1": "Danh bạ hỗ trợ tài chính của bệnh viện ở {state}",
+    "s_dir_lead": "Mọi bệnh viện ở {state} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo {law}. Hãy chọn một bệnh viện để xem giới hạn thu nhập và cách nộp đơn.",
+    "s_foot": "Cobijo Health là một công cụ phi lợi nhuận miễn phí (California 501(c)(3) đang trong quá trình thành lập). Chúng tôi không liên kết với bệnh viện này và đây là thông tin chung, không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận các chi tiết với bệnh viện và trong chính sách hỗ trợ tài chính chính thức của bệnh viện."
   }
 }

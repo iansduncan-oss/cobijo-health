@@ -120,6 +120,16 @@ def load_dataset():
     raise SystemExit("No extracted dataset found — run extract_llm.py then build_dataset.py.")
 
 
+def load_statutory_dataset(filename):
+    """Load a statute-driven state roster (T4.1 Phase 2): a plain list of CMS-derived rows with
+    policy=None, where eligibility comes from the state's LAW (state_rules) not a per-hospital FAP.
+    Returns [] when the file is absent so the app still boots CA-only (IL is additive, never required)."""
+    path = os.path.join(HERE, "data", filename)
+    if not os.path.exists(path):
+        return []
+    return [r for r in json.load(open(path)) if r.get("status") == "statutory"]
+
+
 def find_hospital(ds, *, oshpdid=None, name=None):
     if oshpdid and oshpdid in ds["by_id"]:
         return ds["by_id"][oshpdid]
@@ -484,8 +494,13 @@ def letter_reference(intake, row, pct, tier, lang):
     _t = datetime.date.today()
     today = f"{_t:%B} {_t.day}, {_t.year}"
     ask_key = "letter_ask_free" if tier == "free" else "letter_ask_discount"
+    # Cite the governing law, mirroring generate_letter 1:1: CA stays byte-identical (short name kept in
+    # English inside the translation), a statute-driven state cites its own act.
+    _state = (row.get("state") or "CA").upper()
+    law = "California's Hospital Fair Pricing Act" if _state == "CA" else state_rules.rules_for(_state).fap_law
     body = t(lang, "letter_ref_template",
              name=name,
+             law=law,
              address=intake.get("address", "[Your address]"),
              phone=intake.get("phone", "[Your phone]"),
              today=today,
