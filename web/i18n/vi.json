@@ -630,6 +630,7 @@
   "statutory": {
     "s_dir": "Bệnh viện ở {state}",
     "s_meta": "Hãy xem bạn có đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá tại {name} theo luật {state} hay không. Miễn phí và riêng tư — không cần tạo tài khoản.",
+    "s_meta_discount_only": "Xem bạn có đủ điều kiện được chăm sóc bệnh viện giảm giá tại {name} theo luật {state} hay không. Miễn phí và riêng tư — không cần tài khoản.",
     "s_h_lead": "Theo luật {state}, {name} phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân thu nhập thấp và không có bảo hiểm đủ điều kiện. Dưới đây là những gì luật pháp bảo đảm cho bạn — và cách nộp đơn.",
     "s_h_lead_discount_only": "Theo luật của bang {state}, {name} phải cung cấp dịch vụ chăm sóc có giảm giá cho những bệnh nhân có thu nhập thấp và không có bảo hiểm đủ điều kiện. Đây là những gì luật bảo đảm — và cách nộp đơn.",
     "s_law_h": "Những gì luật {state} bảo đảm cho bạn",
@@ -638,6 +639,7 @@
     "s_minimum_note": "Đây chỉ là mức tối thiểu theo luật — {name} có thể hỗ trợ hào phóng hơn thế. Cách duy nhất để biết là nộp đơn, và nộp đơn thì luôn miễn phí.",
     "s_c_h1": "Hỗ trợ tài chính của bệnh viện ở Hạt {county}, {state}",
     "s_c_meta": "Mọi bệnh viện ở Hạt {county}, {state} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân thu nhập thấp và không có bảo hiểm. Hãy xem các quyền của bạn và cách nộp đơn.",
+    "s_c_meta_discount_only": "Mọi bệnh viện ở Quận {county}, {state} đều phải cung cấp dịch vụ chăm sóc giảm giá cho bệnh nhân thu nhập thấp và không có bảo hiểm. Tìm hiểu quyền lợi của bạn và cách nộp đơn.",
     "s_c_lead": "Mọi bệnh viện ở Hạt {county} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo luật {state}. Hãy tìm bệnh viện của bạn ở bên dưới.",
     "s_c_lead_discount_only": "Mọi bệnh viện ở Quận {county} đều phải cung cấp dịch vụ chăm sóc có giảm giá cho những bệnh nhân đủ điều kiện theo luật của bang {state}. Hãy tìm bệnh viện của bạn bên dưới.",
     "s_c_law_p": "Theo {law}, các bệnh viện ở Hạt {county} phải cung cấp dịch vụ chăm sóc miễn phí cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang, và giảm giá cho bệnh nhân có thu nhập lên đến {discount_pct}%.",

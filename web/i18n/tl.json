@@ -630,6 +630,7 @@
   "statutory": {
     "s_dir": "Mga ospital sa {state}",
     "s_meta": "Tingnan kung kwalipikado ka para sa libre o may diskwentong pangangalaga sa {name} sa ilalim ng batas ng {state}. Libre at pribado — walang account na kailangan.",
+    "s_meta_discount_only": "Tingnan kung kwalipikado ka para sa may-diskwentong pangangalaga sa ospital sa {name} sa ilalim ng batas ng {state}. Libre at pribado — hindi kailangan ng account.",
     "s_h_lead": "Sa ilalim ng batas ng {state}, ang {name} ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga kwalipikadong pasyenteng mababa ang kita at walang insurance. Narito kung ano ang ginagarantiya ng batas — at kung paano mag-apply.",
     "s_h_lead_discount_only": "Sa ilalim ng batas ng {state}, dapat mag-alok ang {name} ng may-diskwentong pangangalaga sa mga karapat-dapat na pasyenteng mababa ang kita at walang insurance. Narito ang ginagarantiya ng batas — at kung paano mag-apply.",
     "s_law_h": "Ang ginagarantiya ng batas ng {state}",
@@ -638,6 +639,7 @@
     "s_minimum_note": "Ito ang legal na minimum — maaaring mas malaki pa ang itulong ng {name}. Ang tanging paraan para malaman ay mag-apply, at palaging libre ang pag-apply.",
     "s_c_h1": "Tulong Pinansyal ng mga Ospital sa {county} County, {state}",
     "s_c_meta": "Bawat ospital sa {county} County, {state} ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga pasyenteng mababa ang kita at walang insurance. Tingnan ang iyong mga karapatan at kung paano mag-apply.",
+    "s_c_meta_discount_only": "Bawat ospital sa {county} County, {state} ay dapat mag-alok ng may-diskwentong pangangalaga sa mga pasyenteng mababa ang kita at walang insurance. Alamin ang iyong mga karapatan at kung paano mag-apply.",
     "s_c_lead": "Bawat ospital sa {county} County ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga kwalipikadong pasyente sa ilalim ng batas ng {state}. Hanapin ang iyong ospital sa ibaba.",
     "s_c_lead_discount_only": "Bawat ospital sa {county} County ay dapat mag-alok ng may-diskwentong pangangalaga sa mga karapat-dapat na pasyente sa ilalim ng batas ng {state}. Hanapin ang iyong ospital sa ibaba.",
     "s_c_law_p": "Sa ilalim ng {law}, ang mga ospital sa {county} County ay kailangang magbigay ng libreng pangangalaga sa mga pasyenteng walang insurance na nasa o mas mababa sa {free_pct}% ng Federal Poverty Level at mga diskwento para sa mga pasyente hanggang {discount_pct}%.",

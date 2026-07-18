@@ -614,6 +614,7 @@
   "statutory": {
     "s_dir": "{state} hospitals",
     "s_meta": "See if you qualify for free or discounted hospital care at {name} under {state} law. Free and private — no account needed.",
+    "s_meta_discount_only": "See if you qualify for discounted hospital care at {name} under {state} law. Free and private — no account needed.",
     "s_h_lead": "Under {state} law, {name} must offer free or discounted care to eligible low-income and uninsured patients. Here's what the law guarantees — and how to apply.",
     "s_h_lead_discount_only": "Under {state} law, {name} must offer discounted care to eligible low-income and uninsured patients. Here's what the law guarantees — and how to apply.",
     "s_law_h": "What {state} law guarantees",
@@ -622,6 +623,7 @@
     "s_minimum_note": "This is the legal minimum — {name} may offer more generous help. The only way to know is to apply, and applying is always free.",
     "s_c_h1": "Hospital Financial Assistance in {county} County, {state}",
     "s_c_meta": "Every hospital in {county} County, {state} must offer free or discounted care to low-income and uninsured patients. See your rights and how to apply.",
+    "s_c_meta_discount_only": "Every hospital in {county} County, {state} must offer discounted care to low-income and uninsured patients. See your rights and how to apply.",
     "s_c_lead": "Every hospital in {county} County must offer free or discounted care to eligible patients under {state} law. Find your hospital below.",
     "s_c_lead_discount_only": "Every hospital in {county} County must offer discounted care to eligible patients under {state} law. Find your hospital below.",
     "s_c_law_p": "Under {law}, hospitals in {county} County must provide free care to uninsured patients at or below {free_pct}% of the Federal Poverty Level and discounts for patients up to {discount_pct}%.",

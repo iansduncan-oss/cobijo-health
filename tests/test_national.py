@@ -831,6 +831,8 @@ class TestColoradoStatutory(unittest.TestCase):
                             (self._hp.render_statutory_hospital(idx[slug], slug, idx, "en"), "hospital")):
             self.assertNotIn("must provide free care", html.lower(), f"{where}: false free-tier claim")
             self.assertIn("discounted care", html.lower(), f"{where}: discount-only framing present")
+            # incl. the <meta> description / snippet: CO law guarantees a discount, not "free or discounted".
+            self.assertNotIn("free or discounted", html.lower(), f"{where}: meta/body overstates free")
 
 
 class TestRhodeIslandStatutory(unittest.TestCase):
@@ -932,10 +934,15 @@ class TestOregonStatutory(unittest.TestCase):
                                                      self._row("X HOSPITAL", "380001", "C", "D"), "en")
         self.assertEqual(free["tier"], "free")                       # ~90% FPL -> free
         self.assertIn("442.614", free["charity"]["message"])
-        # ~330% FPL (between 300 and 400) -> discount (OR ceiling is 400, unlike NJ/MD/WA at 300)
-        disc = navigator.build_statutory_plan_struct({**base, "annual_income": 86000},
+        # ~330% FPL: discount under OR's 400% ceiling, but would be 'over' under NJ/MD/WA's 300% ceiling —
+        # this is the OR-specific band the state exists to cover, so the income must actually exceed 300%.
+        disc = navigator.build_statutory_plan_struct({**base, "annual_income": 109000},   # ~330% FPL
                                                      self._row("X HOSPITAL", "380001", "C", "D"), "en")
         self.assertEqual(disc["tier"], "discount")
+        # Above OR's 400% ceiling -> over (guards against the discount ceiling being wrongly lowered).
+        over = navigator.build_statutory_plan_struct({**base, "annual_income": 140000},   # ~424% FPL
+                                                     self._row("X HOSPITAL", "380001", "C", "D"), "en")
+        self.assertEqual(over["tier"], "over")
 
     def test_registry_discovers_or(self):
         import server

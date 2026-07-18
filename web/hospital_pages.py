@@ -521,7 +521,8 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     canonical = _url(lang, slug, "hospital", state)
     loc = ", ".join([p for p in [city, (county + " County") if county else None, state] if p])
     title = _fill(S["h_h1"], name=name).replace(" — ", " ") + (f" ({city}, {state})" if city else "") + " | Cobijo Health"
-    desc = _fill(S["s_meta"], name=name + (f", {city}" if city else ""), state=state_name)
+    meta_key = "s_meta_discount_only" if free_pct is None else "s_meta"   # CO: law mandates discount, not free
+    desc = _fill(S[meta_key], name=name + (f", {city}" if city else ""), state=state_name)
 
     home_url = BASE + ("/" if lang == "en" else f"/{lang}/")
     breadcrumb = (
@@ -625,7 +626,8 @@ def render_statutory_county(county, index, lang="en", state="IL"):
     dir_path = _path(lang, None, "hospital", state)
     h1 = _fill(S["s_c_h1"], county=county, state=state_name)
     title = h1 + " | Cobijo Health"
-    desc = _fill(S["s_c_meta"], county=county, state=state_name)
+    c_meta_key = "s_c_meta_discount_only" if free_pct is None else "s_c_meta"   # CO has no free tier
+    desc = _fill(S[c_meta_key], county=county, state=state_name)
 
     breadcrumb = (
         '{"@type":"BreadcrumbList","itemListElement":['

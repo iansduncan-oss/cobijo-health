@@ -614,6 +614,7 @@
   "statutory": {
     "s_dir": "Hospitales de {state}",
     "s_meta": "Vea si califica para atención gratuita o con descuento en {name} según la ley de {state}. Gratis y privado — no necesita crear una cuenta.",
+    "s_meta_discount_only": "Vea si califica para atención hospitalaria con descuento en {name} según la ley de {state}. Gratis y privado: no necesita crear una cuenta.",
     "s_h_lead": "Según la ley de {state}, {name} debe ofrecer atención gratuita o con descuento a los pacientes de bajos ingresos y sin seguro que califiquen. Aquí le explicamos lo que la ley le garantiza — y cómo solicitarla.",
     "s_h_lead_discount_only": "Según la ley de {state}, {name} debe ofrecer atención con descuento a los pacientes de bajos ingresos y sin seguro que reúnan los requisitos. Esto es lo que garantiza la ley y cómo solicitarla.",
     "s_law_h": "Lo que la ley de {state} le garantiza",
@@ -622,6 +623,7 @@
     "s_minimum_note": "Este es el mínimo que exige la ley — {name} puede ofrecer una ayuda más generosa. La única forma de saberlo es solicitándola, y solicitarla siempre es gratis.",
     "s_c_h1": "Ayuda económica de hospitales en el condado de {county}, {state}",
     "s_c_meta": "Todos los hospitales del condado de {county}, {state} deben ofrecer atención gratuita o con descuento a los pacientes de bajos ingresos y sin seguro. Vea sus derechos y cómo solicitarla.",
+    "s_c_meta_discount_only": "Todo hospital del condado de {county}, {state} debe ofrecer atención con descuento a pacientes de bajos ingresos y sin seguro. Conozca sus derechos y cómo solicitarla.",
     "s_c_lead": "Todos los hospitales del condado de {county} deben ofrecer atención gratuita o con descuento a los pacientes que califiquen, según la ley de {state}. Encuentre su hospital abajo.",
     "s_c_lead_discount_only": "Todo hospital del condado de {county} debe ofrecer atención con descuento a los pacientes que reúnan los requisitos según la ley de {state}. Encuentre su hospital a continuación.",
     "s_c_law_p": "Según {law}, los hospitales del condado de {county} deben ofrecer atención gratuita a los pacientes sin seguro que estén en o por debajo del {free_pct}% del Nivel Federal de Pobreza, y descuentos a los pacientes de hasta el {discount_pct}%.",
