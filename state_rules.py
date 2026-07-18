@@ -44,11 +44,21 @@ class StateRules:
     # Days after the bill within which the patient must APPLY to claim the discount (IL §10: 60). None =
     # no statutory deadline modeled. Gates the "apply by" actionable note.
     apply_deadline_days: Optional[int] = None
+    # A MONTHLY-PAYMENT cap the statute imposes above the free tier: the hospital may not require monthly
+    # payments above this % of monthly family income for patients up to payment_cap_ceiling_pct% FPL (ME:
+    # 4% up to 400% FPL, 22 M.R.S. §1716-A). Distinct from income_cap_pct (an ANNUAL %-of-income collection
+    # ceiling inside a discount tier). Both fields set -> a flag-gated payment-cap note is surfaced; the pair
+    # models an affordability band a free-ONLY state (no statutory % discount) still guarantees above its
+    # free floor. (CO has the same 4%/2% cap deferred — reuse these fields when that note is added.)
+    payment_cap_pct: Optional[int] = None
+    payment_cap_ceiling_pct: Optional[int] = None
 
     @property
     def is_statutory(self):
-        """True when this state's own law sets the eligibility thresholds (statute-driven / no extraction)."""
-        return self.statutory_discount_pct is not None
+        """True when this state's own law sets the eligibility thresholds (statute-driven / no extraction).
+        True for a free+discount state (discount_pct set), a discount-ONLY state (CO: free_pct None), AND a
+        free-ONLY state (ME: free_pct set, no statutory % discount) — any state whose LAW pins a tier."""
+        return self.statutory_discount_pct is not None or self.statutory_free_pct is not None
 
     @property
     def has_rural_bands(self):
@@ -248,7 +258,30 @@ RI = StateRules(
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
 )
 
-STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI}
+# Maine — hospital financial assistance / charity care (22 M.R.S. §1716-A, as REWRITTEN by PL 2025, c. 488,
+# EFFECTIVE 2026-07-01). STATUTE-DRIVEN and STATEWIDE. ⚠️ STALE-LAW CATCH (verify-first, per the CT/OR
+# lesson): the prior law was FREE ≤150% FPL since ~1995; c. 488 RAISED the free floor to 200% FPL and ADDED
+# an affordability band — so the old "free-only ≤150%" model would have been WRONG. Source-verified vs the
+# primary statute (mainelegislature.org, banner "WHOLE SECTION TEXT EFFECTIVE 7/01/26") + press + MaineHealth
+# (2026-07). The FIRST FREE-ONLY statutory shape: 100% FREE care ≤200% FPL, and NO statutory %-discount tier
+# — instead, patients up to 400% FPL are guaranteed a PAYMENT PLAN capped at 4% of monthly family income (a
+# payment cap, not a charge discount). So statutory_free_pct=200, statutory_discount_pct=None (the engine's
+# tier logic returns 'free' ≤200 and 'over' above it, never a bogus 'discount ... at or below None%'); the
+# 200–400% affordability band is surfaced as a flag-gated payment-cap NOTE (payment_cap_pct/ceiling), not a
+# discount tier. income_cap_pct None (no annual %-of-income collection cap). immigration_excluded stays False:
+# the statute is SILENT on immigration status (income+residency, MAGI-based, no asset test) — not an explicit
+# bar like NY §2807-k(9-a), so no affirmative reassurance. (Maine's debt-collection protection lives in a
+# SEPARATE statute, 32 M.R.S. ch. 109-A — deferred: exact subsection not yet pinned to primary source.)
+ME = StateRules(
+    code="ME", name="Maine",
+    fpl_floor_pct=200, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="Maine's hospital financial assistance law (22 M.R.S. §1716-A)",
+    statutory_free_pct=200, statutory_discount_pct=None, income_cap_pct=None,
+    payment_cap_pct=4, payment_cap_ceiling_pct=400,   # §1716-A: payment plan ≤4% of monthly income to 400% FPL
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI, "ME": ME}
 
 
 def rules_for(state="CA"):

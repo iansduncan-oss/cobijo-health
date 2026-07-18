@@ -639,7 +639,15 @@
     "s_immigration": "Your immigration status cannot be used to decide if you qualify — {state} law bars hospitals from considering it. Eligibility depends only on your household income.",
     "s_medicaid_cap": "If your bill is discounted, {state} law caps it at a share of the Medicaid rate: 10% for household income up to 300% of the Federal Poverty Level, and 20% up to 400% — often far below the sticker price. If your bill is higher, ask the hospital to correct it.",
     "s_debt_protection": "You are protected from aggressive collection: {state} law bars the hospital from suing you, or forcing the sale or foreclosure of your home, to collect this bill when your household income is at or below 400% of the Federal Poverty Level.",
-    "s_apply_deadline": "Apply within {days} days of receiving your bill — that is the deadline to claim this discount under {state} law. It covers any bill over $300 for a single hospital stay or visit, so apply as soon as the bill arrives."
+    "s_apply_deadline": "Apply within {days} days of receiving your bill — that is the deadline to claim this discount under {state} law. It covers any bill over $300 for a single hospital stay or visit, so apply as soon as the bill arrives.",
+    "s_meta_free_only": "See if you qualify for free hospital care at {name} under {state} law. Free and private — no account needed.",
+    "s_h_lead_free_only": "Under {state} law, {name} must offer free care to eligible low-income and uninsured patients. Here's what the law guarantees — and how to apply.",
+    "s_law_p_free_only": "Under {law}, {name} must provide FREE care to uninsured patients at or below {free_pct}% of the Federal Poverty Level.",
+    "s_c_meta_free_only": "Every hospital in {county} County, {state} must offer free care to low-income and uninsured patients. See your rights and how to apply.",
+    "s_c_lead_free_only": "Every hospital in {county} County must offer free care to eligible patients under {state} law. Find your hospital below.",
+    "s_c_law_p_free_only": "Under {law}, hospitals in {county} County must provide free care to uninsured patients at or below {free_pct}% of the Federal Poverty Level.",
+    "s_dir_lead_free_only": "Every {state} hospital must offer free care to patients who qualify under {law}. Choose a hospital to see the income limits and how to apply.",
+    "s_payment_cap": "Even if your income is above the free-care limit, {state} law still protects you: for households up to {payment_cap_ceiling_pct}% of the Federal Poverty Level, {name} must offer a payment plan capped at {payment_cap_pct}% of your monthly income — ask for it."
   },
   "states": {
     "st_title": "Find Financial Help for Your Hospital Bill by State | Cobijo Health",

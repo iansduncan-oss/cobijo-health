@@ -401,6 +401,8 @@ def statutory_facts(intake, row):
         "free_pct": rules.free_pct_for(rural),
         "discount_pct": rules.discount_pct_for(rural),
         "income_cap_pct": rules.income_cap_pct,
+        "payment_cap_pct": rules.payment_cap_pct,
+        "payment_cap_ceiling_pct": rules.payment_cap_ceiling_pct,
         "rural": rural,
         "hospital": row["hospital"].title(),
     }
@@ -425,8 +427,19 @@ def build_statutory_plan_struct(intake, row, lang="en"):
         msg_key = "cc_statutory_discount_only"
     elif tier == "discount" and facts["income_cap_pct"] is None:
         msg_key = "cc_statutory_discount_nocap"
+    # A free-ONLY statute (ME: no % discount tier) has no {discount_pct} to name — the default 'over' message
+    # cites "above the {discount_pct}% limit", which would render "None%". Use a free-floor variant instead.
+    elif tier == "over" and facts["discount_pct"] is None and facts["free_pct"] is not None:
+        msg_key = "cc_statutory_over_free_only"
     message = t(lang, msg_key, name=facts["hospital"], law=facts["fap_law"], pct=facts["fpl_pct"],
                 free_pct=facts["free_pct"], discount_pct=facts["discount_pct"], cap=facts["income_cap_pct"])
+    # Above the free floor but within a statutory payment-cap ceiling (ME 200–400% FPL): the hospital must
+    # still offer a payment plan capped at payment_cap_pct% of monthly income — append that citeable protection.
+    if (tier == "over" and facts["payment_cap_pct"] and facts["payment_cap_ceiling_pct"]
+            and facts["fpl_pct"] <= facts["payment_cap_ceiling_pct"]):
+        message += " " + t(lang, "cc_payment_cap", law=facts["fap_law"],
+                           payment_cap_pct=facts["payment_cap_pct"],
+                           payment_cap_ceiling_pct=facts["payment_cap_ceiling_pct"])
     debt = debt_defense(intake.get("in_collections"), lang=lang)
     return {
         "fpl_pct": facts["fpl_pct"],

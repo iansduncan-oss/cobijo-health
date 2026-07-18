@@ -628,6 +628,14 @@
     "nav_label": "医院分期付款权利"
   },
   "statutory": {
+    "s_meta_free_only": "根据{state}法律，看看您在 {name} 是否符合免费医疗的条件。免费且私密——无需注册账户。",
+    "s_h_lead_free_only": "根据{state}法律，{name} 必须为符合条件的低收入和无保险患者提供免费医疗服务。以下是法律为您保障的内容——以及如何申请。",
+    "s_law_p_free_only": "根据 {law}，{name} 必须为收入在联邦贫困线 {free_pct}% 或以下的无保险患者提供免费医疗。",
+    "s_c_meta_free_only": "{state}{county}县的每一家医院都必须为低收入和无保险的患者提供免费医疗服务。了解您的权利以及如何申请。",
+    "s_c_lead_free_only": "根据{state}法律，{county}县的每一家医院都必须为符合条件的患者提供免费医疗服务。请在下方找到您就诊的医院。",
+    "s_c_law_p_free_only": "根据 {law}，{county}县的医院必须为收入在联邦贫困线 {free_pct}% 或以下的无保险患者提供免费医疗。",
+    "s_dir_lead_free_only": "根据 {law}，{state}的每一家医院都必须为符合条件的患者提供免费医疗服务。选择一家医院，查看收入上限以及如何申请。",
+    "s_payment_cap": "即使您的收入超过免费医疗的上限，{state}法律仍然保护您：对于收入不超过联邦贫困线 {payment_cap_ceiling_pct}% 的家庭，{name} 必须提供还款计划，每月还款额不得超过您月收入的 {payment_cap_pct}%——请主动申请。",
     "s_dir": "{state}的医院",
     "s_meta": "根据{state}法律，看看您在 {name} 是否符合免费或减免医疗的条件。免费且私密——无需注册账户。",
     "s_meta_discount_only": "根据{state}州法律，查看您是否有资格在{name}获得折扣医疗服务。免费且私密——无需注册账户。",

@@ -63,6 +63,17 @@ MESSAGES = {
         "cc_statutory_over": ("Your income (~{pct:.0f}% of the Federal Poverty Level) is above the "
                               "{discount_pct}% limit {name} must offer under {law} — but apply anyway, request "
                               "a payment plan, and use the bill-error review and negotiation options below."),
+        # Over-tier variant for a FREE-ONLY statute (ME: no % discount tier, so no {discount_pct} to cite —
+        # the default 'over' text would render "above the None% limit"). Names the free floor instead.
+        "cc_statutory_over_free_only": ("Your income (~{pct:.0f}% of the Federal Poverty Level) is above the "
+                                        "{free_pct}% free-care limit {name} must offer under {law} — but apply "
+                                        "anyway, request a payment plan, and use the bill-error review and "
+                                        "negotiation options below."),
+        # Appended to the 'over' message when the patient is above the free floor but within a statutory
+        # monthly-payment cap (ME 200–400% FPL): a citeable affordability protection, not a charge discount.
+        "cc_payment_cap": ("And because you're at or below {payment_cap_ceiling_pct}% of the Federal Poverty "
+                           "Level, {law} caps your hospital payment plan at {payment_cap_pct}% of your monthly "
+                           "income — ask the hospital to set that up."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("You reported having insurance — we'd still check for cost-sharing help and "
                         "secondary programs."),
@@ -212,6 +223,13 @@ MESSAGES = {
                               "{discount_pct}% que {name} debe ofrecer según {law} — pero solicítela de todos "
                               "modos, pida un plan de pago y use las opciones de revisión de errores en la "
                               "factura y negociación a continuación."),
+        "cc_statutory_over_free_only": ("Sus ingresos (~{pct:.0f}% del Nivel Federal de Pobreza) superan el "
+                                        "límite del {free_pct}% de atención gratuita que {name} debe ofrecer "
+                                        "según {law} — pero solicítela de todos modos, pida un plan de pago y "
+                                        "use las opciones de revisión de errores en la factura y negociación abajo."),
+        "cc_payment_cap": ("Y como usted está en o por debajo del {payment_cap_ceiling_pct}% del Nivel Federal "
+                           "de Pobreza, {law} limita su plan de pago hospitalario al {payment_cap_pct}% de sus "
+                           "ingresos mensuales — pida al hospital que lo establezca."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("Usted indicó que tiene seguro — de todos modos revisaríamos ayuda con los "
                         "gastos compartidos y programas secundarios."),

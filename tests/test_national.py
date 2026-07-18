@@ -835,6 +835,100 @@ class TestColoradoStatutory(unittest.TestCase):
             self.assertNotIn("free or discounted", html.lower(), f"{where}: meta/body overstates free")
 
 
+class TestMaineStatutory(unittest.TestCase):
+    """Maine (10th state) — the first FREE-ONLY statutory shape. 22 M.R.S. §1716-A (as rewritten by PL 2025
+    c. 488, eff. 2026-07-01) mandates 100% FREE care ≤200% FPL and sets NO statutory %-discount tier — instead
+    a payment plan capped at 4% of monthly income for patients up to 400% FPL. So statutory_free_pct=200,
+    statutory_discount_pct=None: the tier logic returns 'free' ≤200 and 'over' above (never a bogus 'discount
+    ... at or below None%'), and renderers must use the free-only text. The 200–400% band is surfaced as a
+    payment-cap note. STALE-LAW GUARD: pin 200 (not the old 150) so a silent reversion is caught."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "ME",
+                "phone": "(207) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_me_pinned_free_only(self):
+        me = state_rules.rules_for("ME")
+        self.assertEqual(me.statutory_free_pct, 200)      # free tier ≤200% FPL (c. 488 raised it from 150)
+        self.assertIsNone(me.statutory_discount_pct)      # NO statutory %-discount tier — free-only shape
+        self.assertIsNone(me.income_cap_pct)              # affordability is a payment cap, not an income cap
+        self.assertEqual((me.payment_cap_pct, me.payment_cap_ceiling_pct), (4, 400))
+        self.assertFalse(me.has_rural_bands)
+        self.assertFalse(me.immigration_excluded)         # statute is silent on immigration -> no reassurance
+        self.assertTrue(me.is_statutory)                  # free-only must still register as statute-driven
+
+    def test_me_page_free_only_no_discount_tier_leak(self):
+        idx = self._hp.build_index([self._row("MAINE MEDICAL CENTER", "200024", "PORTLAND", "Cumberland")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            self.assertIn("22 M.R.S. §1716-A", html)                  # ME law cited
+            self.assertIn("?st=ME", html)                            # generic CTA
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on ME page")
+            self.assertNotIn("None%", html)                          # the discount_pct=None leak must NOT appear
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("Maine", en)                                   # {state} filled
+        self.assertIn("free care", en.lower())                       # free-only framing present
+        self.assertNotIn("discounted care", en.lower())              # no false statutory-discount claim
+        self.assertNotIn("free or discounted", en.lower())           # meta/body must not overstate a discount tier
+        self.assertNotIn("immigration status", en.lower())           # not barred in statute -> no note
+        self.assertIn(f"/qr/me/hospital/{slug}.svg", en)             # namespaced print-QR
+        self.assertIn("/og-image.png", en)                           # safe site-wide OG
+        self.assertNotIn("/og/hospital/", en)
+        # The 200–400% affordability band is surfaced as a payment-cap note on the page.
+        self.assertIn("4%", en)
+        self.assertIn("400%", en)
+
+    def test_me_plan_free_then_payment_cap_then_over(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4,
+                "insurance": "uninsured", "in_collections": True}
+        row = self._row("X HOSPITAL", "200024", "C", "D")
+        # ~75% FPL -> FREE (a free-only state answers 'free', never 'discount ... None%').
+        free = navigator.build_statutory_plan_struct({**base, "annual_income": 24000}, row, "en")
+        self.assertEqual(free["tier"], "free")
+        self.assertIn("22 M.R.S. §1716-A", free["charity"]["message"])
+        self.assertNotIn("None", free["charity"]["message"])
+        # ~242% FPL -> OVER the free floor but within the 400% cap -> over tier + payment-cap note, no None% leak.
+        cap = navigator.build_statutory_plan_struct({**base, "annual_income": 80000}, row, "en")
+        self.assertEqual(cap["tier"], "over")
+        self.assertNotIn("None%", cap["charity"]["message"])          # over-tier free-only variant cites 200%, not None
+        self.assertIn("200%", cap["charity"]["message"])              # names the free floor, not a discount ceiling
+        self.assertIn("4% of your monthly income", cap["charity"]["message"])   # payment-cap protection appended
+        # ~435% FPL -> above the 400% cap -> over tier, NO payment-cap note.
+        over = navigator.build_statutory_plan_struct({**base, "annual_income": 140000}, row, "en")
+        self.assertEqual(over["tier"], "over")
+        self.assertNotIn("4% of your monthly income", over["charity"]["message"])
+
+    def test_registry_discovers_me(self):
+        import server
+        self.assertIn("ME", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["ME"]["hospitals"]), 0)
+
+    def test_me_county_directory_lead_no_discount_tier_leak(self):
+        # Regression guard: the county hub, the statewide directory, and every page LEAD must use the
+        # free-only text for ME — never a discount-tier string that would print "discounted care ... at or
+        # below None%" for a null discount_pct.
+        idx = self._hp.build_index([self._row("MAINE MEDICAL CENTER", "200024", "PORTLAND", "Cumberland")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "ar"):
+            county = self._hp.render_statutory_county("Cumberland", idx, lang, "ME")
+            directory = self._hp.render_statutory_directory(idx, lang, "ME")
+            hospital = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            for html, where in ((county, "county"), (directory, "directory"), (hospital, "hospital")):
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+                self.assertIn("22 M.R.S. §1716-A", html, f"{lang} {where}: ME law cited")
+        for html, where in ((self._hp.render_statutory_county("Cumberland", idx, "en", "ME"), "county"),
+                            (self._hp.render_statutory_directory(idx, "en", "ME"), "directory"),
+                            (self._hp.render_statutory_hospital(idx[slug], slug, idx, "en"), "hospital")):
+            self.assertNotIn("discounted care", html.lower(), f"{where}: false discount-tier claim")
+            self.assertIn("free care", html.lower(), f"{where}: free-only framing present")
+            self.assertNotIn("free or discounted", html.lower(), f"{where}: meta/body overstates discount")
+
+
 class TestRhodeIslandStatutory(unittest.TestCase):
     """Rhode Island (9th state). Clean free+discount drop-in, same shape as NJ/MD/WA (free ≤200% / discount
     ≤300%, 216-RICR-40-10-23). Reuses the existing free-tier strings on every surface — a state added with

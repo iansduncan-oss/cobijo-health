@@ -628,6 +628,14 @@
     "nav_label": "Quyền được trả góp viện phí"
   },
   "statutory": {
+    "s_meta_free_only": "Hãy xem bạn có đủ điều kiện nhận chăm sóc miễn phí tại {name} theo luật {state} hay không. Miễn phí và riêng tư — không cần tạo tài khoản.",
+    "s_h_lead_free_only": "Theo luật {state}, {name} phải cung cấp dịch vụ chăm sóc miễn phí cho những bệnh nhân thu nhập thấp và không có bảo hiểm đủ điều kiện. Dưới đây là những gì luật pháp bảo đảm cho bạn — và cách nộp đơn.",
+    "s_law_p_free_only": "Theo {law}, {name} phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang.",
+    "s_c_meta_free_only": "Mọi bệnh viện ở Hạt {county}, {state} đều phải cung cấp dịch vụ chăm sóc miễn phí cho những bệnh nhân thu nhập thấp và không có bảo hiểm. Hãy xem các quyền của bạn và cách nộp đơn.",
+    "s_c_lead_free_only": "Mọi bệnh viện ở Hạt {county} đều phải cung cấp dịch vụ chăm sóc miễn phí cho những bệnh nhân đủ điều kiện theo luật {state}. Hãy tìm bệnh viện của bạn ở bên dưới.",
+    "s_c_law_p_free_only": "Theo {law}, các bệnh viện ở Hạt {county} phải cung cấp dịch vụ chăm sóc miễn phí cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang.",
+    "s_dir_lead_free_only": "Mọi bệnh viện ở {state} đều phải cung cấp dịch vụ chăm sóc miễn phí cho những bệnh nhân đủ điều kiện theo {law}. Hãy chọn một bệnh viện để xem giới hạn thu nhập và cách nộp đơn.",
+    "s_payment_cap": "Ngay cả khi thu nhập của bạn cao hơn giới hạn được chăm sóc miễn phí, luật {state} vẫn bảo vệ bạn: đối với các hộ gia đình có thu nhập lên đến {payment_cap_ceiling_pct}% Mức Nghèo Liên bang, {name} phải cung cấp một kế hoạch thanh toán giới hạn ở mức {payment_cap_pct}% thu nhập hằng tháng của bạn — hãy yêu cầu điều đó.",
     "s_dir": "Bệnh viện ở {state}",
     "s_meta": "Hãy xem bạn có đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá tại {name} theo luật {state} hay không. Miễn phí và riêng tư — không cần tạo tài khoản.",
     "s_meta_discount_only": "Xem bạn có đủ điều kiện được chăm sóc bệnh viện giảm giá tại {name} theo luật {state} hay không. Miễn phí và riêng tư — không cần tài khoản.",

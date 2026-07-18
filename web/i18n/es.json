@@ -612,6 +612,14 @@
     "nav_label": "Derechos a un plan de pago del hospital"
   },
   "statutory": {
+    "s_meta_free_only": "Vea si califica para atención hospitalaria gratuita en {name} según la ley de {state}. Gratis y privado — no necesita crear una cuenta.",
+    "s_h_lead_free_only": "Según la ley de {state}, {name} debe ofrecer atención gratuita a los pacientes de bajos ingresos y sin seguro que califiquen. Aquí le explicamos lo que la ley le garantiza — y cómo solicitarla.",
+    "s_law_p_free_only": "Según {law}, {name} debe ofrecer atención GRATUITA a los pacientes sin seguro que estén en o por debajo del {free_pct}% del Nivel Federal de Pobreza.",
+    "s_c_meta_free_only": "Todos los hospitales del condado de {county}, {state} deben ofrecer atención gratuita a los pacientes de bajos ingresos y sin seguro. Vea sus derechos y cómo solicitarla.",
+    "s_c_lead_free_only": "Todos los hospitales del condado de {county} deben ofrecer atención gratuita a los pacientes que califiquen, según la ley de {state}. Encuentre su hospital abajo.",
+    "s_c_law_p_free_only": "Según {law}, los hospitales del condado de {county} deben ofrecer atención gratuita a los pacientes sin seguro que estén en o por debajo del {free_pct}% del Nivel Federal de Pobreza.",
+    "s_dir_lead_free_only": "Todo hospital de {state} debe ofrecer atención gratuita a los pacientes que califican según {law}. Elija un hospital para ver los límites de ingresos y cómo solicitarla.",
+    "s_payment_cap": "Incluso si sus ingresos superan el límite para la atención gratuita, la ley de {state} aún lo protege: para los hogares de hasta el {payment_cap_ceiling_pct}% del Nivel Federal de Pobreza, {name} debe ofrecer un plan de pagos limitado al {payment_cap_pct}% de su ingreso mensual — pídalo.",
     "s_dir": "Hospitales de {state}",
     "s_meta": "Vea si califica para atención gratuita o con descuento en {name} según la ley de {state}. Gratis y privado — no necesita crear una cuenta.",
     "s_meta_discount_only": "Vea si califica para atención hospitalaria con descuento en {name} según la ley de {state}. Gratis y privado: no necesita crear una cuenta.",
