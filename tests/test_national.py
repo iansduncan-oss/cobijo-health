@@ -811,6 +811,27 @@ class TestColoradoStatutory(unittest.TestCase):
         self.assertIn("CO", server.STATUTORY_STATES)
         self.assertGreater(len(server.STATUTORY_STATES["CO"]["hospitals"]), 0)
 
+    def test_co_county_directory_lead_no_free_tier_leak(self):
+        # Regression guard: the county hub, the statewide directory, and every page LEAD must use the
+        # discount-only text for CO — never the free-tier string that prints "free care ... at or below
+        # None%" (the bug the free-tier states' shared strings would produce for a None free_pct).
+        idx = self._hp.build_index([self._row("DENVER HEALTH MEDICAL CENTER", "060052", "DENVER", "Denver")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "ar"):
+            county = self._hp.render_statutory_county("Denver", idx, lang, "CO")
+            directory = self._hp.render_statutory_directory(idx, lang, "CO")
+            hospital = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            for html, where in ((county, "county"), (directory, "directory"), (hospital, "hospital")):
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+                self.assertIn("HB21-1198", html, f"{lang} {where}: CO law cited")
+        # English body text must never assert a statutory FREE tier for CO (discount-only law).
+        for html, where in ((self._hp.render_statutory_county("Denver", idx, "en", "CO"), "county"),
+                            (self._hp.render_statutory_directory(idx, "en", "CO"), "directory"),
+                            (self._hp.render_statutory_hospital(idx[slug], slug, idx, "en"), "hospital")):
+            self.assertNotIn("must provide free care", html.lower(), f"{where}: false free-tier claim")
+            self.assertIn("discounted care", html.lower(), f"{where}: discount-only framing present")
+
 
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim

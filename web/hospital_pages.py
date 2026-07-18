@@ -546,7 +546,8 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     out.append(f'<h1>{_e(_fill(S["h_h1"], name=name))}</h1>')
     if loc:
         out.append(f'<p class="loc">{_e(loc)}</p>')
-    out.append(f'<p class="lead">{_e(_fill(S["s_h_lead"], name=name, state=state_name))}</p>')
+    lead_key = "s_h_lead_discount_only" if free_pct is None else "s_h_lead"   # CO has no free tier
+    out.append(f'<p class="lead">{_e(_fill(S[lead_key], name=name, state=state_name))}</p>')
 
     # What the law guarantees — the statutory bands (rural-adjusted), + an honest "legal minimum" caveat.
     # States with an income-based collection cap (IL) cite it; states that cap on the Medicaid rate
@@ -641,10 +642,15 @@ def render_statutory_county(county, index, lang="en", state="IL"):
     out.append(f'<p class="crumb"><a href="{home}">{_e(S["h_home"])}</a> › '
                f'<a href="{dir_path}">{_e(_fill(S["s_dir"], state=state_name))}</a> › {_e(h1)}</p>')
     out.append(f'<h1>{_e(h1)}</h1>')
-    out.append(f'<p class="lead">{_e(_fill(S["s_c_lead"], county=county, state=state_name))}</p>')
+    c_lead_key = "s_c_lead_discount_only" if free_pct is None else "s_c_lead"   # CO has no free tier
+    out.append(f'<p class="lead">{_e(_fill(S[c_lead_key], county=county, state=state_name))}</p>')
 
-    out.append(f'<div class="card"><h2>{_e(_fill(S["c_law_h"], county=county))}</h2>'
-               f'<p>{_e(_fill(S["s_c_law_p"], county=county, law=law, free_pct=free_pct, discount_pct=disc_pct))}</p></div>')
+    # A discount-only statute (CO) can't use the free-tier county text ("free care ... at or below None%").
+    if free_pct is None:
+        law_p = _fill(S["s_c_law_p_discount_only"], county=county, law=law, discount_pct=disc_pct)
+    else:
+        law_p = _fill(S["s_c_law_p"], county=county, law=law, free_pct=free_pct, discount_pct=disc_pct)
+    out.append(f'<div class="card"><h2>{_e(_fill(S["c_law_h"], county=county))}</h2><p>{_e(law_p)}</p></div>')
 
     out.append(f'<div class="card nearby"><h2>{_e(_fill(S["c_list_h"], county=county))} ({len(hosps)})</h2><p class="nearby">'
                + "".join(f'<a href="{_path(lang, s, "hospital", state)}">{_e(_title(r["hospital"]))}</a>' for s, r in hosps)
@@ -669,6 +675,7 @@ def render_statutory_directory(index, lang="en", state="IL"):
     S = {**i18n.hospital_strings(lang), **i18n.statutory_strings(lang)}
     rules = state_rules.rules_for(state)
     state_name, law = rules.name, rules.fap_law
+    free_pct = rules.free_pct_for(False)                                       # None for a discount-only state (CO)
     canonical = _url(lang, None, "hospital", state)
     out = [_head(_fill(S["s_dir_title"], state=state_name), _fill(S["s_dir_meta"], state=state_name),
                  canonical, lang, None, "", "hospital", state)]
@@ -676,7 +683,8 @@ def render_statutory_directory(index, lang="en", state="IL"):
     home = "/" if lang == "en" else f"/{lang}/"
     out.append(f'<p class="crumb"><a href="{home}">{_e(S["h_home"])}</a> › {_e(_fill(S["s_dir"], state=state_name))}</p>')
     out.append(f'<h1>{_e(_fill(S["s_dir_h1"], state=state_name))}</h1>')
-    out.append(f'<p class="lead">{_e(_fill(S["s_dir_lead"], state=state_name, law=law))}</p>')
+    dir_lead_key = "s_dir_lead_discount_only" if free_pct is None else "s_dir_lead"
+    out.append(f'<p class="lead">{_e(_fill(S[dir_lead_key], state=state_name, law=law))}</p>')
     by_county = {}
     for slug, r in index.items():
         by_county.setdefault(r.get("county") or "Other", []).append((slug, r))
