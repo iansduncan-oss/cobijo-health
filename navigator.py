@@ -236,6 +236,13 @@ def help_leads(pct, insurance, in_collections, lang="en"):
             for r in resources.help_resources(pct, insurance, in_collections)]
 
 
+def statutory_help_leads(state, insurance, in_collections, lang="en"):
+    """help_leads for a statute-driven state: the state's own coverage portal + national clinic locator +
+    state legal-aid, labels localized. See resources.statutory_resources for which door shows when."""
+    return [{"url": r["url"], "phone": r["phone"], "label": t(lang, r["label"])}
+            for r in resources.statutory_resources(state, insurance, in_collections)]
+
+
 def build_plan(intake, row, lang="en"):
     pct = fpl_percent(intake["annual_income"], intake["household_size"])
     insured = bool(intake.get("insurance")) and intake["insurance"].lower() not in ("none", "uninsured", "self-pay")
@@ -408,7 +415,7 @@ def build_statutory_plan_struct(intake, row, lang="en"):
     tier = facts["tier"]
     msg_key = {"free": "cc_statutory_free", "discount": "cc_statutory_discount",
                "over": "cc_statutory_over"}[tier]
-    # A state that caps charges on the Medicare rate rather than a % of income (NY) has no income-cap
+    # A state that caps charges on the Medicaid rate rather than a % of income (NY) has no income-cap
     # clause to cite, so the discount message drops it (income_cap_pct is None).
     if tier == "discount" and facts["income_cap_pct"] is None:
         msg_key = "cc_statutory_discount_nocap"
@@ -429,7 +436,8 @@ def build_statutory_plan_struct(intake, row, lang="en"):
                     "apply": [t(lang, "step1_apply_nophone"), t(lang, "step1_retroactive")]},
         "benefits": [],                                   # CA-only PolicyEngine/Medi-Cal — omitted off-CA
         "debt": debt,
-        "resources": [],                                  # CA-specific routes — a later per-state increment
+        "resources": statutory_help_leads((row.get("state") or "").upper(),
+                                          intake.get("insurance"), intake.get("in_collections"), lang=lang),
         "res_heading": t(lang, "res_heading"),
         "closing": t(lang, "step4", n=2 + (1 if debt else 0)),
         "lang_note": t(lang, "letter_note_english") if lang != "en" else None,

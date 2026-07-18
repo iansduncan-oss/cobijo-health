@@ -430,6 +430,8 @@ function renderResult(r){
   let n=1;
   html+=`<div class="rcard"><div class="rcard-h"><span class="n">${n++}</span>${esc(U.sec_charity)}</div>
     <p>${render(r.charity.message)}</p>`;
+  if(r.charity.min_note) html+=`<p class="tag" style="font-size:13px;margin-top:6px;opacity:.85">${esc(r.charity.min_note)}</p>`;
+  if(r.charity.notes) r.charity.notes.forEach(nt=>{html+=`<p class="tag" style="font-size:13px;margin-top:6px">${esc(nt)}</p>`;});
   if(r.charity.income_ceiling)
     html+=`<div class="ceiling">${esc(U.ceiling_pre)} <b>$${Number(r.charity.income_ceiling).toLocaleString()}${U.peryear}</b></div>`;
   html+=`<div class="subh">${esc(U.sec_apply)}</div><ul class="checks">`+

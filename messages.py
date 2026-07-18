@@ -50,7 +50,7 @@ MESSAGES = {
         "cc_statutory_discount": ("Under {law}, **{name}** must give you a discount: your ~{pct:.0f}% of the "
                                   "Federal Poverty Level falls in the {free_pct}%–{discount_pct}% range, and "
                                   "the hospital may collect no more than {cap}% of your yearly income."),
-        # Cap-less variant (states that cap charges on the Medicare rate, not a % of income — e.g. NY).
+        # Cap-less variant (states that cap charges on the Medicaid rate, not a % of income — e.g. NY).
         "cc_statutory_discount_nocap": ("Under {law}, **{name}** must give you a discount: your ~{pct:.0f}% of the "
                                         "Federal Poverty Level falls in the {free_pct}%–{discount_pct}% range, so "
                                         "you qualify for reduced charges. Apply below."),
@@ -119,6 +119,7 @@ MESSAGES = {
         "res_heading": "Get free help — where to go next:",
         "res_medical": "Apply for Medi-Cal — it's free, and it can cover recent bills",
         "res_coveredca": "Get free local help enrolling in Covered California",
+        "res_coverage": "Apply for free or low-cost health coverage in your state",
         "res_clinic": "Find a free or low-cost clinic near you",
         "res_legalaid": "Free legal help with medical bills, in any language",
         "letter_note_english": ("Note: the request letter below is written in English so the "
@@ -271,6 +272,7 @@ MESSAGES = {
         "res_heading": "Obtenga ayuda gratuita — a dónde acudir:",
         "res_medical": "Solicite Medi-Cal — es gratis y puede cubrir facturas recientes",
         "res_coveredca": "Reciba ayuda local gratuita para inscribirse en Covered California",
+        "res_coverage": "Solicite cobertura de salud gratuita o de bajo costo en su estado",
         "res_clinic": "Encuentre una clínica gratuita o de bajo costo cerca de usted",
         "res_legalaid": "Ayuda legal gratuita con facturas médicas, en cualquier idioma",
         "letter_note_english": ("Nota: la carta de solicitud a continuación está escrita en inglés "

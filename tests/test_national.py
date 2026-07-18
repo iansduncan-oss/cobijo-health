@@ -357,6 +357,27 @@ class TestServerILPlan(unittest.TestCase):
         st, _ = self._post({"st": "IL", "sid": "000000", "income": 18000, "household": 4})
         self.assertEqual(st, 404)
 
+    def test_statutory_plan_carries_min_note_and_resources(self):
+        # M2: the free/discount plan reuses the page's "legal minimum" caveat (so the floor isn't mistaken
+        # for the hospital's actual policy). H3: the plan routes to real doors, not a resources=[] dead end.
+        st, d = self._post({"st": "IL", "sid": self.ccn, "income": 18000, "household": 4,
+                            "insurance": "uninsured", "in_collections": True, "lang": "en"})
+        self.assertEqual(st, 200)
+        note = d["result"]["charity"].get("min_note")
+        self.assertTrue(note and "legal minimum" in note.lower(), "M2 caveat missing from free-tier plan")
+        ids = [r["url"] for r in d["result"]["resources"]]
+        self.assertTrue(any("abe.illinois.gov" in u for u in ids), "H3 IL coverage door missing")
+        self.assertTrue(any("illinoislegalaid.org" in u for u in ids), "H3 IL legal-aid door missing")
+
+    def test_over_tier_plan_omits_min_note(self):
+        # The "legal minimum" caveat only makes sense where a guarantee was asserted; an over-ceiling
+        # patient (no guaranteed tier) shouldn't be told about a minimum that didn't apply to them.
+        st, d = self._post({"st": "IL", "sid": self.ccn, "income": 900000, "household": 1,
+                            "insurance": "uninsured", "lang": "en"})
+        self.assertEqual(st, 200)
+        self.assertEqual(d["result"]["tier"], "over")
+        self.assertIsNone(d["result"]["charity"].get("min_note"))
+
     def test_il_hospitals_stay_out_of_ca_autocomplete(self):
         # Launch decision: IL reachable only via its own pages, so the CA datalist must not carry it.
         il_names = {r["hospital"].title() for r in self.srv.IL_BY_CCN.values()}
@@ -534,7 +555,7 @@ class TestSitemapIndex(unittest.TestCase):
 
 class TestNewYorkStatutory(unittest.TestCase):
     """New York (3rd state) exercises the generalized statutory model: statewide bands (NO rural
-    distinction) and a charge cap on the Medicare rate (NO % -of-income cap) — so the income-cap clause
+    distinction) and a charge cap on the Medicaid rate (NO % -of-income cap) — so the income-cap clause
     is omitted from both the page and the plan, and the rural note never shows even for a CAH."""
     import hospital_pages as _hp
 
@@ -547,7 +568,7 @@ class TestNewYorkStatutory(unittest.TestCase):
     def test_state_rules_ny_pinned(self):
         ny = state_rules.rules_for("NY")
         self.assertEqual((ny.statutory_free_pct, ny.statutory_discount_pct), (200, 400))
-        self.assertIsNone(ny.income_cap_pct)                 # charge cap is % of Medicare, not income
+        self.assertIsNone(ny.income_cap_pct)                 # charge cap is % of Medicaid rate, not income
         self.assertFalse(ny.has_rural_bands)                 # statewide bands
         self.assertTrue(state_rules.rules_for("IL").has_rural_bands)   # IL contrast
 
@@ -606,6 +627,128 @@ class TestNewYorkStatutory(unittest.TestCase):
         slug = next(iter(idx))
         html = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
         self.assertIn("yearly family income", html)          # IL income-cap sentence present
+
+
+class TestMarylandWashingtonStatutory(unittest.TestCase):
+    """Maryland (4th) + Washington (5th) states. MD mirrors NY (statewide, no income cap, immigration
+    EXCLUDED). WA mirrors MD's bands but immigration is NOT excluded (the bar is agency guidance, not
+    statute text — the note must not appear). Both prove the generalized engine adds a state with just a
+    state_rules row + roster: they route, render, and resolve a plan with no per-state page code."""
+    import hospital_pages as _hp
+
+    def _row(self, state, name, ccn, city, county, rural=False):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": state,
+                "phone": "(555) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Critical Access Hospitals" if rural else "Acute Care Hospitals"}
+
+    def test_md_and_wa_pinned_from_statute(self):
+        md, wa = state_rules.rules_for("MD"), state_rules.rules_for("WA")
+        for r in (md, wa):
+            self.assertEqual((r.statutory_free_pct, r.statutory_discount_pct), (200, 300))
+            self.assertIsNone(r.income_cap_pct)          # no % -of-income collection cap in the model
+            self.assertFalse(r.has_rural_bands)          # statewide bands (WA's CAHs get the "other" floor)
+        self.assertTrue(md.immigration_excluded)         # §19-214.1 bars citizenship/immigration status
+        self.assertFalse(wa.immigration_excluded)        # WA bar is AG/DOH guidance, not statute text
+
+    def test_md_page_cites_law_and_shows_immigration_note(self):
+        idx = self._hp.build_index([self._row("MD", "JOHNS HOPKINS HOSPITAL", "210009", "BALTIMORE",
+                                              "Baltimore City")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            self.assertIn("19-214.1", html)                          # MD act cited
+            self.assertIn("?st=MD", html)                            # generic CTA
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on MD page")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("immigration status", en.lower())              # reassurance shown
+        self.assertIn("Maryland", en)                                # {state} filled
+
+    def test_wa_page_has_no_immigration_note(self):
+        # WA statute text doesn't carry the exclusion (only agency guidance) -> the note must NOT appear.
+        for rural in (False, True):
+            idx = self._hp.build_index([self._row("WA", "HARBORVIEW MEDICAL CENTER", "500001", "SEATTLE",
+                                                  "King", rural=rural)])[0]
+            slug = next(iter(idx))
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+            self.assertIn("70.170.060", html)                        # WA act cited
+            self.assertNotIn("immigration status", html.lower())     # no fabricated claim
+            self.assertNotIn("Critical Access", html)                # WA has no rural-lower-limits note
+
+    def test_md_and_wa_free_plan_cites_law(self):
+        import navigator
+        intake = {"first_name": "there", "full_name": "A B", "household_size": 4,
+                  "annual_income": 18000, "insurance": "uninsured", "in_collections": True}
+        for state, law in (("MD", "19-214.1"), ("WA", "70.170.060")):
+            p = navigator.build_statutory_plan_struct(intake, self._row(state, "X HOSPITAL", "999", "C", "D"), "en")
+            self.assertEqual(p["tier"], "free")                      # ~90% FPL -> free
+            self.assertIn(law, p["charity"]["message"])
+
+    def test_registry_discovers_md_and_wa(self):
+        import server
+        self.assertEqual(set(server.STATUTORY_STATES) >= {"IL", "NY", "MD", "WA"}, True)
+        self.assertGreater(len(server.STATUTORY_STATES["MD"]["hospitals"]), 0)
+        self.assertGreater(len(server.STATUTORY_STATES["WA"]["hospitals"]), 0)
+
+    def test_statutory_page_qr_is_namespaced_and_og_is_safe(self):
+        # L1: the print handout QR must be namespaced under /qr/<ns>/ (so a slug shared with a CA hospital
+        # can't collide) and the OG card must fall back to the site-wide image — NOT the CA-only per-
+        # hospital path, which for a statutory slug would 404 or show the wrong hospital's card.
+        idx = self._hp.build_index([self._row("MD", "X HOSPITAL", "210009", "BALTIMORE", "Baltimore City")])[0]
+        slug = next(iter(idx))
+        html = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn(f"/qr/md/hospital/{slug}.svg", html)       # namespaced print-QR
+        self.assertIn("/og-image.png", html)                     # safe site-wide OG
+        self.assertNotIn("/og/hospital/", html)                  # never the CA-only per-hospital card
+
+
+class TestStatutoryProtectionNotes(unittest.TestCase):
+    """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
+    only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure
+    protection (H2), IL's 60-day apply deadline (M3). Translated in all 10 languages (token-parity)."""
+    import hospital_pages as _hp
+    import i18n as _i18n
+
+    def _row(self, state, ccn):
+        return {"hospital": "X HOSPITAL", "ccn": ccn, "city": "C", "county": "D", "state": state,
+                "phone": "(1) 2", "status": "statutory", "policy": None, "hospital_type": "Acute Care Hospitals"}
+
+    def test_flags_pinned(self):
+        ny, il = state_rules.rules_for("NY"), state_rules.rules_for("IL")
+        self.assertTrue(ny.bars_debt_lawsuits and ny.names_medicaid_cap)
+        self.assertEqual(il.apply_deadline_days, 60)
+        for code in ("MD", "WA", "CA", "IL"):                     # only NY names a Medicaid-rate cap
+            self.assertFalse(state_rules.rules_for(code).names_medicaid_cap)
+        for code in ("MD", "WA", "CA", "NY"):                     # only IL models an apply deadline
+            self.assertIsNone(state_rules.rules_for(code).apply_deadline_days)
+
+    def test_ny_page_shows_cap_and_debt_il_shows_deadline(self):
+        def page(state, ccn, lang):
+            idx = self._hp.build_index([self._row(state, ccn)])[0]
+            slug = next(iter(idx))
+            return self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+        ny_en, il_en = page("NY", "330024", "en"), page("IL", "140208", "en")
+        self.assertIn("share of the Medicaid", ny_en)             # H1 cap note
+        self.assertIn("foreclosure", ny_en)                      # H2 protection note
+        self.assertNotIn("within 60 days", ny_en)                # IL-only deadline absent
+        self.assertIn("within 60 days", il_en)                   # M3 deadline note
+        self.assertNotIn("share of the Medicaid", il_en)         # NY-only cap absent
+        for state, ccn in (("MD", "210009"), ("WA", "500001")):  # neither flag set -> no notes
+            h = page(state, ccn, "en")
+            self.assertNotIn("share of the Medicaid", h)
+            self.assertNotIn("within 60 days", h)
+        # every language renders the gated notes with no unfilled {token}
+        for lang in self._i18n.LANGS:
+            for html in (page("NY", "330024", lang), page("IL", "140208", lang)):
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on a statutory page")
+
+    def test_new_keys_present_and_nonempty_in_every_language(self):
+        for lang in self._i18n.LANGS:
+            S = self._i18n.statutory_strings(lang)
+            for k in ("s_medicaid_cap", "s_debt_protection", "s_apply_deadline"):
+                self.assertTrue(S.get(k, "").strip(), f"{lang}.statutory.{k} empty")
+            # res_coverage rides the plan catalog (messages.t) — present + generic (not 'Medi-Cal')
+            import messages
+            self.assertIn("res_coverage", messages.MESSAGES.get(lang, messages.MESSAGES["en"]))
 
 
 if __name__ == "__main__":

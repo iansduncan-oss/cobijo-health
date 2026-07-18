@@ -35,24 +35,26 @@ DS, SRC = navigator.load_dataset()
 # so any hospital in the CMS roster gets a correct answer with zero extracted data. IL is reached via the
 # `il=<ccn>` hint the IL SEO pages send into the tool (kept out of the CA autocomplete for launch, so a
 # name shared across states can't resolve to the wrong one). Additive: absent file -> empty -> CA-only.
-IL_ROWS = navigator.load_statutory_dataset("dataset_il.json")
-IL_BY_CCN = {str(r["ccn"]): r for r in IL_ROWS if r.get("ccn")}
-# Per-hospital SEO pages for the statute-driven IL roster (slug->row) + its per-county hubs.
-IL_HOSPITAL_INDEX, _ = hospital_pages.build_index(IL_ROWS)
-IL_COUNTY_INDEX = hospital_pages.county_index(IL_HOSPITAL_INDEX)
-NY_ROWS = navigator.load_statutory_dataset("dataset_ny.json")
-NY_BY_CCN = {str(r["ccn"]): r for r in NY_ROWS if r.get("ccn")}
-NY_HOSPITAL_INDEX, _ = hospital_pages.build_index(NY_ROWS)
-NY_COUNTY_INDEX = hospital_pages.county_index(NY_HOSPITAL_INDEX)
-# Registry of statute-driven states, keyed by USPS code. ONE place that drives the /<state>/ page
-# routing, the /plan resolution (?st=&sid=), the per-state sitemap children, and the /find hub — so
-# adding the next state is one state_rules row + a CMS roster + (nothing here; it's discovered below).
+# Registry of statute-driven states, keyed by USPS code. ONE place that drives the /<state>/ page routing,
+# the /plan resolution (?st=&sid=), the per-state sitemap children, and the /find hub. It DISCOVERS every
+# statutory state automatically from state_rules.STATES: adding a state is a state_rules row + a
+# data/dataset_<code>.json roster (force-added CMS data) — nothing to change here. Absent roster -> skipped
+# (so a state whose data file hasn't shipped yet degrades to CA-only rather than crashing).
 STATUTORY_STATES = {}
-for _code, _by_ccn, _hidx, _cidx in (("IL", IL_BY_CCN, IL_HOSPITAL_INDEX, IL_COUNTY_INDEX),
-                                     ("NY", NY_BY_CCN, NY_HOSPITAL_INDEX, NY_COUNTY_INDEX)):
-    if _hidx:                                          # only expose a state whose roster actually loaded
-        STATUTORY_STATES[_code] = {"by_ccn": _by_ccn, "hospitals": _hidx, "counties": _cidx,
-                                   "dir": hospital_pages._DIR_SLUG[_code], "ns": _code.lower()}
+for _code, _rules in state_rules.STATES.items():
+    if not _rules.is_statutory:                        # CA is extraction-driven, not statute-driven -> skip
+        continue
+    _rows = navigator.load_statutory_dataset(f"dataset_{_code.lower()}.json")
+    _hidx, _ = hospital_pages.build_index(_rows)       # per-hospital SEO pages (slug->row)
+    if not _hidx:                                      # only expose a state whose roster actually loaded
+        continue
+    STATUTORY_STATES[_code] = {
+        "by_ccn": {str(r["ccn"]): r for r in _rows if r.get("ccn")},
+        "hospitals": _hidx, "counties": hospital_pages.county_index(_hidx),
+        "dir": hospital_pages._DIR_SLUG[_code], "ns": _code.lower()}
+# Back-compat aliases (tests + any direct reference resolve a state's CCN map by name).
+IL_BY_CCN = STATUTORY_STATES.get("IL", {}).get("by_ccn", {})
+NY_BY_CCN = STATUTORY_STATES.get("NY", {}).get("by_ccn", {})
 # Disambiguated, de-duplicated labels for the autocomplete: a name shared by two campuses shows as
 # "Name (City)" (or collapses to one entry when it's the same hospital double-listed). find_hospital
 # resolves these labels back to the row. See navigator._build_name_index.
@@ -372,6 +374,27 @@ class Handler(BaseHTTPRequestHandler):
             # a per-hospital FAP. Same response shape as the CA path (the rich UI renders `result`).
             result = navigator.build_statutory_plan_struct(intake, row, lang=lang)
             pct, tier = result["fpl_pct"], result["tier"]
+            # M2: a statute-driven plan states the law's guaranteed floor as fact ("must provide free
+            # care"). Reuse the page catalog's already-translated "legal minimum — the hospital may offer
+            # more, applying is free" caveat so a plan reader doesn't mistake the floor for the hospital's
+            # actual (often more generous) policy. Shown only where a guarantee was asserted (free/discount).
+            # Alongside it, surface the same statute-backed extras the SEO page shows (H1 named Medicaid-rate
+            # cap, H2 no-lawsuit/no-foreclosure protection, M3 apply-by deadline), each gated by a rules flag
+            # AND by tier (the cap only bites on a discounted bill; protections/deadline apply ≤ the ceiling).
+            if tier in ("free", "discount"):
+                S = i18n.statutory_strings(lang)
+                hn, sr = result["hospital"]["name"], state_rules.rules_for(row.get("state"))
+                if S.get("s_minimum_note"):
+                    result["charity"]["min_note"] = S["s_minimum_note"].format(name=hn)
+                notes = []
+                if tier == "discount" and sr.names_medicaid_cap and S.get("s_medicaid_cap"):
+                    notes.append(S["s_medicaid_cap"].format(state=sr.name))
+                if sr.bars_debt_lawsuits and S.get("s_debt_protection"):
+                    notes.append(S["s_debt_protection"].format(state=sr.name))
+                if sr.apply_deadline_days and S.get("s_apply_deadline"):
+                    notes.append(S["s_apply_deadline"].format(state=sr.name, days=sr.apply_deadline_days))
+                if notes:
+                    result["charity"]["notes"] = notes
             letter = navigator.generate_letter(intake, row, pct, tier)     # English, cites the state's act
             ref = navigator.letter_reference(intake, row, pct, tier, lang) if lang != "en" else None
             return self._send(200, json.dumps({

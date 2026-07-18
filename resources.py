@@ -41,6 +41,37 @@ RESOURCES = [
 
 _UNINSURED = ("", "none", "uninsured", "self-pay")
 
+# Statute-driven states (IL/NY/MD/WA…) route to their OWN coverage portals + legal-aid networks — CA's
+# BenefitsCal / Covered California / Health Consumer Alliance don't serve them. Per state: the official
+# coverage-application portal (Medicaid + marketplace in one door), plus a statewide legal-aid network for
+# medical-debt / collections help. The national HRSA clinic locator is shared with CA. Labels reuse the
+# generic res_clinic / res_legalaid keys (already state-neutral in all 10 langs); the coverage door uses
+# the generic res_coverage (NOT CA's "Medi-Cal" res_medical). URLs verified live 2026-07-17; re-verify
+# periodically (state portals move) — same discipline as RESOURCES above.
+_STATE_RESOURCES = {
+    "IL": {"coverage": "https://abe.illinois.gov/",                 "legalaid": "https://www.illinoislegalaid.org/"},
+    "NY": {"coverage": "https://nystateofhealth.ny.gov/",           "legalaid": "https://www.lawhelpny.org/"},
+    "MD": {"coverage": "https://www.marylandhealthconnection.gov/", "legalaid": "https://www.mdlab.org/"},
+    "WA": {"coverage": "https://www.wahealthplanfinder.org/",       "legalaid": "https://nwjustice.org/get-legal-help"},
+}
+
+
+def statutory_resources(state, insurance, in_collections):
+    """Resource doors for a statute-driven state — same shape/contract as help_resources (label stays an
+    UNRESOLVED i18n key). Uninsured -> the state coverage portal + the national clinic locator; a bill in
+    collections -> the state legal-aid network. An un-modeled state returns [] (the plan just omits the
+    resource block). Kept parallel to help_resources so both plans route through one localizer."""
+    st = _STATE_RESOURCES.get((state or "").upper())
+    if not st:
+        return []
+    out = []
+    if (insurance or "").strip().lower() in _UNINSURED:
+        out.append({"id": "coverage", "url": st["coverage"], "phone": None, "label": "res_coverage"})
+        out.append({"id": "clinic", "url": "https://findahealthcenter.hrsa.gov/", "phone": None, "label": "res_clinic"})
+    if in_collections:
+        out.append({"id": "legalaid", "url": st["legalaid"], "phone": None, "label": "res_legalaid"})
+    return out
+
 
 def help_resources(pct, insurance, in_collections):
     """The resource entries that apply to this patient, in priority order.

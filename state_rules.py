@@ -35,6 +35,15 @@ class StateRules:
     # (NY §2807-k(9-a)). Surfaced on the page as a reassurance for immigrant patients — set only where the
     # law says so in terms, not merely where §501(r) is silent on citizenship.
     immigration_excluded: bool = False
+    # True when the statute bars suing the patient / forcing the sale or foreclosure of a primary home to
+    # collect the bill (NY §2807-k, patients ≤400% FPL). Surfaced as a collection-protection reassurance.
+    bars_debt_lawsuits: bool = False
+    # True when the statute caps the discounted bill at a NAMED share of the Medicaid rate the patient can
+    # cite to challenge an inflated bill (NY: 10% of Medicaid ≤300% FPL, 20% ≤400%). Gates the cap note.
+    names_medicaid_cap: bool = False
+    # Days after the bill within which the patient must APPLY to claim the discount (IL §10: 60). None =
+    # no statutory deadline modeled. Gates the "apply by" actionable note.
+    apply_deadline_days: Optional[int] = None
 
     @property
     def is_statutory(self):
@@ -98,14 +107,16 @@ IL = StateRules(
     fap_law="Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
     statutory_free_pct=200, statutory_discount_pct=600, income_cap_pct=20,
     statutory_free_rural_pct=125, statutory_discount_rural_pct=300,   # rural/Critical-Access tier (§10(a))
+    apply_deadline_days=60,          # §10: patient must apply within 60 days of the bill (covers bills > $300)
 )
 
 # New York — Hospital Financial Assistance Law (Public Health Law §2807-k), as amended (eff. 2024–25).
 # STATUTE-DRIVEN and STATEWIDE (no rural/Critical-Access distinction — the bands apply to every DOH-licensed
 # hospital). Source-verified vs NY DOH implementation guidance + HCFANY + NYC Bar (2026-07):
 #   • 100% free care (all charges waived) at/below 200% FPL;
-#   • sliding-scale discount 200%–400% FPL, charges capped at ~20% of the MEDICARE rate (a charge cap, NOT
-#     a % of the patient's income — so income_cap_pct stays None; the plan/page omit the income-cap clause);
+#   • sliding-scale discount 200%–400% FPL, charges capped at % of the MEDICAID rate — 10% for 200–300% FPL,
+#     20% for 300–400% FPL (a charge cap, NOT a % of the patient's income — so income_cap_pct stays None; the
+#     plan/page omit the income-cap clause);
 #   • immigration status may NOT be used as an eligibility criterion (§2807-k) — surfaced to Cobijo's audience.
 # No collection lawsuits against patients ≤400% FPL. fpl_floor_pct mirrors the 400% discount ceiling.
 NY = StateRules(
@@ -113,11 +124,51 @@ NY = StateRules(
     fpl_floor_pct=400, discount_implausible_pct=800,
     free_care_unusual_pct=200, free_care_implausible_pct=400,
     fap_law="New York Hospital Financial Assistance Law (Public Health Law §2807-k)",
-    statutory_free_pct=200, statutory_discount_pct=400, income_cap_pct=None,   # charge cap is % of Medicare, not income
+    statutory_free_pct=200, statutory_discount_pct=400, income_cap_pct=None,   # charge cap is % of Medicaid rate, not income
     immigration_excluded=True,   # §2807-k(9-a): immigration status may NOT be an eligibility criterion (eff. 2024-10-20)
+    bars_debt_lawsuits=True,      # §2807-k: no lawsuits + no forced sale/foreclosure of a home, patients ≤400% FPL
+    names_medicaid_cap=True,      # §2807-k: bill capped at 10% of Medicaid rate ≤300% FPL, 20% ≤400% (citable by patient)
 )
 
-STATES = {"CA": CA, "IL": IL, "NY": NY}
+# Maryland — Hospital Financial Assistance Law (Health-General §19-214.1, + COMAR 10.37.13.06, HSCRC).
+# STATUTE-DRIVEN and STATEWIDE (uniform statewide policy since 2020-10-01). Source-verified vs the statute
+# text (Justia/FindLaw) + HSCRC (2026-07):
+#   • 100% free medically necessary care at/below 200% FPL;
+#   • reduced-cost care above 200% FPL (sliding scale) — the statute extends reduced-cost care to 500% FPL for
+#     patients with documented FINANCIAL HARDSHIP (medical debt > 25% of income). We model the clean 300%
+#     non-hardship guarantee here; the 300–500% hardship tier needs a hardship concept the model lacks (a
+#     follow-on, like WA's large-system tier);
+#   • §19-214.1 EXPLICITLY bars using citizenship/immigration status as an eligibility criterion.
+# MD's collection cap is a MONTHLY-PAYMENT cap (5% of monthly income, §19-214.2), semantically different from
+# IL's annual-income cap -> income_cap_pct stays None (surface separately later). No rural/CAH distinction.
+MD = StateRules(
+    code="MD", name="Maryland",
+    fpl_floor_pct=300, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="Maryland Hospital Financial Assistance Law (Health-General §19-214.1)",
+    statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
+    immigration_excluded=True,   # §19-214.1 bars citizenship/immigration status as an eligibility criterion
+)
+
+# Washington — Charity Care Law (RCW 70.170.060, as amended by SHB 1616, eff. 2022-07-01). STATUTE-DRIVEN.
+# The law sets TWO tiers by hospital SIZE/SYSTEM (not rural): large systems (owned by a system with 3+ acute
+# hospitals, or big-bed hospitals in the most populous / a southern-border county) free ≤300%/discount→400%;
+# ALL OTHER hospitals free ≤200%/discount→300%. Source-verified vs app.leg.wa.gov RCW 70.170.060 + WA AG
+# guidance (2026-07). We pin the "other-hospital" tier as the UNIVERSAL FLOOR every WA hospital guarantees —
+# fits Cobijo's honest "legal minimum, the hospital may offer more, apply to find out" framing (large systems
+# exceed it). The large-system 300/400 tier needs a system-size classifier the CMS roster lacks (a follow-on).
+# income_cap_pct None (mechanism is a 75%/50% discount schedule, no income/Medicaid cap). immigration_excluded
+# stays False: the immigration bar is AG+DOH GUIDANCE, not statute text (set the flag only where the law says
+# so in terms — as NY's §2807-k(9-a) does). No rural/CAH bands.
+WA = StateRules(
+    code="WA", name="Washington",
+    fpl_floor_pct=300, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="Washington Charity Care Law (RCW 70.170.060)",
+    statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA}
 
 
 def rules_for(state="CA"):

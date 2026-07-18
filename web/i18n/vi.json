@@ -186,7 +186,8 @@
     "cc_statutory_free": "Theo {law}, **{name}** phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên Bang — và ở khoảng {pct:.0f}%, bạn đủ điều kiện. Hãy nộp đơn bên dưới.",
     "cc_statutory_discount": "Theo {law}, **{name}** phải giảm giá cho bạn: mức thu nhập khoảng {pct:.0f}% Mức Nghèo Liên Bang của bạn nằm trong khoảng {free_pct}%–{discount_pct}%, và bệnh viện không được thu quá {cap}% thu nhập hằng năm của bạn.",
     "cc_statutory_over": "Thu nhập của bạn (khoảng {pct:.0f}% Mức Nghèo Liên Bang) cao hơn giới hạn {discount_pct}% mà {name} phải cung cấp theo {law} — nhưng bạn vẫn cứ nộp đơn, xin trả góp, và dùng các lựa chọn xem xét lỗi hóa đơn và thương lượng bên dưới.",
-    "cc_statutory_discount_nocap": "Theo {law}, **{name}** phải giảm giá cho bạn: mức thu nhập khoảng {pct:.0f}% Mức Nghèo Liên Bang của bạn nằm trong khoảng {free_pct}%–{discount_pct}%, vì vậy bạn đủ điều kiện được giảm chi phí. Hãy nộp đơn bên dưới."
+    "cc_statutory_discount_nocap": "Theo {law}, **{name}** phải giảm giá cho bạn: mức thu nhập khoảng {pct:.0f}% Mức Nghèo Liên Bang của bạn nằm trong khoảng {free_pct}%–{discount_pct}%, vì vậy bạn đủ điều kiện được giảm chi phí. Hãy nộp đơn bên dưới.",
+    "res_coverage": "Nộp đơn xin bảo hiểm y tế miễn phí hoặc chi phí thấp ở tiểu bang của bạn"
   },
   "landing": {
     "title": "Cobijo Health — hỗ trợ miễn phí cho hóa đơn y tế của bạn",
@@ -644,7 +645,10 @@
     "s_dir_lead": "Mọi bệnh viện ở {state} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo {law}. Hãy chọn một bệnh viện để xem giới hạn thu nhập và cách nộp đơn.",
     "s_foot": "Cobijo Health là một công cụ phi lợi nhuận miễn phí (California 501(c)(3) đang trong quá trình thành lập). Chúng tôi không liên kết với bệnh viện này và đây là thông tin chung, không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận các chi tiết với bệnh viện và trong chính sách hỗ trợ tài chính chính thức của bệnh viện.",
     "s_law_p_nocap": "Theo {law}, {name} phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang, và chăm sóc giảm giá cho bệnh nhân có thu nhập lên đến {discount_pct}%.",
-    "s_immigration": "Tình trạng nhập cư của bạn không thể được dùng để quyết định bạn có đủ điều kiện hay không — luật {state} cấm bệnh viện xem xét điều đó. Việc đủ điều kiện chỉ phụ thuộc vào thu nhập của gia đình bạn."
+    "s_immigration": "Tình trạng nhập cư của bạn không thể được dùng để quyết định bạn có đủ điều kiện hay không — luật {state} cấm bệnh viện xem xét điều đó. Việc đủ điều kiện chỉ phụ thuộc vào thu nhập của gia đình bạn.",
+    "s_medicaid_cap": "Nếu hóa đơn của bạn được giảm giá, luật {state} giới hạn nó ở một phần của mức Medicaid: 10% nếu thu nhập hộ gia đình đến 300% Mức Nghèo Liên Bang, và 20% đến 400% — thường thấp hơn nhiều so với giá niêm yết. Nếu hóa đơn của bạn cao hơn, hãy yêu cầu bệnh viện sửa lại.",
+    "s_debt_protection": "Bạn được bảo vệ khỏi việc thu nợ gắt gao: luật {state} cấm bệnh viện kiện bạn, hoặc ép bán hay tịch thu nhà của bạn, để thu hóa đơn này khi thu nhập hộ gia đình của bạn ở mức 400% Mức Nghèo Liên Bang trở xuống.",
+    "s_apply_deadline": "Hãy nộp đơn trong vòng {days} ngày kể từ khi nhận hóa đơn — đó là hạn chót để xin khoản giảm giá này theo luật {state}. Khoản này áp dụng cho bất kỳ hóa đơn nào trên $300 cho một lần nằm viện hoặc khám bệnh, vì vậy hãy nộp đơn ngay khi hóa đơn đến."
   },
   "states": {
     "st_title": "Tìm hỗ trợ tài chính cho hóa đơn bệnh viện của bạn theo tiểu bang | Cobijo Health",

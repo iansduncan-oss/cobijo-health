@@ -186,7 +186,8 @@
     "cc_statutory_free": "Sa ilalim ng {law}, ang **{name}** ay dapat magbigay ng LIBRENG pangangalaga sa mga pasyenteng may kita na katumbas o mas mababa sa {free_pct}% ng Federal Poverty Level — at sa mga {pct:.0f}%, kwalipikado ka. Mag-apply sa ibaba.",
     "cc_statutory_discount": "Sa ilalim ng {law}, ang **{name}** ay dapat magbigay sa iyo ng diskwento: ang iyong kita na mga {pct:.0f}% ng Federal Poverty Level ay nasa saklaw na {free_pct}%–{discount_pct}%, at hindi maaaring maningil ang ospital ng higit sa {cap}% ng iyong taunang kita.",
     "cc_statutory_over": "Ang iyong kita (mga {pct:.0f}% ng Federal Poverty Level) ay mas mataas sa limitasyong {discount_pct}% na dapat ialok ng {name} sa ilalim ng {law} — pero mag-apply pa rin, humingi ng payment plan, at gamitin ang mga opsyon sa pagsusuri ng maling bill at negosasyon sa ibaba.",
-    "cc_statutory_discount_nocap": "Sa ilalim ng {law}, ang **{name}** ay dapat magbigay sa iyo ng diskwento: ang iyong kita na mga {pct:.0f}% ng Federal Poverty Level ay nasa saklaw na {free_pct}%–{discount_pct}%, kaya kwalipikado ka para sa nabawasang singil. Mag-apply sa ibaba."
+    "cc_statutory_discount_nocap": "Sa ilalim ng {law}, ang **{name}** ay dapat magbigay sa iyo ng diskwento: ang iyong kita na mga {pct:.0f}% ng Federal Poverty Level ay nasa saklaw na {free_pct}%–{discount_pct}%, kaya kwalipikado ka para sa nabawasang singil. Mag-apply sa ibaba.",
+    "res_coverage": "Mag-apply para sa libre o murang health coverage sa iyong estado"
   },
   "landing": {
     "title": "Cobijo Health — libreng tulong sa iyong medical bills",
@@ -644,7 +645,10 @@
     "s_dir_lead": "Bawat ospital sa {state} ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga pasyenteng kwalipikado sa ilalim ng {law}. Pumili ng ospital para makita ang mga limitasyon sa kita at kung paano mag-apply.",
     "s_foot": "Ang Cobijo Health ay isang libreng nonprofit na tool (California 501(c)(3) na ginagawa pa lang). Hindi kami kaakibat ng ospital na ito at ito ay pangkalahatang impormasyon, hindi legal, medikal, o pinansyal na payo. Palaging kumpirmahin ang mga detalye sa ospital at sa opisyal nitong patakaran sa tulong pinansyal.",
     "s_law_p_nocap": "Sa ilalim ng {law}, ang {name} ay kailangang magbigay ng LIBRENG pangangalaga sa mga pasyenteng walang insurance na nasa o mas mababa sa {free_pct}% ng Federal Poverty Level, at may diskwentong pangangalaga para sa mga pasyente hanggang {discount_pct}%.",
-    "s_immigration": "Hindi maaaring gamitin ang iyong immigration status para magpasya kung kwalipikado ka — ipinagbabawal ng batas ng {state} sa mga ospital na isaalang-alang ito. Ang pagiging kwalipikado ay nakadepende lamang sa kita ng iyong pamilya."
+    "s_immigration": "Hindi maaaring gamitin ang iyong immigration status para magpasya kung kwalipikado ka — ipinagbabawal ng batas ng {state} sa mga ospital na isaalang-alang ito. Ang pagiging kwalipikado ay nakadepende lamang sa kita ng iyong pamilya.",
+    "s_medicaid_cap": "Kung binawasan ang iyong bill, nililimitahan ito ng batas ng {state} sa isang bahagi lamang ng rate ng Medicaid: 10% kung ang kita ng iyong sambahayan ay hanggang 300% ng Federal Poverty Level, at 20% hanggang 400% — kadalasang mas mababa pa kaysa sa nakalimbag na presyo. Kung mas mataas ang iyong bill, hilingin sa ospital na itama ito.",
+    "s_debt_protection": "Protektado ka mula sa agresibong paniningil: ipinagbabawal ng batas ng {state} sa ospital na idemanda ka, o pilitin ang pagbebenta o foreclosure ng iyong tahanan, para makolekta ang bill na ito kapag ang kita ng iyong sambahayan ay nasa o mas mababa sa 400% ng Federal Poverty Level.",
+    "s_apply_deadline": "Mag-apply sa loob ng {days} araw mula nang matanggap mo ang iyong bill — iyon ang huling araw para hilingin ang diskwentong ito sa ilalim ng batas ng {state}. Saklaw nito ang anumang bill na higit sa $300 para sa isang pananatili o pagbisita sa ospital, kaya mag-apply agad pagdating ng bill."
   },
   "states": {
     "st_title": "Maghanap ng Tulong Pinansyal para sa Iyong Bill sa Ospital ayon sa Estado | Cobijo Health",

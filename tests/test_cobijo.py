@@ -1156,6 +1156,30 @@ class TestHelpResources(unittest.TestCase):
         self.assertIn("benefitscal.com", text)
         self.assertIn("(888) 804-3536", text)
 
+    def test_statutory_resources_route_per_state(self):
+        # A statute-driven state routes to ITS OWN coverage portal + legal aid (not CA's), + the shared
+        # national clinic locator — so the statutory plan is no longer a resources=[] dead end.
+        r = self._res
+        for state, cov in (("IL", "abe.illinois.gov"), ("NY", "nystateofhealth.ny.gov"),
+                           ("MD", "marylandhealthconnection.gov"), ("WA", "wahealthplanfinder.org")):
+            doors = r.statutory_resources(state, "uninsured", True)
+            self.assertEqual([d["id"] for d in doors], ["coverage", "clinic", "legalaid"])
+            self.assertIn(cov, doors[0]["url"])                         # state-specific coverage door
+            self.assertIn("findahealthcenter.hrsa.gov", doors[1]["url"])  # shared national clinic locator
+            for d in doors:
+                self.assertTrue(d["url"].startswith("https://"), f"{state} {d['id']} not https")
+                self.assertIn(d["label"], MESSAGES["en"], f"{d['label']} missing from catalog")
+        # Insured + not in collections -> no link dump; an un-modeled state -> no routes.
+        self.assertEqual(r.statutory_resources("MD", "aetna", False), [])
+        self.assertEqual(r.statutory_resources("TX", "uninsured", True), [])
+
+    def test_res_coverage_label_is_generic_not_california(self):
+        # The statutory coverage door must NOT say "Medi-Cal" (CA-only). en/es pinned inline; the other 8
+        # langs are completed in the translation batch and fall back to English via t() until then.
+        for lang in ("en", "es"):
+            self.assertIn("res_coverage", MESSAGES[lang])
+            self.assertNotIn("Medi-Cal", MESSAGES[lang]["res_coverage"])
+
 
 def navigator_langs():
     """The languages the plan catalog claims to support (en/es inline + the 8 loaded from web i18n)."""
