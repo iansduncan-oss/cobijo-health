@@ -752,6 +752,66 @@ class TestNewJerseyStatutory(unittest.TestCase):
         self.assertGreater(len(server.STATUTORY_STATES["NJ"]["hospitals"]), 0)
 
 
+class TestColoradoStatutory(unittest.TestCase):
+    """Colorado (7th state) — the first DISCOUNT-ONLY statutory state. CO Hospital Discounted Care
+    (HB21-1198) sets NO free tier: every eligible patient ≤250% FPL gets capped-rate discounted care, not
+    free care. So statutory_free_pct=None and both renderers must use the discount-only text (never print
+    'FREE care ... at or below None%'). Proves the engine handles a no-free-tier statute honestly."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "CO",
+                "phone": "(555) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_co_pinned_discount_only(self):
+        co = state_rules.rules_for("CO")
+        self.assertIsNone(co.statutory_free_pct)         # no statutory free tier
+        self.assertEqual(co.statutory_discount_pct, 250)
+        self.assertIsNone(co.income_cap_pct)             # monthly-payment cap, not an annual %-of-income cap
+        self.assertFalse(co.has_rural_bands)
+        self.assertFalse(co.immigration_excluded)
+        self.assertTrue(co.is_statutory)
+
+    def test_co_page_discount_only_no_free_tier_leak(self):
+        idx = self._hp.build_index([self._row("DENVER HEALTH MEDICAL CENTER", "060052", "DENVER", "Denver")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            self.assertIn("HB21-1198", html)                         # CO law cited
+            self.assertIn("?st=CO", html)                            # generic CTA
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on CO page")
+            self.assertNotIn("None%", html)                          # the free_pct=None leak must NOT appear
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("Colorado", en)                                # {state} filled
+        self.assertIn("discounted care", en.lower())                 # discount-only framing present
+        self.assertNotIn("must provide free care", en.lower())       # no false free-tier claim
+        self.assertNotIn("immigration status", en.lower())           # not barred in statute -> no note
+        self.assertIn(f"/qr/co/hospital/{slug}.svg", en)             # namespaced print-QR
+        self.assertIn("/og-image.png", en)                           # safe site-wide OG
+        self.assertNotIn("/og/hospital/", en)
+
+    def test_co_plan_low_income_is_discount_not_free(self):
+        import navigator
+        # ~90% FPL: a free-tier state would say 'free'; CO (no free tier) must say 'discount', cite the law,
+        # and never render 'None%'.
+        intake = {"first_name": "there", "full_name": "A B", "household_size": 4,
+                  "annual_income": 18000, "insurance": "uninsured", "in_collections": True}
+        p = navigator.build_statutory_plan_struct(intake, self._row("X HOSPITAL", "060052", "C", "D"), "en")
+        self.assertEqual(p["tier"], "discount")                      # NOT 'free' — CO has no free tier
+        self.assertIn("HB21-1198", p["charity"]["message"])
+        self.assertNotIn("None", p["charity"]["message"])            # no {free_pct}=None leak
+        # Above 250% FPL -> over tier.
+        over = {**intake, "annual_income": 90000}
+        po = navigator.build_statutory_plan_struct(over, self._row("X HOSPITAL", "060052", "C", "D"), "en")
+        self.assertEqual(po["tier"], "over")
+
+    def test_registry_discovers_co(self):
+        import server
+        self.assertIn("CO", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["CO"]["hospitals"]), 0)
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure

@@ -417,7 +417,13 @@ def build_statutory_plan_struct(intake, row, lang="en"):
                "over": "cc_statutory_over"}[tier]
     # A state that caps charges on the Medicaid rate rather than a % of income (NY) has no income-cap
     # clause to cite, so the discount message drops it (income_cap_pct is None).
-    if tier == "discount" and facts["income_cap_pct"] is None:
+    # A discount-only statute (CO: no free tier) has no free-floor to name a band against — the patient is
+    # simply at/below the discount ceiling — so it uses a band-less variant instead of the free_pct–disc_pct
+    # range text (which would render "None%–250%"). Otherwise a Medicaid-rate-cap state (NY) drops the
+    # income-cap clause.
+    if tier == "discount" and facts["free_pct"] is None:
+        msg_key = "cc_statutory_discount_only"
+    elif tier == "discount" and facts["income_cap_pct"] is None:
         msg_key = "cc_statutory_discount_nocap"
     message = t(lang, msg_key, name=facts["hospital"], law=facts["fap_law"], pct=facts["fpl_pct"],
                 free_pct=facts["free_pct"], discount_pct=facts["discount_pct"], cap=facts["income_cap_pct"])

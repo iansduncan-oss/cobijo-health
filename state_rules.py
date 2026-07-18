@@ -192,7 +192,28 @@ NJ = StateRules(
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
 )
 
-STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ}
+# Colorado — Hospital Discounted Care (HB21-1198, codified C.R.S. §25.5-3-501 et seq.; eff. 2022-09-01).
+# STATUTE-DRIVEN and STATEWIDE. DIFFERENT SHAPE from the free≤200/discount≤300 states: CO's law sets NO
+# statutory FREE tier — instead every uninsured (or underinsured, on the balance) patient AT OR BELOW 250%
+# FPL is guaranteed DISCOUNTED care (charges capped at the greater of the Medicare or Medicaid base rate,
+# set annually by HCPF), with monthly payments capped at 4% of monthly household income (2% for a bill
+# from a health-care professional) and the balance treated as PAID IN FULL after a cumulative 36 monthly
+# payments. Source-verified vs leg.colorado.gov HB21-1198 + CO HCPF Hospital Discounted Care + Justia CRS
+# (2026-07). So CO is the first DISCOUNT-ONLY statutory state: statutory_free_pct=None (the engine's tier
+# logic returns 'discount' for pct≤250 and never mis-asserts 'free'). income_cap_pct stays None — CO's cap
+# is a MONTHLY-PAYMENT cap (4%/2%), semantically unlike IL's annual %-of-income cap, so it's surfaced (if
+# at all) as a note, not the income-cap clause. Many CO hospitals ADD free care by their own FAP above this
+# floor — the s_minimum_note ("legal minimum; the hospital may offer more — apply") carries that honestly.
+# immigration_excluded stays False (HDC conditions on income/residency, not a statutory immigration bar).
+CO = StateRules(
+    code="CO", name="Colorado",
+    fpl_floor_pct=250, discount_implausible_pct=800,
+    free_care_unusual_pct=250, free_care_implausible_pct=400,
+    fap_law="Colorado Hospital Discounted Care law (HB21-1198, C.R.S. §25.5-3-501 et seq.)",
+    statutory_free_pct=None, statutory_discount_pct=250, income_cap_pct=None,
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO}
 
 
 def rules_for(state="CA"):

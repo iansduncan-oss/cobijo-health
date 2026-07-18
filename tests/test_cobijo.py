@@ -1162,7 +1162,7 @@ class TestHelpResources(unittest.TestCase):
         r = self._res
         for state, cov in (("IL", "abe.illinois.gov"), ("NY", "nystateofhealth.ny.gov"),
                            ("MD", "marylandhealthconnection.gov"), ("WA", "wahealthplanfinder.org"),
-                           ("NJ", "getcovered.nj.gov")):
+                           ("NJ", "getcovered.nj.gov"), ("CO", "connectforhealthco.com")):
             doors = r.statutory_resources(state, "uninsured", True)
             self.assertEqual([d["id"] for d in doors], ["coverage", "clinic", "legalaid"])
             self.assertIn(cov, doors[0]["url"])                         # state-specific coverage door

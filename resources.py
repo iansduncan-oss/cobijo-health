@@ -54,6 +54,7 @@ _STATE_RESOURCES = {
     "MD": {"coverage": "https://www.marylandhealthconnection.gov/", "legalaid": "https://www.mdlab.org/"},
     "WA": {"coverage": "https://www.wahealthplanfinder.org/",       "legalaid": "https://nwjustice.org/get-legal-help"},
     "NJ": {"coverage": "https://www.getcovered.nj.gov/",            "legalaid": "https://www.lsnjlaw.org/"},
+    "CO": {"coverage": "https://connectforhealthco.com/",           "legalaid": "https://coloradolegalservices.org/"},
 }
 
 

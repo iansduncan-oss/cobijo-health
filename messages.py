@@ -54,6 +54,12 @@ MESSAGES = {
         "cc_statutory_discount_nocap": ("Under {law}, **{name}** must give you a discount: your ~{pct:.0f}% of the "
                                         "Federal Poverty Level falls in the {free_pct}%–{discount_pct}% range, so "
                                         "you qualify for reduced charges. Apply below."),
+        # Discount-only variant (a state whose law sets NO free tier — every eligible patient gets a capped
+        # discount, not free care — e.g. CO). No free-floor to name a band against, so it cites the ceiling.
+        "cc_statutory_discount_only": ("Under {law}, **{name}** must give you a discount: at ~{pct:.0f}% of the "
+                                       "Federal Poverty Level (at or below {discount_pct}%), you qualify for reduced "
+                                       "charges — the hospital caps what you're charged and your monthly payments. "
+                                       "Apply below."),
         "cc_statutory_over": ("Your income (~{pct:.0f}% of the Federal Poverty Level) is above the "
                               "{discount_pct}% limit {name} must offer under {law} — but apply anyway, request "
                               "a payment plan, and use the bill-error review and negotiation options below."),
@@ -195,6 +201,10 @@ MESSAGES = {
         "cc_statutory_discount": ("Según {law}, **{name}** debe otorgarle un descuento: su ~{pct:.0f}% del Nivel "
                                   "Federal de Pobreza está en el rango de {free_pct}%–{discount_pct}%, y el "
                                   "hospital no puede cobrar más del {cap}% de su ingreso anual."),
+        "cc_statutory_discount_only": ("Según {law}, **{name}** debe otorgarle un descuento: con ~{pct:.0f}% del "
+                                       "Nivel Federal de Pobreza (en o por debajo del {discount_pct}%), usted califica "
+                                       "para cargos reducidos: el hospital limita lo que le cobran y sus pagos "
+                                       "mensuales. Solicítelo a continuación."),
         "cc_statutory_discount_nocap": ("Según {law}, **{name}** debe otorgarle un descuento: su ~{pct:.0f}% del "
                                         "Nivel Federal de Pobreza está en el rango de {free_pct}%–{discount_pct}%, "
                                         "por lo que usted califica para cargos reducidos. Solicítela abajo."),

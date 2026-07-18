@@ -75,7 +75,8 @@ def _fill(s, **kw):
 # A statute-driven state (T4.1 Phase 2) lives under an /<state>/ namespace (e.g. /il/hospital/<slug>),
 # so its pages never collide with California's, which stays at the un-prefixed root (byte-identical).
 _DIR_SLUG = {"CA": "california-hospitals", "IL": "illinois-hospitals", "NY": "new-york-hospitals",
-             "MD": "maryland-hospitals", "WA": "washington-hospitals", "NJ": "new-jersey-hospitals"}
+             "MD": "maryland-hospitals", "WA": "washington-hospitals", "NJ": "new-jersey-hospitals",
+             "CO": "colorado-hospitals"}
 
 
 def _path(lang, slug=None, kind="hospital", state="CA"):
@@ -550,7 +551,10 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     # What the law guarantees — the statutory bands (rural-adjusted), + an honest "legal minimum" caveat.
     # States with an income-based collection cap (IL) cite it; states that cap on the Medicaid rate
     # instead (NY) use the cap-less text. The rural note shows only where the law sets distinct rural bands.
-    law_key = "s_law_p" if cap is not None else "s_law_p_nocap"
+    # A discount-only statute (CO: no free tier — every eligible patient gets capped-rate discounted care,
+    # not free care) can't use the free-tier text; it would print "FREE care ... at or below None%". Else
+    # states with an income-based collection cap (IL) cite it; Medicaid-rate-cap states (NY) drop it.
+    law_key = "s_law_p_discount_only" if free_pct is None else ("s_law_p" if cap is not None else "s_law_p_nocap")
     out.append(f'<div class="card"><h2>{_e(_fill(S["s_law_h"], state=state_name))}</h2>'
                f'<p>{_e(_fill(S[law_key], name=name, law=law, free_pct=free_pct, discount_pct=disc_pct, cap=cap))}</p>')
     if rural and rules.has_rural_bands:
