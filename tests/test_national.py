@@ -701,6 +701,57 @@ class TestMarylandWashingtonStatutory(unittest.TestCase):
         self.assertNotIn("/og/hospital/", html)                  # never the CA-only per-hospital card
 
 
+class TestNewJerseyStatutory(unittest.TestCase):
+    """New Jersey (6th state). Shape mirrors WA: statewide 200/300 bands, no income cap, no rural tier,
+    immigration NOT surfaced (NJ Charity Care is residency+income+asset-based; the statute doesn't bar
+    immigration status 'in terms' the way NY §2807-k(9-a) does, so the reassurance must not appear).
+    Proves the generalized engine adds NJ with only a state_rules row + roster — routes, renders, resolves."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "NJ",
+                "phone": "(555) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_nj_pinned_from_statute(self):
+        nj = state_rules.rules_for("NJ")
+        self.assertEqual((nj.statutory_free_pct, nj.statutory_discount_pct), (200, 300))
+        self.assertIsNone(nj.income_cap_pct)             # asset test, not a % -of-income cap -> not modeled
+        self.assertFalse(nj.has_rural_bands)             # statewide program, no rural/CAH distinction
+        self.assertFalse(nj.immigration_excluded)        # not barred in statute text -> no reassurance note
+        self.assertTrue(nj.is_statutory)
+
+    def test_nj_page_cites_law_and_has_no_immigration_note(self):
+        idx = self._hp.build_index([self._row("HACKENSACK UNIVERSITY MEDICAL CENTER", "310002",
+                                              "HACKENSACK", "Bergen")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            self.assertIn("26:2H-18.60", html)                       # NJ act cited
+            self.assertIn("?st=NJ", html)                            # generic CTA
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token on NJ page")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("New Jersey", en)                              # {state} filled
+        self.assertNotIn("immigration status", en.lower())          # no fabricated statutory claim
+        self.assertNotIn("Critical Access", en)                     # no rural-lower-limits note
+        self.assertIn(f"/qr/nj/hospital/{slug}.svg", en)            # namespaced print-QR
+        self.assertIn("/og-image.png", en)                          # safe site-wide OG card
+        self.assertNotIn("/og/hospital/", en)                       # never the CA-only per-hospital card
+
+    def test_nj_free_plan_cites_law(self):
+        import navigator
+        intake = {"first_name": "there", "full_name": "A B", "household_size": 4,
+                  "annual_income": 18000, "insurance": "uninsured", "in_collections": True}
+        p = navigator.build_statutory_plan_struct(intake, self._row("X HOSPITAL", "999", "C", "D"), "en")
+        self.assertEqual(p["tier"], "free")                          # ~90% FPL -> free
+        self.assertIn("26:2H-18.60", p["charity"]["message"])
+
+    def test_registry_discovers_nj(self):
+        import server
+        self.assertIn("NJ", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["NJ"]["hospitals"]), 0)
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure

@@ -53,6 +53,7 @@ _STATE_RESOURCES = {
     "NY": {"coverage": "https://nystateofhealth.ny.gov/",           "legalaid": "https://www.lawhelpny.org/"},
     "MD": {"coverage": "https://www.marylandhealthconnection.gov/", "legalaid": "https://www.mdlab.org/"},
     "WA": {"coverage": "https://www.wahealthplanfinder.org/",       "legalaid": "https://nwjustice.org/get-legal-help"},
+    "NJ": {"coverage": "https://www.getcovered.nj.gov/",            "legalaid": "https://www.lsnjlaw.org/"},
 }
 
 

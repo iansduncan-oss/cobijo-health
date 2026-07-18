@@ -168,7 +168,31 @@ WA = StateRules(
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
 )
 
-STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA}
+# New Jersey — Hospital Care Payment Assistance Program / "Charity Care" (N.J.S.A. 26:2H-18.60; N.J.A.C.
+# 10:52-11). STATUTE-DRIVEN and STATEWIDE (uniform statewide program, no rural/CAH distinction). The state
+# sets the eligibility thresholds, so an NJ patient gets a correct answer from these numbers alone — no
+# per-hospital FAP extraction. Source-verified vs Legal Services of NJ + NJ DOH (nj.gov/health/hcf) +
+# DollarFor (2026-07):
+#   • 100% free care at/below 200% FPL;
+#   • sliding-scale reduced-charge 200%–300% FPL (patient pays 20/40/60/80% across 25-pt bands) — we model
+#     the clean 300% envelope as the discount ceiling (the sub-bands are like NY's Medicaid-cap: a note-level
+#     refinement, a follow-on). A hardship path can extend past 300% when out-of-pocket medical > 30% of
+#     income — needs the same hardship concept MD's 300–500% tier lacks, so not modeled here.
+# NJ's collection limit is an ASSET test ($7,500 individual / $15,000 family, spend-down allowed) + a NJ
+# RESIDENCY requirement, NOT a % -of-income cap -> income_cap_pct stays None (the model has no asset/residency
+# concept; Cobijo's honest "apply to confirm" framing covers it). immigration_excluded stays False: NJ Charity
+# Care is residency+income+asset-based and does not require immigration status, but that's program practice /
+# secondary-source characterization, not statute text barring it "in terms" as NY's §2807-k(9-a) does — so we
+# do NOT surface the affirmative reassurance (a native/legal-review upgrade candidate). Mirrors WA's shape.
+NJ = StateRules(
+    code="NJ", name="New Jersey",
+    fpl_floor_pct=300, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="New Jersey Hospital Care Payment Assistance Program (N.J.S.A. 26:2H-18.60)",
+    statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ}
 
 
 def rules_for(state="CA"):

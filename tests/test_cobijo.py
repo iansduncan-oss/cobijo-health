@@ -1161,7 +1161,8 @@ class TestHelpResources(unittest.TestCase):
         # national clinic locator — so the statutory plan is no longer a resources=[] dead end.
         r = self._res
         for state, cov in (("IL", "abe.illinois.gov"), ("NY", "nystateofhealth.ny.gov"),
-                           ("MD", "marylandhealthconnection.gov"), ("WA", "wahealthplanfinder.org")):
+                           ("MD", "marylandhealthconnection.gov"), ("WA", "wahealthplanfinder.org"),
+                           ("NJ", "getcovered.nj.gov")):
             doors = r.statutory_resources(state, "uninsured", True)
             self.assertEqual([d["id"] for d in doors], ["coverage", "clinic", "legalaid"])
             self.assertIn(cov, doors[0]["url"])                         # state-specific coverage door
