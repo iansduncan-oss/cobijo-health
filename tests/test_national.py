@@ -833,6 +833,59 @@ class TestColoradoStatutory(unittest.TestCase):
             self.assertIn("discounted care", html.lower(), f"{where}: discount-only framing present")
 
 
+class TestRhodeIslandStatutory(unittest.TestCase):
+    """Rhode Island (9th state). Clean free+discount drop-in, same shape as NJ/MD/WA (free ≤200% / discount
+    ≤300%, 216-RICR-40-10-23). Reuses the existing free-tier strings on every surface — a state added with
+    just a state_rules row + roster, no i18n."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "RI",
+                "phone": "(555) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_ri_pinned_from_statute(self):
+        r = state_rules.rules_for("RI")
+        self.assertEqual((r.statutory_free_pct, r.statutory_discount_pct), (200, 300))
+        self.assertIsNone(r.income_cap_pct)
+        self.assertFalse(r.immigration_excluded)
+        self.assertTrue(r.is_statutory)
+
+    def test_ri_surfaces_cite_law_no_leak(self):
+        idx = self._hp.build_index([self._row("RHODE ISLAND HOSPITAL", "410001", "PROVIDENCE",
+                                              "Providence")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            c = self._hp.render_statutory_county("Providence", idx, lang, "RI")
+            d = self._hp.render_statutory_directory(idx, lang, "RI")
+            for html, where in ((h, "hospital"), (c, "county"), (d, "directory")):
+                self.assertIn("216-RICR-40-10-23", html, f"{lang} {where}: RI reg cited")
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("Rhode Island", en)
+        self.assertIn("free care", en.lower())                       # RI has a free tier
+        self.assertIn(f"/qr/ri/hospital/{slug}.svg", en)
+
+    def test_ri_plan_free_and_discount(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4, "insurance": "uninsured",
+                "in_collections": True}
+        free = navigator.build_statutory_plan_struct({**base, "annual_income": 18000},
+                                                     self._row("X HOSPITAL", "410001", "C", "D"), "en")
+        self.assertEqual(free["tier"], "free")
+        self.assertIn("216-RICR-40-10-23", free["charity"]["message"])
+        disc = navigator.build_statutory_plan_struct({**base, "annual_income": 80000},   # ~242% FPL -> discount
+                                                     self._row("X HOSPITAL", "410001", "C", "D"), "en")
+        self.assertEqual(disc["tier"], "discount")
+
+    def test_registry_discovers_ri(self):
+        import server
+        self.assertIn("RI", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["RI"]["hospitals"]), 0)
+
+
 class TestOregonStatutory(unittest.TestCase):
     """Oregon (8th state). Free+discount shape like NJ/MD/WA but with a HIGHER discount ceiling (400% vs
     300%): free ≤200% FPL, sliding discount to 400% (ORS 442.614 / HB 3076). Because OR has a real free

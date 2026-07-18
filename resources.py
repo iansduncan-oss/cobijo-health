@@ -56,6 +56,7 @@ _STATE_RESOURCES = {
     "NJ": {"coverage": "https://www.getcovered.nj.gov/",            "legalaid": "https://www.lsnjlaw.org/"},
     "CO": {"coverage": "https://connectforhealthco.com/",           "legalaid": "https://coloradolegalservices.org/"},
     "OR": {"coverage": "https://one.oregon.gov/",                   "legalaid": "https://oregonlawhelp.org/"},
+    "RI": {"coverage": "https://healthsourceri.com/",               "legalaid": "https://helprilaw.org/"},
 }
 
 

@@ -232,7 +232,23 @@ OR = StateRules(
     statutory_free_pct=200, statutory_discount_pct=400, income_cap_pct=None,
 )
 
-STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR}
+# Rhode Island — hospital charity care (216-RICR-40-10-23 §23.14.1, "Provision of Charity Care,
+# Uncompensated Care, and Community Benefits"; effective 2022-01-04). STATUTE/REGULATION-DRIVEN and
+# STATEWIDE. Free+discount shape identical to NJ/MD/WA: 100% free charity care ≤200% FPL, partial charity
+# care (a sliding discount <100%) 200–300% FPL. Source-verified vs the primary RICR text (rules.sos.ri.gov)
+# + RI DOH (2026-07). The partial-discount AMOUNT is set by each hospital ("its own evaluation of service
+# area needs"), so we model the clean free≤200 / discount≤300 ELIGIBILITY envelope the regulation guarantees
+# (the s_minimum_note already says the hospital may offer more). income_cap_pct None (no %-of-income cap);
+# immigration_excluded False (not addressed in the regulation). Reuses existing free-tier strings — no i18n.
+RI = StateRules(
+    code="RI", name="Rhode Island",
+    fpl_floor_pct=300, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="Rhode Island's hospital charity care regulation (216-RICR-40-10-23)",
+    statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI}
 
 
 def rules_for(state="CA"):
