@@ -307,8 +307,51 @@ MA = StateRules(
     immigration_excluded=True,   # 101 CMR 613.08 bars alienage/citizenship discrimination + HSN covers undocumented residents
 )
 
+# Ohio — Hospital Care Assurance Program (HCAP): the individual free-care mandate is Ohio Rev. Code §5168.14
+# (within ORC ch. 5168), implemented by OAC 5160-2-17. STATUTE-DRIVEN and STATEWIDE — every non-federal general
+# acute-care hospital is assessed the HCAP fee (§5168.06) and §5168.14 binds "each hospital that receives funds
+# distributed under" the chapter, so the free-care duty reaches essentially all of them. The SECOND FREE-ONLY
+# shape (like ME): a hospital "shall provide, without charge ... basic, medically necessary hospital-level
+# services to individuals who are residents of this state, are not medicaid recipients, and whose income is at
+# or below the federal poverty line" — i.e. 100% FREE ≤100% FPL, NO statutory discount tier above it (any
+# higher-income discount is the hospital's own §501(r) policy, not HCAP). statutory_free_pct=100,
+# statutory_discount_pct=None. Source-verified vs primary ORC §5168.14 + §5168.01 + OAC 5160-2-17
+# (codes.ohio.gov); current eff. 2023-10-03 (HB33), the 100% FPL standard did NOT move. income_cap_pct None.
+# immigration_excluded stays False: the statute is SILENT on immigration (residency+income+non-Medicaid only) —
+# the "no immigration consequence" reassurance is UHCAN advocacy guidance, not statute text, so we don't surface
+# the affirmative note. Honest follow-on (not modeled): HCAP gives an unusually long 3-YEAR window to apply. Cite
+# §5168.14 (NOT §5168.06, the funding side). Reuses the ME free-only i18n — no new i18n.
+OH = StateRules(
+    code="OH", name="Ohio",
+    fpl_floor_pct=100, discount_implausible_pct=800,
+    free_care_unusual_pct=100, free_care_implausible_pct=300,
+    fap_law="Ohio's Hospital Care Assurance Program (Ohio Rev. Code §5168.14)",
+    statutory_free_pct=100, statutory_discount_pct=None, income_cap_pct=None,
+)
+
+# Vermont — Patient Financial Assistance and Medical Debt (18 V.S.A. §§9481–9485; Act 119 of 2022, FPL tiers
+# operational 2022-07-01 with hospital implementation 2024-07-01; §9485 amended by Act 21 of 2025). STATUTE-
+# DRIVEN and STATEWIDE — §9482 sets a MANDATORY statewide FPL floor every "large health care facility" must meet
+# ("shall provide free or discounted care ... as follows"), the most generous free tier in the model: 100% FREE
+# ≤250% FPL, then a ≥40% discount 250–400% FPL. (A separate catastrophic cap — bills capped at 20% of household
+# income ≤600% FPL — needs the hardship concept the model lacks, a follow-on like MD's 300–500% tier.)
+# statutory_free_pct=250, statutory_discount_pct=400. Source-verified vs primary 18 V.S.A. §9482/§9483
+# (legislature.vermont.gov). income_cap_pct None (the discount is a %-reduction; §9483's 5%-of-monthly-income
+# PAYMENT-plan cap is a separate protection, a follow-on note). immigration_excluded=True: §9483 EXPLICITLY
+# protects undocumented immigrants (refusal to apply for public programs is not grounds for denial; they may
+# submit alternative income documentation) — an in-terms statutory non-exclusion (stronger than MA's), so we
+# surface the existing translated s_immigration reassurance. Reuses existing free+discount strings — no new i18n.
+VT = StateRules(
+    code="VT", name="Vermont",
+    fpl_floor_pct=400, discount_implausible_pct=800,
+    free_care_unusual_pct=250, free_care_implausible_pct=400,
+    fap_law="Vermont's hospital financial assistance law (18 V.S.A. §9482)",
+    statutory_free_pct=250, statutory_discount_pct=400, income_cap_pct=None,
+    immigration_excluded=True,   # 18 V.S.A. §9483 explicitly protects undocumented immigrants from exclusion
+)
+
 STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI, "ME": ME,
-          "MA": MA}
+          "MA": MA, "OH": OH, "VT": VT}
 
 
 def rules_for(state="CA"):

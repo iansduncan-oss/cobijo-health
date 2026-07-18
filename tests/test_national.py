@@ -1107,6 +1107,126 @@ class TestMassachusettsStatutory(unittest.TestCase):
         self.assertGreater(len(server.STATUTORY_STATES["MA"]["hospitals"]), 0)
 
 
+class TestOhioStatutory(unittest.TestCase):
+    """Ohio (12th state) — the SECOND free-only statutory shape (after ME). HCAP (Ohio Rev. Code §5168.14)
+    guarantees FREE basic medically-necessary care to Ohio residents (non-Medicaid) ≤100% FPL, with NO
+    statutory discount tier. statutory_free_pct=100, statutory_discount_pct=None — reuses the ME free-only
+    i18n (no discount-tier leak, no 'None%'). No payment-cap band (unlike ME). Immigration silent -> no note."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "OH",
+                "phone": "(614) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_oh_pinned_free_only(self):
+        o = state_rules.rules_for("OH")
+        self.assertEqual(o.statutory_free_pct, 100)       # HCAP: free basic care ≤100% FPL
+        self.assertIsNone(o.statutory_discount_pct)       # no statutory discount tier — free-only
+        self.assertIsNone(o.income_cap_pct)
+        self.assertIsNone(o.payment_cap_pct)              # no 200–400% payment-cap band (unlike ME)
+        self.assertFalse(o.immigration_excluded)          # statute silent on immigration -> no reassurance
+        self.assertTrue(o.is_statutory)
+
+    def test_oh_surfaces_free_only_no_leak(self):
+        idx = self._hp.build_index([self._row("OHIO STATE UNIVERSITY HOSPITAL", "360085", "COLUMBUS",
+                                              "Franklin")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "ar"):
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            c = self._hp.render_statutory_county("Franklin", idx, lang, "OH")
+            d = self._hp.render_statutory_directory(idx, lang, "OH")
+            for html, where in ((h, "hospital"), (c, "county"), (d, "directory")):
+                self.assertIn("5168.14", html, f"{lang} {where}: OH law cited")
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("Ohio", en)
+        self.assertIn("free care", en.lower())
+        self.assertNotIn("discounted care", en.lower())              # free-only: no false discount-tier claim
+        self.assertNotIn("immigration status", en.lower())           # silent statute -> no note
+        self.assertIn("?st=OH", en)
+        self.assertIn(f"/qr/oh/hospital/{slug}.svg", en)
+
+    def test_oh_plan_free_then_over(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4, "insurance": "uninsured",
+                "in_collections": True}
+        row = self._row("X HOSPITAL", "360085", "C", "D")
+        free = navigator.build_statutory_plan_struct({**base, "annual_income": 20000}, row, "en")  # ~60% FPL
+        self.assertEqual(free["tier"], "free")
+        self.assertIn("5168.14", free["charity"]["message"])
+        self.assertNotIn("None", free["charity"]["message"])
+        over = navigator.build_statutory_plan_struct({**base, "annual_income": 45000}, row, "en")  # ~136% FPL
+        self.assertEqual(over["tier"], "over")                       # above 100% -> over (no discount tier)
+        self.assertNotIn("None%", over["charity"]["message"])
+        self.assertIn("100%", over["charity"]["message"])            # free-only over cites the 100% floor, not None
+
+    def test_registry_discovers_oh(self):
+        import server
+        self.assertIn("OH", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["OH"]["hospitals"]), 0)
+
+
+class TestVermontStatutory(unittest.TestCase):
+    """Vermont (13th state). Free+discount via 18 V.S.A. §9482 (Act 119 of 2022) with the MOST GENEROUS free
+    floor in the model: free ≤250% FPL, ≥40% discount 250–400%. immigration_excluded=True — §9483 explicitly
+    protects undocumented immigrants (an in-terms non-exclusion), so the translated reassurance surfaces. The
+    distinguishing test is the 200–250% band: VT answers 'free' there, where every 200-floor state answers
+    'discount' — guards the 250 free floor against a silent revert."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "VT",
+                "phone": "(802) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_vt_pinned_from_statute(self):
+        v = state_rules.rules_for("VT")
+        self.assertEqual((v.statutory_free_pct, v.statutory_discount_pct), (250, 400))   # §9482: free 250 / disc 400
+        self.assertIsNone(v.income_cap_pct)
+        self.assertFalse(v.has_rural_bands)
+        self.assertTrue(v.immigration_excluded)           # §9483 explicit undocumented protection -> note
+        self.assertTrue(v.is_statutory)
+
+    def test_vt_surfaces_cite_law_no_leak(self):
+        idx = self._hp.build_index([self._row("UNIVERSITY OF VERMONT MEDICAL CENTER", "470003", "BURLINGTON",
+                                              "Chittenden")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            c = self._hp.render_statutory_county("Chittenden", idx, lang, "VT")
+            d = self._hp.render_statutory_directory(idx, lang, "VT")
+            for html, where in ((h, "hospital"), (c, "county"), (d, "directory")):
+                self.assertIn("9482", html, f"{lang} {where}: VT law cited")
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("Vermont", en)
+        self.assertIn("free care", en.lower())                       # VT HAS a free tier
+        self.assertIn("immigration status", en.lower())              # §9483 non-exclusion reassurance renders
+        self.assertIn(f"/qr/vt/hospital/{slug}.svg", en)
+
+    def test_vt_plan_free_floor_at_250(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4, "insurance": "uninsured",
+                "in_collections": True}
+        row = self._row("X HOSPITAL", "470003", "C", "D")
+        # ~230% FPL: FREE under VT's 250 floor — but a 200-floor state would call this 'discount'. Guards the floor.
+        free = navigator.build_statutory_plan_struct({**base, "annual_income": 76000}, row, "en")
+        self.assertEqual(free["tier"], "free")
+        self.assertIn("9482", free["charity"]["message"])
+        disc = navigator.build_statutory_plan_struct({**base, "annual_income": 109000}, row, "en")  # ~330% FPL
+        self.assertEqual(disc["tier"], "discount")
+        over = navigator.build_statutory_plan_struct({**base, "annual_income": 150000}, row, "en")  # ~454% FPL
+        self.assertEqual(over["tier"], "over")
+
+    def test_registry_discovers_vt(self):
+        import server
+        self.assertIn("VT", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["VT"]["hospitals"]), 0)
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure
