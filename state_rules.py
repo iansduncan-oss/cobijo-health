@@ -213,7 +213,26 @@ CO = StateRules(
     statutory_free_pct=None, statutory_discount_pct=250, income_cap_pct=None,
 )
 
-STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO}
+# Oregon — Hospital Financial Assistance (HB 3076 (2019), codified ORS 442.614). STATUTE-DRIVEN and
+# STATEWIDE (no hospital-type distinction — applies to every nonprofit hospital + its affiliated clinics).
+# A free+discount state, same SHAPE as NJ/MD/WA but with a higher discount ceiling: 100% free ≤200% FPL,
+# then a sliding-scale minimum reduction — ≥75% (200–300%), ≥50% (300–350%), ≥25% (350–400%). We model the
+# clean free≤200 / discount≤400 envelope (the 75/50/25 sub-bands are a note-level refinement like NY's cap).
+# Source-verified vs primary ORS 442.614 (oregon.public.law) + OHA + DollarFor (2026-07). VERIFIED CURRENT:
+# the 2026 omnibus HB 4040 only raised the presumptive-screening DOLLAR threshold for INSURED patients
+# ($500→$1,500/visit) — it did NOT change the FPL eligibility bands (uninsured/OHP patients are still
+# screened+discounted before any bill). income_cap_pct None (a %-reduction sliding scale, not an income cap).
+# immigration_excluded False (ORS 442.614 conditions on income, not a statutory immigration bar). Because OR
+# HAS a free tier (free_pct=200), it reuses the existing free-tier strings on every surface — no new i18n.
+OR = StateRules(
+    code="OR", name="Oregon",
+    fpl_floor_pct=400, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="Oregon's hospital financial assistance law (ORS 442.614, HB 3076)",
+    statutory_free_pct=200, statutory_discount_pct=400, income_cap_pct=None,
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR}
 
 
 def rules_for(state="CA"):

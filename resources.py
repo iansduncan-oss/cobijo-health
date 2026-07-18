@@ -55,6 +55,7 @@ _STATE_RESOURCES = {
     "WA": {"coverage": "https://www.wahealthplanfinder.org/",       "legalaid": "https://nwjustice.org/get-legal-help"},
     "NJ": {"coverage": "https://www.getcovered.nj.gov/",            "legalaid": "https://www.lsnjlaw.org/"},
     "CO": {"coverage": "https://connectforhealthco.com/",           "legalaid": "https://coloradolegalservices.org/"},
+    "OR": {"coverage": "https://one.oregon.gov/",                   "legalaid": "https://oregonlawhelp.org/"},
 }
 
 

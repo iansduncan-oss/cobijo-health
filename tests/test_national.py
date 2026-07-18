@@ -833,6 +833,63 @@ class TestColoradoStatutory(unittest.TestCase):
             self.assertIn("discounted care", html.lower(), f"{where}: discount-only framing present")
 
 
+class TestOregonStatutory(unittest.TestCase):
+    """Oregon (8th state). Free+discount shape like NJ/MD/WA but with a HIGHER discount ceiling (400% vs
+    300%): free ≤200% FPL, sliding discount to 400% (ORS 442.614 / HB 3076). Because OR has a real free
+    tier it reuses the existing free-tier strings on every surface (no discount-only variant). Confirms the
+    2026 HB 4040 change (presumptive-screening $ threshold) did NOT move the modeled FPL bands."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "OR",
+                "phone": "(555) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_or_pinned_from_statute(self):
+        o = state_rules.rules_for("OR")
+        self.assertEqual((o.statutory_free_pct, o.statutory_discount_pct), (200, 400))
+        self.assertIsNone(o.income_cap_pct)
+        self.assertFalse(o.has_rural_bands)
+        self.assertFalse(o.immigration_excluded)
+        self.assertTrue(o.is_statutory)
+
+    def test_or_page_and_county_cite_law_no_leak(self):
+        idx = self._hp.build_index([self._row("OREGON HEALTH SCIENCE UNIV HOSP", "380001", "PORTLAND",
+                                              "Multnomah")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            c = self._hp.render_statutory_county("Multnomah", idx, lang, "OR")
+            d = self._hp.render_statutory_directory(idx, lang, "OR")
+            for html, where in ((h, "hospital"), (c, "county"), (d, "directory")):
+                self.assertIn("442.614", html, f"{lang} {where}: OR law cited")
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("Oregon", en)
+        self.assertIn("free care", en.lower())                       # OR HAS a free tier -> correct here
+        self.assertIn("?st=OR", en)
+        self.assertIn(f"/qr/or/hospital/{slug}.svg", en)
+
+    def test_or_plan_free_and_discount_tiers(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4, "insurance": "uninsured",
+                "in_collections": True}
+        free = navigator.build_statutory_plan_struct({**base, "annual_income": 18000},
+                                                     self._row("X HOSPITAL", "380001", "C", "D"), "en")
+        self.assertEqual(free["tier"], "free")                       # ~90% FPL -> free
+        self.assertIn("442.614", free["charity"]["message"])
+        # ~330% FPL (between 300 and 400) -> discount (OR ceiling is 400, unlike NJ/MD/WA at 300)
+        disc = navigator.build_statutory_plan_struct({**base, "annual_income": 86000},
+                                                     self._row("X HOSPITAL", "380001", "C", "D"), "en")
+        self.assertEqual(disc["tier"], "discount")
+
+    def test_registry_discovers_or(self):
+        import server
+        self.assertIn("OR", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["OR"]["hospitals"]), 0)
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure

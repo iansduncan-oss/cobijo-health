@@ -76,7 +76,7 @@ def _fill(s, **kw):
 # so its pages never collide with California's, which stays at the un-prefixed root (byte-identical).
 _DIR_SLUG = {"CA": "california-hospitals", "IL": "illinois-hospitals", "NY": "new-york-hospitals",
              "MD": "maryland-hospitals", "WA": "washington-hospitals", "NJ": "new-jersey-hospitals",
-             "CO": "colorado-hospitals"}
+             "CO": "colorado-hospitals", "OR": "oregon-hospitals"}
 
 
 def _path(lang, slug=None, kind="hospital", state="CA"):
