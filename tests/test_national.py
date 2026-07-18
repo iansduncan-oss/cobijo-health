@@ -1044,6 +1044,69 @@ class TestOregonStatutory(unittest.TestCase):
         self.assertGreater(len(server.STATUTORY_STATES["OR"]["hospitals"]), 0)
 
 
+class TestMassachusettsStatutory(unittest.TestCase):
+    """Massachusetts (11th state). Clean free+discount drop-in via the Health Safety Net (M.G.L. c.118E;
+    101 CMR 613.00) — but with a LOWER free floor than the 200%-floor states: free ≤150% FPL, partial/
+    deductible 150–300% FPL. Reuses the existing free-tier strings (no i18n). The distinguishing test is the
+    150–200% band: MA answers 'discount' there, where a 200-floor state (NJ/MD/WA/RI/OR) would answer 'free' —
+    so a silent revert of the free floor to 200 is caught."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "MA",
+                "phone": "(555) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_ma_pinned_from_statute(self):
+        m = state_rules.rules_for("MA")
+        self.assertEqual((m.statutory_free_pct, m.statutory_discount_pct), (150, 300))   # HSN: free 150 / partial 300
+        self.assertIsNone(m.income_cap_pct)              # sliding deductible, not a %-of-income collection cap
+        self.assertFalse(m.has_rural_bands)
+        self.assertTrue(m.immigration_excluded)          # 101 CMR 613.08 non-exclusion (user-approved) -> reassurance note
+        self.assertTrue(m.is_statutory)
+
+    def test_ma_surfaces_cite_law_no_leak(self):
+        idx = self._hp.build_index([self._row("MASSACHUSETTS GENERAL HOSPITAL", "220071", "BOSTON",
+                                              "Suffolk")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            c = self._hp.render_statutory_county("Suffolk", idx, lang, "MA")
+            d = self._hp.render_statutory_directory(idx, lang, "MA")
+            for html, where in ((h, "hospital"), (c, "county"), (d, "directory")):
+                self.assertIn("101 CMR 613.00", html, f"{lang} {where}: MA law cited")
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("Massachusetts", en)
+        self.assertIn("free care", en.lower())                       # MA HAS a free tier
+        self.assertIn("immigration status", en.lower())              # 101 CMR 613.08 non-exclusion reassurance renders
+        self.assertIn("?st=MA", en)
+        self.assertIn(f"/qr/ma/hospital/{slug}.svg", en)
+
+    def test_ma_plan_free_discount_boundary_at_150(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4, "insurance": "uninsured",
+                "in_collections": True}
+        row = self._row("X HOSPITAL", "220071", "C", "D")
+        # ~73% FPL -> free.
+        free = navigator.build_statutory_plan_struct({**base, "annual_income": 24000}, row, "en")
+        self.assertEqual(free["tier"], "free")
+        self.assertIn("101 CMR 613.00", free["charity"]["message"])
+        # ~182% FPL: DISCOUNT under MA's 150% free floor — but a 200-floor state would call this 'free'. This is
+        # the MA-specific band; asserting 'discount' here guards the lower free floor against a silent revert.
+        disc = navigator.build_statutory_plan_struct({**base, "annual_income": 60000}, row, "en")
+        self.assertEqual(disc["tier"], "discount")
+        # Above MA's 300% ceiling -> over.
+        over = navigator.build_statutory_plan_struct({**base, "annual_income": 110000}, row, "en")
+        self.assertEqual(over["tier"], "over")
+
+    def test_registry_discovers_ma(self):
+        import server
+        self.assertIn("MA", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["MA"]["hospitals"]), 0)
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure

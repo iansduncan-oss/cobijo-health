@@ -58,6 +58,7 @@ _STATE_RESOURCES = {
     "OR": {"coverage": "https://one.oregon.gov/",                   "legalaid": "https://oregonlawhelp.org/"},
     "RI": {"coverage": "https://healthsourceri.com/",               "legalaid": "https://helprilaw.org/"},
     "ME": {"coverage": "https://www.coverme.gov/",                  "legalaid": "https://www.ptla.org/"},
+    "MA": {"coverage": "https://www.mahealthconnector.org/",        "legalaid": "https://healthlawadvocates.org/"},
 }
 
 

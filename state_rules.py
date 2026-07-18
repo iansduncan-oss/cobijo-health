@@ -281,7 +281,34 @@ ME = StateRules(
     payment_cap_pct=4, payment_cap_ceiling_pct=400,   # §1716-A: payment plan ≤4% of monthly income to 400% FPL
 )
 
-STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI, "ME": ME}
+# Massachusetts — Health Safety Net (HSN): M.G.L. c.118E §§65–69 (enabling statute) + 101 CMR 613.00 (the
+# operative eligibility regulation, current version effective 2024-04-01; thresholds stable through 2026).
+# STATUTE/REGULATION-DRIVEN and STATEWIDE. Clean FREE+DISCOUNT shape like NJ/MD/RI but with a LOWER free floor:
+# 100% FREE care (no deductible) ≤150% FPL, then a partial/sliding "HSN Partial" DEDUCTIBLE tier 150–300% FPL
+# (deductible = greater of a ConnectorCare-premium proxy or 40% of income over 200% FPL — a sliding cost-share,
+# NOT a flat % discount or a %-of-income collection cap, so income_cap_pct stays None). We model the clean
+# free≤150 / discount≤300 ELIGIBILITY envelope the reg guarantees (the s_minimum_note carries "the hospital may
+# offer more"). Above 300% FPL = Medical Hardship (case-by-case, needs the hardship concept the model lacks —
+# a follow-on, like MD's 300–500% tier). Source-verified vs the primary reg (101 CMR 613.04, Cornell LII) +
+# M.G.L. c.118E + mass.gov HSN (2026-07); thresholds NOT amended down 2023–2026 (2025 changes were dental
+# prior-auth only). immigration_excluded=True (deliberate, user-approved 2026-07-18): MA HSN eligibility is
+# residency+income-based and DOES cover undocumented residents, and 101 CMR 613.08 bars discrimination on
+# "alienage"/"citizenship" — a strong, citeable non-exclusion for Cobijo's core audience. It's a residency
+# mechanism + anti-discrimination reg rather than NY's single "immigration shall not be an eligibility
+# criterion" clause, so it's a hair less "in terms" than NY, but well-sourced (HIGH confidence) and accurate:
+# status can't decide eligibility. Reuses the existing translated s_immigration string (all 10 langs — a clean
+# toggle, no new i18n). Because MA also HAS a free tier it reuses the existing free-tier strings — no new i18n.
+MA = StateRules(
+    code="MA", name="Massachusetts",
+    fpl_floor_pct=300, discount_implausible_pct=800,
+    free_care_unusual_pct=150, free_care_implausible_pct=400,
+    fap_law="the Massachusetts Health Safety Net (M.G.L. c.118E; 101 CMR 613.00)",
+    statutory_free_pct=150, statutory_discount_pct=300, income_cap_pct=None,
+    immigration_excluded=True,   # 101 CMR 613.08 bars alienage/citizenship discrimination + HSN covers undocumented residents
+)
+
+STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI, "ME": ME,
+          "MA": MA}
 
 
 def rules_for(state="CA"):

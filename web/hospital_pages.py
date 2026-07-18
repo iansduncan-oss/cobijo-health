@@ -77,7 +77,7 @@ def _fill(s, **kw):
 _DIR_SLUG = {"CA": "california-hospitals", "IL": "illinois-hospitals", "NY": "new-york-hospitals",
              "MD": "maryland-hospitals", "WA": "washington-hospitals", "NJ": "new-jersey-hospitals",
              "CO": "colorado-hospitals", "OR": "oregon-hospitals", "RI": "rhode-island-hospitals",
-             "ME": "maine-hospitals"}
+             "ME": "maine-hospitals", "MA": "massachusetts-hospitals"}
 
 
 def _path(lang, slug=None, kind="hospital", state="CA"):
