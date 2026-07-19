@@ -406,6 +406,11 @@ def statutory_facts(intake, row):
         "payment_cap_pct_professional": rules.payment_cap_pct_professional,
         "payment_cap_pct_comprehensive": rules.payment_cap_pct_comprehensive,
         "payment_cap_payoff_months": rules.payment_cap_payoff_months,
+        "hardship_ceiling_pct": rules.hardship_ceiling_pct,
+        "hardship_debt_pct": rules.hardship_debt_pct,
+        "catastrophic_cap_pct": rules.catastrophic_cap_pct,
+        "catastrophic_ceiling_pct": rules.catastrophic_ceiling_pct,
+        "medical_hardship_entry_pct": rules.medical_hardship_entry_pct,
         "program_suspended": rules.program_suspended,
         "rural": rural,
         "hospital": row["hospital"].title(),
@@ -455,6 +460,19 @@ def build_statutory_plan_struct(intake, row, lang="en"):
         message += " " + t(lang, "cc_payment_cap", law=facts["fap_law"],
                            payment_cap_pct=facts["payment_cap_pct"],
                            payment_cap_ceiling_pct=facts["payment_cap_ceiling_pct"])
+    # Above-the-tiers "hardship" help — surfaced in the 'over' tier so a patient the base bands would turn away
+    # still hears about the path the law gives them (each state sets only its own field, so these are exclusive).
+    if (tier == "over" and facts["hardship_ceiling_pct"] and facts["hardship_debt_pct"]
+            and facts["fpl_pct"] <= facts["hardship_ceiling_pct"]):
+        message += " " + t(lang, "cc_hardship_extend", law=facts["fap_law"],
+                           hardship_ceiling_pct=facts["hardship_ceiling_pct"], hardship_debt_pct=facts["hardship_debt_pct"])
+    elif (tier == "over" and facts["catastrophic_cap_pct"] and facts["catastrophic_ceiling_pct"]
+            and facts["fpl_pct"] <= facts["catastrophic_ceiling_pct"]):
+        message += " " + t(lang, "cc_catastrophic", law=facts["fap_law"],
+                           catastrophic_cap_pct=facts["catastrophic_cap_pct"], catastrophic_ceiling_pct=facts["catastrophic_ceiling_pct"])
+    elif tier == "over" and facts["medical_hardship_entry_pct"]:
+        message += " " + t(lang, "cc_medical_hardship", law=facts["fap_law"],
+                           medical_hardship_entry_pct=facts["medical_hardship_entry_pct"])
     # KILL SWITCH: a CONFIRMED-lapsed program (program_suspended) must not assert a guarantee in the tool
     # either — replace the message with the same honest "not currently active; apply anyway, it's free" the
     # pages show. (For NC the cap-append block above is already inert — payment_cap_pct is None.)

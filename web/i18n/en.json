@@ -639,7 +639,7 @@
     "s_immigration": "Your immigration status cannot be used to decide if you qualify — {state} law bars hospitals from considering it. Eligibility depends only on your household income.",
     "s_medicaid_cap": "If your bill is discounted, {state} law caps it at a share of the Medicaid rate: 10% for household income up to 300% of the Federal Poverty Level, and 20% up to 400% — often far below the sticker price. If your bill is higher, ask the hospital to correct it.",
     "s_debt_protection": "You are protected from aggressive collection: {state} law bars the hospital from suing you, or forcing the sale or foreclosure of your home, to collect this bill when your household income is at or below 400% of the Federal Poverty Level.",
-    "s_apply_deadline": "Apply within {days} days of receiving your bill — that is the deadline to claim this discount under {state} law. It covers any bill over $300 for a single hospital stay or visit, so apply as soon as the bill arrives.",
+    "s_apply_deadline": "Apply within {days} days of receiving your bill — that is the deadline to claim this discount under {state} law, so apply as soon as it arrives.",
     "s_meta_free_only": "See if you qualify for free hospital care at {name} under {state} law. Free and private — no account needed.",
     "s_h_lead_free_only": "Under {state} law, {name} must offer free care to eligible low-income and uninsured patients. Here's what the law guarantees — and how to apply.",
     "s_law_p_free_only": "Under {law}, {name} must provide FREE care to uninsured patients at or below {free_pct}% of the Federal Poverty Level.",
@@ -655,7 +655,12 @@
     "s_c_lead_program": "Every hospital in {county} County must offer free or discounted care to eligible patients under {state}'s hospital financial assistance program. Find your hospital below.",
     "s_minimum_note_program": "This is the required minimum — {name} may offer more generous help. The only way to know is to apply, and applying is always free.",
     "s_program_currency": "This is a program {state} renews each year, so the exact help available can change over time. The hospital can confirm what applies to you right now — and applying is always free.",
-    "s_program_suspended": "{state}'s hospital financial assistance program is not active right now. Hospitals here still offer their own financial help for patients who can't afford care — apply to find out what you qualify for, and applying is always free."
+    "s_program_suspended": "{state}'s hospital financial assistance program is not active right now. Hospitals here still offer their own financial help for patients who can't afford care — apply to find out what you qualify for, and applying is always free.",
+    "s_hardship_extend": "Even if your income is above the usual limit, {state} law reaches further: for families up to {hardship_ceiling_pct}% of the Federal Poverty Level whose medical debt over a year is more than {hardship_debt_pct}% of their income, the hospital must still provide reduced-cost care. It is worth applying even if you think you earn too much.",
+    "s_debt_protection_md": "Once you qualify for free or reduced-cost care, {state} law keeps the bill from growing: the hospital cannot charge interest before a court judgment, cannot report the debt to credit agencies, and cannot sue you over a bill of ${debt_suit_floor_usd} or less.",
+    "s_catastrophic_cap": "{state} law also caps your total bill: if your household income is at or below {catastrophic_ceiling_pct}% of the Federal Poverty Level, the hospital must lower the bill so you never owe more than {catastrophic_cap_pct}% of your household income.",
+    "s_medical_hardship": "{state} sets no income limit for its Medical Hardship help: if your allowable medical bills are more than about {medical_hardship_entry_pct}% of your income — a higher share if you earn more — the Health Safety Net can cover the rest. Apply even if your income is above the limits listed here.",
+    "s_charity_excess": "If your qualified medical bills are more than {charity_excess_pct}% of your yearly income, {state} covers everything above that share in full — once per family each year, on top of the sliding-scale discount."
   },
   "states": {
     "st_title": "Find Financial Help for Your Hospital Bill by State | Cobijo Health",

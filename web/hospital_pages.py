@@ -611,6 +611,20 @@ def render_statutory_hospital(row, slug, index, lang="en"):
             out.append(f'<p class="note"><strong>{_e(_fill(S["s_debt_protection"], state=state_name))}</strong></p>')
         if rules.apply_deadline_days:
             out.append(f'<p class="note"><strong>{_e(_fill(S["s_apply_deadline"], state=state_name, days=rules.apply_deadline_days))}</strong></p>')
+        # Above-the-tiers "hardship" help — each state's mechanism differs, so each shows its OWN accurate note
+        # (gated by its own state_rules field). These extend help beyond the base free/discount bands: MD's
+        # reduced-cost extension to 500% FPL, VT's 20%-of-income catastrophic cap, MA's no-ceiling Medical
+        # Hardship, NJ's within-band excess-coverage, and MD's HB0268 debt protections.
+        if rules.hardship_ceiling_pct and rules.hardship_debt_pct:
+            out.append(f'<p class="note">{_e(_fill(S["s_hardship_extend"], state=state_name, hardship_ceiling_pct=rules.hardship_ceiling_pct, hardship_debt_pct=rules.hardship_debt_pct))}</p>')
+        if rules.catastrophic_cap_pct and rules.catastrophic_ceiling_pct:
+            out.append(f'<p class="note">{_e(_fill(S["s_catastrophic_cap"], state=state_name, catastrophic_cap_pct=rules.catastrophic_cap_pct, catastrophic_ceiling_pct=rules.catastrophic_ceiling_pct))}</p>')
+        if rules.medical_hardship_entry_pct:
+            out.append(f'<p class="note">{_e(_fill(S["s_medical_hardship"], state=state_name, medical_hardship_entry_pct=rules.medical_hardship_entry_pct))}</p>')
+        if rules.charity_excess_pct:
+            out.append(f'<p class="note">{_e(_fill(S["s_charity_excess"], state=state_name, charity_excess_pct=rules.charity_excess_pct))}</p>')
+        if rules.debt_suit_floor_usd:
+            out.append(f'<p class="note"><strong>{_e(_fill(S["s_debt_protection_md"], state=state_name, debt_suit_floor_usd=rules.debt_suit_floor_usd))}</strong></p>')
         out.append('</div>')
 
     # How to apply — reuse the CA chrome (phone + call script).

@@ -81,6 +81,18 @@ MESSAGES = {
                                   "provider's bill, and {payment_cap_pct_comprehensive}% across a combined bill — and "
                                   "after {payment_cap_payoff_months} monthly payments, any remaining balance is treated "
                                   "as paid in full. Ask the hospital to set up that payment plan."),
+        # Above-the-tiers "hardship" help, appended to the 'over' message so a patient the base bands turn away
+        # still hears about the path the law gives them (MD extend / VT catastrophic cap / MA no-ceiling hardship).
+        "cc_hardship_extend": ("But {law} reaches further: for families up to {hardship_ceiling_pct}% of the Federal "
+                               "Poverty Level whose yearly medical debt is more than {hardship_debt_pct}% of their "
+                               "income, the hospital must still provide reduced-cost care — so apply anyway; you may "
+                               "still qualify."),
+        "cc_catastrophic": ("And even above that limit, {law} caps your total hospital bill at {catastrophic_cap_pct}% "
+                            "of your household income for incomes up to {catastrophic_ceiling_pct}% of the Federal "
+                            "Poverty Level — ask the hospital to apply that cap."),
+        "cc_medical_hardship": ("But {law} sets no income limit for Medical Hardship: if your medical bills are more "
+                                "than about {medical_hardship_entry_pct}% of your income, the Health Safety Net may "
+                                "still cover them — so apply even though your income is above the limit."),
         # KILL SWITCH: replaces the whole statutory message when a program's authority is CONFIRMED lapsed
         # (state_rules.program_suspended) — never assert a guarantee we know has ended.
         "cc_program_suspended": ("This program isn't active right now, but {name} still has its own financial "
@@ -248,6 +260,17 @@ MESSAGES = {
                                   "{payment_cap_pct_comprehensive}% en una factura combinada — y después de "
                                   "{payment_cap_payoff_months} pagos mensuales, cualquier saldo restante se considera "
                                   "pagado en su totalidad. Pida al hospital que establezca ese plan de pago."),
+        "cc_hardship_extend": ("Pero {law} llega más lejos: para familias de hasta el {hardship_ceiling_pct}% del Nivel "
+                               "Federal de Pobreza cuya deuda médica anual supera el {hardship_debt_pct}% de sus "
+                               "ingresos, el hospital aún debe brindar atención a costo reducido — así que solicítela "
+                               "de todos modos; todavía podría calificar."),
+        "cc_catastrophic": ("E incluso por encima de ese límite, {law} limita el total de su factura hospitalaria al "
+                            "{catastrophic_cap_pct}% del ingreso de su hogar para ingresos de hasta el "
+                            "{catastrophic_ceiling_pct}% del Nivel Federal de Pobreza — pida al hospital que aplique ese límite."),
+        "cc_medical_hardship": ("Pero {law} no fija un límite de ingresos para la Dificultad Médica: si sus facturas "
+                                "médicas superan aproximadamente el {medical_hardship_entry_pct}% de sus ingresos, la Red "
+                                "de Seguridad de Salud aún puede cubrirlas — así que solicítela aunque sus ingresos "
+                                "superen el límite."),
         "cc_program_suspended": ("Este programa no está activo en este momento, pero {name} todavía tiene su propia "
                                  "asistencia financiera para pacientes que no pueden pagar la atención — solicítela de "
                                  "todos modos, y solicitarla siempre es gratis."),

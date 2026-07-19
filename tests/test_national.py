@@ -1451,7 +1451,7 @@ class TestStatutoryCurrencyCheck(unittest.TestCase):
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure
-    protection (H2), IL's 60-day apply deadline (M3). Translated in all 10 languages (token-parity)."""
+    protection (H2), IL's 90-day apply deadline (M3, §15(b)). Translated in all 10 languages (token-parity)."""
     import hospital_pages as _hp
     import i18n as _i18n
 
@@ -1462,10 +1462,11 @@ class TestStatutoryProtectionNotes(unittest.TestCase):
     def test_flags_pinned(self):
         ny, il = state_rules.rules_for("NY"), state_rules.rules_for("IL")
         self.assertTrue(ny.bars_debt_lawsuits and ny.names_medicaid_cap)
-        self.assertEqual(il.apply_deadline_days, 60)
+        self.assertEqual(il.apply_deadline_days, 90)   # 210 ILCS 89/15(b), amended by P.A. 103-492 (eff. 2024-01-01)
+        self.assertEqual(state_rules.rules_for("MD").apply_deadline_days, 240)  # HB0268 §19-214.2 (eff. 2025-10-01)
         for code in ("MD", "WA", "CA", "IL"):                     # only NY names a Medicaid-rate cap
             self.assertFalse(state_rules.rules_for(code).names_medicaid_cap)
-        for code in ("MD", "WA", "CA", "NY"):                     # only IL models an apply deadline
+        for code in ("WA", "CA", "NY"):                           # IL (90) + MD (240) model an apply deadline; others none
             self.assertIsNone(state_rules.rules_for(code).apply_deadline_days)
 
     def test_ny_page_shows_cap_and_debt_il_shows_deadline(self):
@@ -1476,13 +1477,13 @@ class TestStatutoryProtectionNotes(unittest.TestCase):
         ny_en, il_en = page("NY", "330024", "en"), page("IL", "140208", "en")
         self.assertIn("share of the Medicaid", ny_en)             # H1 cap note
         self.assertIn("foreclosure", ny_en)                      # H2 protection note
-        self.assertNotIn("within 60 days", ny_en)                # IL-only deadline absent
-        self.assertIn("within 60 days", il_en)                   # M3 deadline note
+        self.assertNotIn("within 90 days", ny_en)                # IL-only deadline absent
+        self.assertIn("within 90 days", il_en)                   # M3 deadline note
         self.assertNotIn("share of the Medicaid", il_en)         # NY-only cap absent
         for state, ccn in (("MD", "210009"), ("WA", "500001")):  # neither flag set -> no notes
             h = page(state, ccn, "en")
             self.assertNotIn("share of the Medicaid", h)
-            self.assertNotIn("within 60 days", h)
+            self.assertNotIn("within 90 days", h)
         # every language renders the gated notes with no unfilled {token}
         for lang in self._i18n.LANGS:
             for html in (page("NY", "330024", lang), page("IL", "140208", lang)):
@@ -1496,6 +1497,93 @@ class TestStatutoryProtectionNotes(unittest.TestCase):
             # res_coverage rides the plan catalog (messages.t) — present + generic (not 'Medi-Cal')
             import messages
             self.assertIn("res_coverage", messages.MESSAGES.get(lang, messages.MESSAGES["en"]))
+
+
+class TestHardshipNotes(unittest.TestCase):
+    """Above-the-tiers 'hardship' help (T4.x follow-on), numbers pinned to primary-source-verified statute:
+    MD reduced-cost extension to 500% FPL @ 25%-of-income debt + HB0268 debt protections (240-day window,
+    no-suit ≤$500), VT 20%-of-income catastrophic cap ≤600% FPL, MA no-ceiling Medical Hardship, NJ within-
+    band excess-coverage. Each shows its OWN gated note; the /plan tool surfaces MD/VT/MA in the 'over' tier."""
+    import hospital_pages as _hp
+    import i18n as _i18n
+
+    def _row(self, state, ccn):
+        return {"hospital": "X HOSPITAL", "ccn": ccn, "city": "C", "county": "D", "state": state,
+                "phone": "(1) 2", "status": "statutory", "policy": None, "hospital_type": "Acute Care Hospitals"}
+
+    def _page(self, state, ccn, lang="en"):
+        idx = self._hp.build_index([self._row(state, ccn)])[0]
+        slug = next(iter(idx))
+        return self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+
+    def _intake(self, income, household=1, **kw):
+        base = {"first_name": "there", "full_name": "T P", "household_size": household,
+                "annual_income": income, "insurance": "uninsured", "in_collections": False}
+        base.update(kw)
+        return base
+
+    def test_fields_pinned(self):
+        md = state_rules.rules_for("MD")
+        self.assertEqual((md.hardship_ceiling_pct, md.hardship_debt_pct), (500, 25))
+        self.assertEqual((md.apply_deadline_days, md.debt_suit_floor_usd), (240, 500))
+        vt = state_rules.rules_for("VT")
+        self.assertEqual((vt.catastrophic_cap_pct, vt.catastrophic_ceiling_pct), (20, 600))
+        self.assertEqual(state_rules.rules_for("MA").medical_hardship_entry_pct, 10)
+        self.assertEqual(state_rules.rules_for("NJ").charity_excess_pct, 30)
+        # every OTHER state leaves the new fields off -> byte-identical behavior
+        for code in ("CA", "IL", "NY", "WA", "CO", "OR", "RI", "ME", "OH", "NC"):
+            r = state_rules.rules_for(code)
+            self.assertIsNone(r.hardship_ceiling_pct)
+            self.assertIsNone(r.catastrophic_cap_pct)
+            self.assertIsNone(r.medical_hardship_entry_pct)
+            self.assertIsNone(r.charity_excess_pct)
+
+    def test_md_page_surfaces_hardship_and_hb0268_protections(self):
+        for lang in self._i18n.LANGS:
+            h = self._page("MD", "210009", lang)
+            self.assertNotRegex(h, r"\{[a-z_]+\}", f"{lang}: unfilled token on MD page")
+            self.assertNotIn("None%", h)
+        en = self._page("MD", "210009", "en")
+        self.assertIn("500%", en)          # hardship reduced-cost ceiling
+        self.assertIn("25%", en)           # 12-month medical-debt threshold
+        self.assertIn("$500", en)          # HB0268 no-suit floor
+        self.assertIn("240 days", en)      # HB0268 apply window (rides apply_deadline_days)
+
+    def test_vt_catastrophic_cap_note(self):
+        for lang in self._i18n.LANGS:
+            self.assertNotRegex(self._page("VT", "470002", lang), r"\{[a-z_]+\}", f"{lang}: VT unfilled token")
+        en = self._page("VT", "470002", "en")
+        self.assertIn("20%", en)           # cap = 20% of household income
+        self.assertIn("600%", en)          # up to 600% FPL
+
+    def test_ma_medical_hardship_note(self):
+        en = self._page("MA", "220001", "en")
+        self.assertIn("Medical Hardship", en)
+        self.assertIn("10%", en)
+        self.assertIn("no income limit", en)
+        for lang in self._i18n.LANGS:
+            self.assertNotRegex(self._page("MA", "220001", lang), r"\{[a-z_]+\}", f"{lang}: MA unfilled token")
+
+    def test_nj_excess_coverage_note(self):
+        en = self._page("NJ", "310001", "en")
+        self.assertIn("30%", en)
+        for lang in self._i18n.LANGS:
+            self.assertNotRegex(self._page("NJ", "310001", lang), r"\{[a-z_]+\}", f"{lang}: NJ unfilled token")
+
+    def test_plan_over_tier_surfaces_hardship_paths(self):
+        # income chosen to land ABOVE each state's base ceiling but WITHIN its hardship ceiling
+        md = navigator.build_statutory_plan_struct(self._intake(60000), self._row("MD", "210009"), "en")
+        self.assertEqual(md["tier"], "over")
+        self.assertIn("reduced-cost care", md["charity"]["message"])
+        self.assertIn("500%", md["charity"]["message"])
+        vt = navigator.build_statutory_plan_struct(self._intake(75000), self._row("VT", "470002"), "en")
+        self.assertEqual(vt["tier"], "over")
+        self.assertIn("20%", vt["charity"]["message"])
+        ma = navigator.build_statutory_plan_struct(self._intake(60000), self._row("MA", "220001"), "en")
+        self.assertEqual(ma["tier"], "over")
+        self.assertIn("Medical Hardship", ma["charity"]["message"])
+        for p in (md, vt, ma):
+            self.assertNotRegex(p["charity"]["message"], r"\{[a-z_]+\}")
 
 
 if __name__ == "__main__":

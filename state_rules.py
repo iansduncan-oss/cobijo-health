@@ -41,7 +41,7 @@ class StateRules:
     # True when the statute caps the discounted bill at a NAMED share of the Medicaid rate the patient can
     # cite to challenge an inflated bill (NY: 10% of Medicaid ≤300% FPL, 20% ≤400%). Gates the cap note.
     names_medicaid_cap: bool = False
-    # Days after the bill within which the patient must APPLY to claim the discount (IL §10: 60). None =
+    # Days after the bill within which the patient must APPLY to claim the discount (IL §15(b): 90). None =
     # no statutory deadline modeled. Gates the "apply by" actionable note.
     apply_deadline_days: Optional[int] = None
     # A MONTHLY-PAYMENT cap the statute imposes above the free tier: the hospital may not require monthly
@@ -63,6 +63,31 @@ class StateRules:
     payment_cap_pct_professional: Optional[int] = None
     payment_cap_pct_comprehensive: Optional[int] = None
     payment_cap_payoff_months: Optional[int] = None
+    # --- ABOVE-THE-TIERS "hardship" help (T4.x follow-on) -----------------------------------------------
+    # Several states guarantee EXTRA help beyond the base free/discount bands for patients whose medical
+    # bills are a large share of income. The mechanisms differ per state, so each surfaces its OWN accurate
+    # flag-gated note (not a forced-uniform "tier"). All default None/False -> every other state byte-identical.
+    # MD: reduced-cost care EXTENDS to hardship_ceiling_pct% FPL when a family's 12-month medical debt exceeds
+    # hardship_debt_pct% of income (Health-General §19-214.1). A discount-eligibility extension, not a bill cap.
+    hardship_ceiling_pct: Optional[int] = None
+    hardship_debt_pct: Optional[int] = None
+    # MD HB0268 (2025 RS ch.693, eff. 2025-10-01, §19-214.2): once a patient qualifies for free/reduced-cost
+    # care the hospital may not charge interest pre-judgment, report the debt to credit bureaus, or sue over a
+    # bill at/below debt_suit_floor_usd. (MD's 240-day apply window rides the existing apply_deadline_days.)
+    debt_suit_floor_usd: Optional[int] = None
+    # VT: CATASTROPHIC CAP — for households ≤ catastrophic_ceiling_pct% FPL the total hospital bill is reduced
+    # so the patient owes no more than catastrophic_cap_pct% of household income (18 V.S.A. §9482(b)(2)(E)).
+    # A total-bill cap, distinct from §9483's 5%-of-monthly-income payment-plan cap. Both real, both current.
+    catastrophic_cap_pct: Optional[int] = None
+    catastrophic_ceiling_pct: Optional[int] = None
+    # MA: Medical Hardship has NO income ceiling — a resident at any income qualifies once allowable medical
+    # expenses exceed a %-of-income test that rises by FPL band (10/15/20/30/40%, 101 CMR 613.05). We surface
+    # the entry threshold (the lowest band's %) with an "a higher share if you earn more" caveat. Case-by-case.
+    medical_hardship_entry_pct: Optional[int] = None
+    # NJ: WITHIN the 200–300% reduced-charge band, qualified medical expenses exceeding charity_excess_pct% of
+    # annual gross income get 100% coverage on the excess, once per family per 12 months (N.J.A.C. 10:52-11.8(d)).
+    # NOT an above-300% extension — NJ caps all eligibility at ≤300% FPL (N.J.S.A. 26:2H-18.60(b)).
+    charity_excess_pct: Optional[int] = None
     # True when the eligibility guarantee comes from a binding STATEWIDE PROGRAM (e.g. a Medicaid directed-payment
     # condition every hospital accepted) rather than a statute. Same modelable free/discount bands, but the pages
     # must NOT say "{state} law" — they use "_program" i18n variants ("{state}'s hospital financial assistance
@@ -147,7 +172,7 @@ IL = StateRules(
     fap_law="Illinois Hospital Uninsured Patient Discount Act (210 ILCS 89)",
     statutory_free_pct=200, statutory_discount_pct=600, income_cap_pct=20,
     statutory_free_rural_pct=125, statutory_discount_rural_pct=300,   # rural/Critical-Access tier (§10(a))
-    apply_deadline_days=60,          # §10: patient must apply within 60 days of the bill (covers bills > $300)
+    apply_deadline_days=90,          # §15(b): patient must apply within 90 days of discharge/service (as amended by P.A. 103-492, eff. 2024-01-01; was 60 under the prior text)
 )
 
 # New York — Hospital Financial Assistance Law (Public Health Law §2807-k), as amended (eff. 2024–25).
@@ -188,6 +213,12 @@ MD = StateRules(
     fap_law="Maryland Hospital Financial Assistance Law (Health-General §19-214.1)",
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
     immigration_excluded=True,   # §19-214.1 bars citizenship/immigration status as an eligibility criterion
+    # Reduced-cost care extends to 500% FPL on documented financial hardship = 12-month medical debt > 25% of
+    # income (§19-214.1; primary-source verified vs codified text + HB0268 enrolled bill, 2026-07-19):
+    hardship_ceiling_pct=500, hardship_debt_pct=25,
+    # HB0268 (2025 RS ch.693, eff. 2025-10-01): 240-day apply window + no-suit ≤$500 / no credit-report / no
+    # pre-judgment interest for patients who qualify for free or reduced-cost care (§19-214.2):
+    apply_deadline_days=240, debt_suit_floor_usd=500,
 )
 
 # Washington — Charity Care Law (RCW 70.170.060, as amended by SHB 1616, eff. 2022-07-01). STATUTE-DRIVEN.
@@ -230,6 +261,10 @@ NJ = StateRules(
     free_care_unusual_pct=200, free_care_implausible_pct=400,
     fap_law="New Jersey Hospital Care Payment Assistance Program (N.J.S.A. 26:2H-18.60)",
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
+    # Within the 200–300% reduced-charge band, qualified medical expenses > 30% of annual gross income get
+    # 100% coverage on the excess, once per family/12 mo (N.J.A.C. 10:52-11.8(d); verified 2026-07-19). NOT an
+    # above-300% path — NJ caps all eligibility at ≤300% FPL, so this rides inside the existing discount tier.
+    charity_excess_pct=30,
 )
 
 # Colorado — Hospital Discounted Care (HB21-1198, codified C.R.S. §25.5-3-501 et seq.; eff. 2022-09-01).
@@ -341,6 +376,9 @@ MA = StateRules(
     fap_law="the Massachusetts Health Safety Net (M.G.L. c.118E; 101 CMR 613.00)",
     statutory_free_pct=150, statutory_discount_pct=300, income_cap_pct=None,
     immigration_excluded=True,   # 101 CMR 613.08 bars alienage/citizenship discrimination + HSN covers undocumented residents
+    # Medical Hardship has NO income ceiling: qualifies at any income once allowable medical expenses exceed a
+    # %-of-income test rising by band (10→40%, 101 CMR 613.05; verified 2026-07-19). Surface the 10% entry point.
+    medical_hardship_entry_pct=10,
 )
 
 # Ohio — Hospital Care Assurance Program (HCAP): the individual free-care mandate is Ohio Rev. Code §5168.14
@@ -384,6 +422,9 @@ VT = StateRules(
     fap_law="Vermont's hospital financial assistance law (18 V.S.A. §9482)",
     statutory_free_pct=250, statutory_discount_pct=400, income_cap_pct=None,
     immigration_excluded=True,   # 18 V.S.A. §9483 explicitly protects undocumented immigrants from exclusion
+    # Catastrophic cap: bill reduced so patients ≤600% FPL owe ≤20% of household income (§9482(b)(2)(E);
+    # primary-source verified 2026-07-19, distinct from §9483's 5%-of-monthly payment-plan cap):
+    catastrophic_cap_pct=20, catastrophic_ceiling_pct=600,
 )
 
 # North Carolina — Medical Debt Relief Incentive Program (the charity-care standard hospitals must adopt as a
