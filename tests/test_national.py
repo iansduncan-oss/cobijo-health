@@ -1311,6 +1311,29 @@ class TestNorthCarolinaStatutory(unittest.TestCase):
         self.assertIn("?st=NC", en_h)
         self.assertIn(f"/qr/nc/hospital/{slug}.svg", en_h)
 
+    def test_nc_program_currency_note_present_and_program_gated(self):
+        # A program-authority state rests on an ANNUALLY-renewed Medicaid condition (confirmed only through
+        # mid-2026; Year-4 renewal unverified as of 2026-07-18), so the pages must carry the honest currency
+        # note on BOTH the hospital and county surfaces, in every language, with no token leak.
+        idx = self._hp.build_index([self._row("DUKE UNIVERSITY HOSPITAL", "340030", "DURHAM", "Durham")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "ar"):
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            c = self._hp.render_statutory_county("Durham", idx, lang, "NC")
+            for html, where in ((h, "hospital"), (c, "county")):
+                self.assertIn("North Carolina", html, f"{lang} {where}: {{state}} filled in currency note")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+        en_h = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("renews each year", en_h)                       # the currency caveat is present
+        self.assertIn("applying is always free", en_h)                # kept the reassuring nudge
+        # A STATUTE state with the SAME free+discount shape (MD, 200/300) must NOT get the program-currency note.
+        md_idx = self._hp.build_index([{"hospital": "JOHNS HOPKINS HOSPITAL", "ccn": "210009", "city": "BALTIMORE",
+                                        "county": "Baltimore City", "state": "MD", "status": "statutory",
+                                        "policy": None, "hospital_type": "Acute Care Hospitals"}])[0]
+        md_slug = next(iter(md_idx))
+        md_h = self._hp.render_statutory_hospital(md_idx[md_slug], md_slug, md_idx, "en")
+        self.assertNotIn("renews each year", md_h)                     # statute states are permanent -> no caveat
+
     def test_nc_hub_card_says_program(self):
         hub = self._hp.render_states_hub([{"name": "North Carolina", "code": "NC", "count": 99}], "en")
         self.assertIn("statewide program", hub)
@@ -1334,6 +1357,95 @@ class TestNorthCarolinaStatutory(unittest.TestCase):
         import server
         self.assertIn("NC", server.STATUTORY_STATES)
         self.assertGreater(len(server.STATUTORY_STATES["NC"]["hospitals"]), 0)
+
+    def test_nc_confirmed_through_pinned(self):
+        # The currency date feeds the out-of-band alert; a silent None would blind the monitor.
+        n = state_rules.rules_for("NC")
+        self.assertEqual(n.program_confirmed_through, "2026-06-30")
+        self.assertTrue(n.program_renewal_watch)
+        self.assertFalse(n.program_suspended)                        # kill switch off by default
+
+    def test_nc_suspended_kill_switch_suppresses_guarantee(self):
+        # If a lapse is ever CONFIRMED (program_suspended=True), the pages + /plan must STOP asserting the
+        # guarantee and show the honest "not active — the hospital still helps, apply, it's free" note.
+        import navigator, dataclasses
+        orig = state_rules.STATES["NC"]
+        try:
+            state_rules.STATES["NC"] = dataclasses.replace(orig, program_suspended=True)
+            idx = self._hp.build_index([self._row("DUKE UNIVERSITY HOSPITAL", "340030", "DURHAM", "Durham")])[0]
+            slug = next(iter(idx))
+            for lang in ("en", "es", "ar"):
+                h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+                c = self._hp.render_statutory_county("Durham", idx, lang, "NC")
+                for html, where in ((h, "hospital"), (c, "county")):
+                    self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token when suspended")
+            en_h = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+            en_c = self._hp.render_statutory_county("Durham", idx, "en", "NC")
+            for html, where in ((en_h, "hospital"), (en_c, "county")):
+                self.assertIn("not active right now", html, f"{where}: suspended note present")
+                self.assertNotIn("must provide free care", html.lower(), f"{where}: guarantee suppressed")
+                self.assertNotIn("renews each year", html, f"{where}: currency note suppressed when suspended")
+            # /plan refuses to assert the guarantee too.
+            p = navigator.build_statutory_plan_struct(
+                {"first_name": "there", "full_name": "A B", "household_size": 4, "annual_income": 24000,
+                 "insurance": "uninsured", "in_collections": True},
+                self._row("X HOSPITAL", "340030", "C", "D"), "en")
+            self.assertIn("isn't active right now", p["charity"]["message"])
+            self.assertIn("apply anyway", p["charity"]["message"].lower())
+            self.assertNotIn("Medical Debt Relief Program", p["charity"]["message"])   # no guarantee cited
+        finally:
+            state_rules.STATES["NC"] = orig
+
+
+class TestStatutoryCurrencyCheck(unittest.TestCase):
+    """The out-of-band monitor that alerts a human to re-verify a program state's authority before its pages
+    can silently go stale. Pure evaluate() logic is date-injectable so these are deterministic."""
+    import statutory_currency_check as _scc
+    import state_rules as _sr
+    import dataclasses as _dc
+    import datetime as _dt
+
+    def _states(self, **overrides):
+        return {"NC": self._dc.replace(self._sr.NC, **overrides)}
+
+    def test_in_window_is_ok(self):
+        rows, problems = self._scc.evaluate(self._states(program_confirmed_through="2026-06-30"),
+                                            self._dt.date(2026, 1, 1))
+        self.assertEqual(rows[0][1], "OK")
+        self.assertEqual(problems, [])
+
+    def test_within_warn_window_warns_but_is_not_a_problem(self):
+        rows, problems = self._scc.evaluate(self._states(program_confirmed_through="2026-06-30"),
+                                            self._dt.date(2026, 6, 1))   # 29 days before -> WARN
+        self.assertEqual(rows[0][1], "WARN")
+        self.assertEqual(problems, [])                                   # a heads-up, not yet an alert
+
+    def test_past_window_is_stale_and_a_problem(self):
+        rows, problems = self._scc.evaluate(self._states(program_confirmed_through="2026-06-30"),
+                                            self._dt.date(2026, 7, 18))
+        self.assertEqual(rows[0][1], "STALE")
+        self.assertEqual([c for c, _, _ in problems], ["NC"])           # exit 1 -> cron/Kuma alerts
+
+    def test_suspended_is_a_problem_regardless_of_date(self):
+        rows, problems = self._scc.evaluate(self._states(program_suspended=True),
+                                            self._dt.date(2020, 1, 1))
+        self.assertEqual(rows[0][1], "SUSPENDED")
+        self.assertEqual([c for c, _, _ in problems], ["NC"])
+
+    def test_statute_states_are_skipped(self):
+        # A statute (CA) doesn't expire — it must never appear in the program-currency monitor.
+        rows, problems = self._scc.evaluate({"CA": self._sr.CA, "IL": self._sr.IL},
+                                            self._dt.date(2026, 7, 18))
+        self.assertEqual(rows, [])
+        self.assertEqual(problems, [])
+
+    def test_live_nc_config_is_tracked(self):
+        # Guards the real config without being time-fragile: NC must be TRACKED by the monitor (a program
+        # state with a parseable confirmed-through date) — whether it's OK or STALE today depends on the date,
+        # which is fine. A silent drop of authority_is_program / the date would make this vanish.
+        rows, _ = self._scc.evaluate(self._sr.STATES, self._dt.date.today())
+        tracked = {c for c, status, _, _ in rows if status in ("OK", "WARN", "STALE")}
+        self.assertIn("NC", tracked)
 
 
 class TestStatutoryProtectionNotes(unittest.TestCase):

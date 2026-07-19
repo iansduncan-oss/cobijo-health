@@ -574,31 +574,44 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     # The card heading says "What {state} law guarantees" — a program state (NC) uses "What {state}'s program
     # guarantees". The body uses {law}/fap_law (the program's name), so its text is already authority-accurate.
     law_h_key = "s_law_h_program" if program else "s_law_h"
-    out.append(f'<div class="card"><h2>{_e(_fill(S[law_h_key], state=state_name))}</h2>'
-               f'<p>{_e(_fill(S[law_key], name=name, law=law, free_pct=free_pct, discount_pct=disc_pct, cap=cap))}</p>')
-    if rural and rules.has_rural_bands:
-        out.append(f'<p>{_e(_fill(S["s_rural_note"], name=name, state=state_name, free_pct=free_pct, discount_pct=disc_pct))}</p>')
-    min_note_key = "s_minimum_note_program" if program else "s_minimum_note"   # "required" vs "legal" minimum
-    out.append(f'<p class="note">{_e(_fill(S[min_note_key], name=name))}</p>')
-    # Statutory monthly-payment-cap note, two shapes: ME's cap sits above the free floor ("even if you're above
-    # the free-care limit ..."); CO's applies inside the discount tier and is tiered (4%/2%/6%) + extinguishes the
-    # balance after 36 payments — the payoff variant. payment_cap_payoff_months set -> CO variant.
-    if rules.payment_cap_pct and rules.payment_cap_ceiling_pct:
-        cap_key = "s_payment_cap_payoff" if rules.payment_cap_payoff_months else "s_payment_cap"
-        out.append(f'<p class="note">{_e(_fill(S[cap_key], state=state_name, name=name, free_pct=free_pct, payment_cap_pct=rules.payment_cap_pct, payment_cap_ceiling_pct=rules.payment_cap_ceiling_pct, payment_cap_pct_professional=rules.payment_cap_pct_professional, payment_cap_pct_comprehensive=rules.payment_cap_pct_comprehensive, payment_cap_payoff_months=rules.payment_cap_payoff_months))}</p>')
-    # Where the statute bars using immigration status (NY §2807-k(9-a)) — a reassurance for the audience.
-    if rules.immigration_excluded:
-        out.append(f'<p class="note"><strong>{_e(_fill(S["s_immigration"], state=state_name))}</strong></p>')
-    # Concrete, statute-backed extras a patient can act on (H1/H2/M3), each gated by a state_rules flag so
-    # the claim only shows where the law actually says so: the named Medicaid-rate cap (challenge an inflated
-    # bill), the no-lawsuit / no-home-foreclosure protection, and the apply-by deadline.
-    if rules.names_medicaid_cap:
-        out.append(f'<p class="note">{_e(_fill(S["s_medicaid_cap"], state=state_name))}</p>')
-    if rules.bars_debt_lawsuits:
-        out.append(f'<p class="note"><strong>{_e(_fill(S["s_debt_protection"], state=state_name))}</strong></p>')
-    if rules.apply_deadline_days:
-        out.append(f'<p class="note"><strong>{_e(_fill(S["s_apply_deadline"], state=state_name, days=rules.apply_deadline_days))}</strong></p>')
-    out.append('</div>')
+    if rules.program_suspended:
+        # KILL SWITCH: the program's authority is CONFIRMED lapsed — do NOT assert a guarantee. Render one
+        # honest card ("not active right now — the hospital still has its own help, apply, it's free") and skip
+        # the whole guarantee block (body + min-note/currency/payment-cap/etc. all presuppose an active program).
+        out.append(f'<div class="card"><p class="note"><strong>'
+                   f'{_e(_fill(S["s_program_suspended"], state=state_name))}</strong></p></div>')
+    else:
+        out.append(f'<div class="card"><h2>{_e(_fill(S[law_h_key], state=state_name))}</h2>'
+                   f'<p>{_e(_fill(S[law_key], name=name, law=law, free_pct=free_pct, discount_pct=disc_pct, cap=cap))}</p>')
+        if rural and rules.has_rural_bands:
+            out.append(f'<p>{_e(_fill(S["s_rural_note"], name=name, state=state_name, free_pct=free_pct, discount_pct=disc_pct))}</p>')
+        min_note_key = "s_minimum_note_program" if program else "s_minimum_note"   # "required" vs "legal" minimum
+        out.append(f'<p class="note">{_e(_fill(S[min_note_key], name=name))}</p>')
+        # A program-authority state (NC) rests on an ANNUALLY-renewed Medicaid condition, not a permanent statute.
+        # The currency note is EVERGREEN and fails safe (true whether the program is active, pending, or lapsed) —
+        # it does NOT assert a hard current guarantee, so it can't mislead in either direction as time passes. The
+        # confirmed-through date drives the OUT-OF-BAND alert (statutory_currency_check.py), not this copy.
+        if program:
+            out.append(f'<p class="note">{_e(_fill(S["s_program_currency"], state=state_name))}</p>')
+        # Statutory monthly-payment-cap note, two shapes: ME's cap sits above the free floor ("even if you're above
+        # the free-care limit ..."); CO's applies inside the discount tier and is tiered (4%/2%/6%) + extinguishes the
+        # balance after 36 payments — the payoff variant. payment_cap_payoff_months set -> CO variant.
+        if rules.payment_cap_pct and rules.payment_cap_ceiling_pct:
+            cap_key = "s_payment_cap_payoff" if rules.payment_cap_payoff_months else "s_payment_cap"
+            out.append(f'<p class="note">{_e(_fill(S[cap_key], state=state_name, name=name, free_pct=free_pct, payment_cap_pct=rules.payment_cap_pct, payment_cap_ceiling_pct=rules.payment_cap_ceiling_pct, payment_cap_pct_professional=rules.payment_cap_pct_professional, payment_cap_pct_comprehensive=rules.payment_cap_pct_comprehensive, payment_cap_payoff_months=rules.payment_cap_payoff_months))}</p>')
+        # Where the statute bars using immigration status (NY §2807-k(9-a)) — a reassurance for the audience.
+        if rules.immigration_excluded:
+            out.append(f'<p class="note"><strong>{_e(_fill(S["s_immigration"], state=state_name))}</strong></p>')
+        # Concrete, statute-backed extras a patient can act on (H1/H2/M3), each gated by a state_rules flag so
+        # the claim only shows where the law actually says so: the named Medicaid-rate cap (challenge an inflated
+        # bill), the no-lawsuit / no-home-foreclosure protection, and the apply-by deadline.
+        if rules.names_medicaid_cap:
+            out.append(f'<p class="note">{_e(_fill(S["s_medicaid_cap"], state=state_name))}</p>')
+        if rules.bars_debt_lawsuits:
+            out.append(f'<p class="note"><strong>{_e(_fill(S["s_debt_protection"], state=state_name))}</strong></p>')
+        if rules.apply_deadline_days:
+            out.append(f'<p class="note"><strong>{_e(_fill(S["s_apply_deadline"], state=state_name, days=rules.apply_deadline_days))}</strong></p>')
+        out.append('</div>')
 
     # How to apply — reuse the CA chrome (phone + call script).
     out.append(f'<div class="card"><h2>{_e(S["h_apply_h"])}</h2>')
@@ -675,15 +688,23 @@ def render_statutory_county(county, index, lang="en", state="IL"):
                    ("s_c_lead_program" if program else "s_c_lead")))
     out.append(f'<p class="lead">{_e(_fill(S[c_lead_key], county=county, state=state_name))}</p>')
 
-    # Free-only (ME) names only the free floor; discount-only (CO) can't use the free-tier text ("... at or
-    # below None%"); else the default free+discount county paragraph.
-    if disc_pct is None:
-        law_p = _fill(S["s_c_law_p_free_only"], county=county, law=law, free_pct=free_pct)
-    elif free_pct is None:
-        law_p = _fill(S["s_c_law_p_discount_only"], county=county, law=law, discount_pct=disc_pct)
+    # KILL SWITCH: a CONFIRMED-lapsed program drops the guarantee paragraph entirely for the honest note.
+    if rules.program_suspended:
+        out.append(f'<div class="card"><p class="note"><strong>'
+                   f'{_e(_fill(S["s_program_suspended"], state=state_name))}</strong></p></div>')
     else:
-        law_p = _fill(S["s_c_law_p"], county=county, law=law, free_pct=free_pct, discount_pct=disc_pct)
-    out.append(f'<div class="card"><h2>{_e(_fill(S["c_law_h"], county=county))}</h2><p>{_e(law_p)}</p></div>')
+        # Free-only (ME) names only the free floor; discount-only (CO) can't use the free-tier text ("... at or
+        # below None%"); else the default free+discount county paragraph.
+        if disc_pct is None:
+            law_p = _fill(S["s_c_law_p_free_only"], county=county, law=law, free_pct=free_pct)
+        elif free_pct is None:
+            law_p = _fill(S["s_c_law_p_discount_only"], county=county, law=law, discount_pct=disc_pct)
+        else:
+            law_p = _fill(S["s_c_law_p"], county=county, law=law, free_pct=free_pct, discount_pct=disc_pct)
+        # Evergreen currency note for a program state (fails safe; the alert, not this copy, tracks the date).
+        currency = (f'<p class="note">{_e(_fill(S["s_program_currency"], state=state_name))}</p>'
+                    if program else "")
+        out.append(f'<div class="card"><h2>{_e(_fill(S["c_law_h"], county=county))}</h2><p>{_e(law_p)}</p>{currency}</div>')
 
     out.append(f'<div class="card nearby"><h2>{_e(_fill(S["c_list_h"], county=county))} ({len(hosps)})</h2><p class="nearby">'
                + "".join(f'<a href="{_path(lang, s, "hospital", state)}">{_e(_title(r["hospital"]))}</a>' for s, r in hosps)

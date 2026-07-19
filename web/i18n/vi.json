@@ -669,7 +669,9 @@
     "s_h_lead_program": "Theo chương trình hỗ trợ tài chính bệnh viện của {state}, {name} phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân thu nhập thấp và không có bảo hiểm đủ điều kiện. Dưới đây là những gì chương trình bảo đảm cho bạn — và cách nộp đơn.",
     "s_law_h_program": "Những gì chương trình của {state} bảo đảm cho bạn",
     "s_c_lead_program": "Mọi bệnh viện ở Hạt {county} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo chương trình hỗ trợ tài chính bệnh viện của {state}. Hãy tìm bệnh viện của bạn ở bên dưới.",
-    "s_minimum_note_program": "Đây chỉ là mức tối thiểu bắt buộc — {name} có thể hỗ trợ hào phóng hơn thế. Cách duy nhất để biết là nộp đơn, và nộp đơn thì luôn miễn phí."
+    "s_minimum_note_program": "Đây chỉ là mức tối thiểu bắt buộc — {name} có thể hỗ trợ hào phóng hơn thế. Cách duy nhất để biết là nộp đơn, và nộp đơn thì luôn miễn phí.",
+    "s_program_currency": "Đây là một chương trình mà {state} gia hạn mỗi năm, nên mức hỗ trợ cụ thể có thể thay đổi theo thời gian. Bệnh viện có thể xác nhận điều gì áp dụng cho bạn ngay lúc này — và việc nộp đơn luôn luôn miễn phí.",
+    "s_program_suspended": "Chương trình hỗ trợ tài chính của bệnh viện ở {state} hiện không hoạt động. Các bệnh viện ở đây vẫn cung cấp hỗ trợ tài chính riêng của họ cho những bệnh nhân không đủ khả năng chi trả cho việc chăm sóc — hãy nộp đơn để biết bạn đủ điều kiện nhận gì, và việc nộp đơn luôn luôn miễn phí."
   },
   "states": {
     "st_title": "Tìm hỗ trợ tài chính cho hóa đơn bệnh viện của bạn theo tiểu bang | Cobijo Health",

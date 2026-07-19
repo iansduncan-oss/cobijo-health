@@ -81,6 +81,11 @@ MESSAGES = {
                                   "provider's bill, and {payment_cap_pct_comprehensive}% across a combined bill — and "
                                   "after {payment_cap_payoff_months} monthly payments, any remaining balance is treated "
                                   "as paid in full. Ask the hospital to set up that payment plan."),
+        # KILL SWITCH: replaces the whole statutory message when a program's authority is CONFIRMED lapsed
+        # (state_rules.program_suspended) — never assert a guarantee we know has ended.
+        "cc_program_suspended": ("This program isn't active right now, but {name} still has its own financial "
+                                 "assistance for patients who can't afford care — apply anyway, and applying is "
+                                 "always free."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("You reported having insurance — we'd still check for cost-sharing help and "
                         "secondary programs."),
@@ -243,6 +248,9 @@ MESSAGES = {
                                   "{payment_cap_pct_comprehensive}% en una factura combinada — y después de "
                                   "{payment_cap_payoff_months} pagos mensuales, cualquier saldo restante se considera "
                                   "pagado en su totalidad. Pida al hospital que establezca ese plan de pago."),
+        "cc_program_suspended": ("Este programa no está activo en este momento, pero {name} todavía tiene su propia "
+                                 "asistencia financiera para pacientes que no pueden pagar la atención — solicítela de "
+                                 "todos modos, y solicitarla siempre es gratis."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("Usted indicó que tiene seguro — de todos modos revisaríamos ayuda con los "
                         "gastos compartidos y programas secundarios."),

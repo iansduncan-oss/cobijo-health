@@ -669,7 +669,9 @@
     "s_h_lead_program": "Sa ilalim ng programa ng tulong pinansyal sa ospital ng {state}, ang {name} ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga kwalipikadong pasyenteng mababa ang kita at walang insurance. Narito kung ano ang ginagarantiya ng programa — at kung paano mag-apply.",
     "s_law_h_program": "Ang ginagarantiya ng programa ng {state}",
     "s_c_lead_program": "Bawat ospital sa {county} County ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga kwalipikadong pasyente sa ilalim ng programa ng tulong pinansyal sa ospital ng {state}. Hanapin ang iyong ospital sa ibaba.",
-    "s_minimum_note_program": "Ito ang kinakailangang minimum — maaaring mas malaki pa ang itulong ng {name}. Ang tanging paraan para malaman ay mag-apply, at palaging libre ang pag-apply."
+    "s_minimum_note_program": "Ito ang kinakailangang minimum — maaaring mas malaki pa ang itulong ng {name}. Ang tanging paraan para malaman ay mag-apply, at palaging libre ang pag-apply.",
+    "s_program_currency": "Ito ay isang programa na binabago ng {state} taun-taon, kaya maaaring magbago sa paglipas ng panahon ang eksaktong tulong na makukuha. Makukumpirma ng ospital kung ano ang naaangkop sa iyo sa ngayon — at ang pag-apply ay palaging libre.",
+    "s_program_suspended": "Hindi aktibo sa ngayon ang programa ng tulong pinansyal ng ospital sa {state}. Nag-aalok pa rin ang mga ospital dito ng sarili nilang tulong pinansyal para sa mga pasyenteng hindi kayang magbayad para sa pangangalaga — mag-apply para malaman kung ano ang kwalipikado ka, at ang pag-apply ay palaging libre."
   },
   "states": {
     "st_title": "Maghanap ng Tulong Pinansyal para sa Iyong Bill sa Ospital ayon sa Estado | Cobijo Health",

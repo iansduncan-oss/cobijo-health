@@ -653,7 +653,9 @@
     "s_h_lead_program": "Under {state}'s hospital financial assistance program, {name} must offer free or discounted care to eligible low-income and uninsured patients. Here's what the program guarantees — and how to apply.",
     "s_law_h_program": "What {state}'s program guarantees",
     "s_c_lead_program": "Every hospital in {county} County must offer free or discounted care to eligible patients under {state}'s hospital financial assistance program. Find your hospital below.",
-    "s_minimum_note_program": "This is the required minimum — {name} may offer more generous help. The only way to know is to apply, and applying is always free."
+    "s_minimum_note_program": "This is the required minimum — {name} may offer more generous help. The only way to know is to apply, and applying is always free.",
+    "s_program_currency": "This is a program {state} renews each year, so the exact help available can change over time. The hospital can confirm what applies to you right now — and applying is always free.",
+    "s_program_suspended": "{state}'s hospital financial assistance program is not active right now. Hospitals here still offer their own financial help for patients who can't afford care — apply to find out what you qualify for, and applying is always free."
   },
   "states": {
     "st_title": "Find Financial Help for Your Hospital Bill by State | Cobijo Health",

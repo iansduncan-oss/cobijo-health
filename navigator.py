@@ -406,6 +406,7 @@ def statutory_facts(intake, row):
         "payment_cap_pct_professional": rules.payment_cap_pct_professional,
         "payment_cap_pct_comprehensive": rules.payment_cap_pct_comprehensive,
         "payment_cap_payoff_months": rules.payment_cap_payoff_months,
+        "program_suspended": rules.program_suspended,
         "rural": rural,
         "hospital": row["hospital"].title(),
     }
@@ -454,6 +455,11 @@ def build_statutory_plan_struct(intake, row, lang="en"):
         message += " " + t(lang, "cc_payment_cap", law=facts["fap_law"],
                            payment_cap_pct=facts["payment_cap_pct"],
                            payment_cap_ceiling_pct=facts["payment_cap_ceiling_pct"])
+    # KILL SWITCH: a CONFIRMED-lapsed program (program_suspended) must not assert a guarantee in the tool
+    # either — replace the message with the same honest "not currently active; apply anyway, it's free" the
+    # pages show. (For NC the cap-append block above is already inert — payment_cap_pct is None.)
+    if facts["program_suspended"]:
+        message = t(lang, "cc_program_suspended", name=facts["hospital"])
     debt = debt_defense(intake.get("in_collections"), lang=lang)
     return {
         "fpl_pct": facts["fpl_pct"],

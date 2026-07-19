@@ -653,7 +653,9 @@
     "s_h_lead_program": "Según el programa de asistencia financiera hospitalaria de {state}, {name} debe ofrecer atención gratuita o con descuento a los pacientes de bajos ingresos y sin seguro que califiquen. Aquí le explicamos lo que el programa le garantiza — y cómo solicitarla.",
     "s_law_h_program": "Lo que el programa de {state} le garantiza",
     "s_c_lead_program": "Todos los hospitales del condado de {county} deben ofrecer atención gratuita o con descuento a los pacientes que califiquen, según el programa de asistencia financiera hospitalaria de {state}. Encuentre su hospital abajo.",
-    "s_minimum_note_program": "Este es el mínimo requerido — {name} puede ofrecer una ayuda más generosa. La única forma de saberlo es solicitándola, y solicitarla siempre es gratis."
+    "s_minimum_note_program": "Este es el mínimo requerido — {name} puede ofrecer una ayuda más generosa. La única forma de saberlo es solicitándola, y solicitarla siempre es gratis.",
+    "s_program_currency": "Este es un programa que {state} renueva cada año, por lo que la ayuda exacta disponible puede cambiar con el tiempo. El hospital puede confirmar lo que le corresponde en este momento — y solicitarla siempre es gratis.",
+    "s_program_suspended": "El programa de asistencia financiera hospitalaria de {state} no está activo en este momento. Los hospitales aquí todavía ofrecen su propia ayuda financiera para pacientes que no pueden pagar la atención — solicítela para saber a qué tiene derecho, y solicitarla siempre es gratis."
   },
   "states": {
     "st_title": "Encuentre ayuda económica para su factura de hospital por estado | Cobijo Health",

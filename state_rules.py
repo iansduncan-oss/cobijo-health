@@ -68,6 +68,20 @@ class StateRules:
     # must NOT say "{state} law" — they use "_program" i18n variants ("{state}'s hospital financial assistance
     # program") so the authority is stated honestly. The {law}/fap_law slots carry the program's name.
     authority_is_program: bool = False
+    # --- Program-authority CURRENCY tracking (a program condition, unlike a statute, is renewed periodically
+    # and can lapse — so we track when its authority was last CONFIRMED and watch for the next renewal). Only
+    # meaningful when authority_is_program. ---
+    # ISO date (YYYY-MM-DD) through which the program's binding authority is CONFIRMED by primary sources. Drives
+    # statutory_currency_check.py (alerts when it passes) — NOT the patient copy, which is intentionally evergreen
+    # and fails safe. Bump this forward when a renewal is source-verified. None -> not tracked.
+    program_confirmed_through: Optional[str] = None
+    # A human breadcrumb for the next re-check (what to look for, hard horizons). Surfaced only in the alert.
+    program_renewal_watch: Optional[str] = None
+    # KILL SWITCH: flip True ONLY when a lapse is CONFIRMED (not merely unconfirmed). Suppresses the guarantee
+    # framing and shows an honest "not currently active — the hospital still has its own assistance" note so the
+    # site never asserts a guarantee we know has ended. Default False; the evergreen currency note covers the
+    # ordinary "renewal pending" case without this.
+    program_suspended: bool = False
 
     @property
     def is_statutory(self):
@@ -392,6 +406,12 @@ NC = StateRules(
     fap_law="North Carolina's Medical Debt Relief Program",
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
     authority_is_program=True,   # binding Medicaid HASP program condition (all 99 acute hospitals), not a statute
+    # Currency: CMS approved HASP "Year 3" through 2026-06-30; Year-4 (SFY2027) renewal UNCONFIRMED as of
+    # 2026-07-18 (two verify-first passes found no primary-source approval; the charity-care condition is NOT
+    # decoupled into statute — HB367 died in committee 2023). The pages stay up with the evergreen currency
+    # note (fails safe); the check below alerts us to re-verify. Bump this date when Year-4 is source-verified.
+    program_confirmed_through="2026-06-30",
+    program_renewal_watch="Watch NCDHHS press feed for the HASP Year-4/SFY2027 'approved for another year' release; hard horizon: OBBB grandfathering ends 2028.",
 )
 
 STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI, "ME": ME,
