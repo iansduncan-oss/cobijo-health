@@ -1227,6 +1227,72 @@ class TestVermontStatutory(unittest.TestCase):
         self.assertGreater(len(server.STATUTORY_STATES["VT"]["hospitals"]), 0)
 
 
+class TestNorthCarolinaStatutory(unittest.TestCase):
+    """North Carolina (14th state) — the FIRST program-authority state. Free ≤200% FPL / discount ≤300% comes
+    from a binding statewide PROGRAM (the Medicaid HASP charity-care condition all 99 acute hospitals accepted),
+    NOT a statute — so authority_is_program=True and the pages must say "North Carolina's ... program", NEVER
+    "North Carolina law" (which would misstate the authority). Same free+discount bands as MD; the honesty test
+    is the framing: 'program' present, '{state} law' absent."""
+    import hospital_pages as _hp
+
+    def _row(self, name, ccn, city, county):
+        return {"hospital": name, "ccn": ccn, "city": city, "county": county, "state": "NC",
+                "phone": "(919) 555-0100", "status": "statutory", "policy": None,
+                "hospital_type": "Acute Care Hospitals"}
+
+    def test_nc_pinned_program_authority(self):
+        n = state_rules.rules_for("NC")
+        self.assertEqual((n.statutory_free_pct, n.statutory_discount_pct), (200, 300))
+        self.assertTrue(n.authority_is_program)          # binding Medicaid program, not a statute
+        self.assertIsNone(n.income_cap_pct)
+        self.assertFalse(n.immigration_excluded)          # immigration-neutral but no in-terms non-exclusion
+        self.assertTrue(n.is_statutory)
+
+    def test_nc_surfaces_say_program_not_law(self):
+        idx = self._hp.build_index([self._row("DUKE UNIVERSITY HOSPITAL", "340030", "DURHAM", "Durham")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "zh"):
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            c = self._hp.render_statutory_county("Durham", idx, lang, "NC")
+            d = self._hp.render_statutory_directory(idx, lang, "NC")
+            for html, where in ((h, "hospital"), (c, "county"), (d, "directory")):
+                self.assertIn("Medical Debt Relief Program", html, f"{lang} {where}: program named")
+                self.assertNotIn("None%", html, f"{lang} {where}: None% leak")
+                self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang} {where}: unfilled token")
+        en_h = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        en_c = self._hp.render_statutory_county("Durham", idx, "en", "NC")
+        for html, where in ((en_h, "hospital"), (en_c, "county")):
+            self.assertIn("program", html.lower(), f"{where}: program framing present")
+            self.assertNotIn("north carolina law", html.lower(), f"{where}: must NOT call the program 'law'")
+            self.assertIn("free care", html.lower(), f"{where}: free tier present")
+        self.assertIn("?st=NC", en_h)
+        self.assertIn(f"/qr/nc/hospital/{slug}.svg", en_h)
+
+    def test_nc_hub_card_says_program(self):
+        hub = self._hp.render_states_hub([{"name": "North Carolina", "code": "NC", "count": 99}], "en")
+        self.assertIn("statewide program", hub)
+        self.assertNotIn("under state law", hub)          # the NC card must not say "under state law"
+
+    def test_nc_plan_free_discount_over_cite_program(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4, "insurance": "uninsured",
+                "in_collections": True}
+        row = self._row("X HOSPITAL", "340030", "C", "D")
+        free = navigator.build_statutory_plan_struct({**base, "annual_income": 24000}, row, "en")   # ~73% FPL
+        self.assertEqual(free["tier"], "free")
+        self.assertIn("Medical Debt Relief Program", free["charity"]["message"])
+        self.assertNotIn("North Carolina law", free["charity"]["message"])
+        disc = navigator.build_statutory_plan_struct({**base, "annual_income": 80000}, row, "en")   # ~242% FPL
+        self.assertEqual(disc["tier"], "discount")
+        over = navigator.build_statutory_plan_struct({**base, "annual_income": 110000}, row, "en")  # ~333% FPL
+        self.assertEqual(over["tier"], "over")
+
+    def test_registry_discovers_nc(self):
+        import server
+        self.assertIn("NC", server.STATUTORY_STATES)
+        self.assertGreater(len(server.STATUTORY_STATES["NC"]["hospitals"]), 0)
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure

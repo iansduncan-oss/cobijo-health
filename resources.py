@@ -61,6 +61,7 @@ _STATE_RESOURCES = {
     "MA": {"coverage": "https://www.mahealthconnector.org/",        "legalaid": "https://healthlawadvocates.org/"},
     "OH": {"coverage": "https://www.healthcare.gov/",               "legalaid": "https://www.ohiolegalhelp.org/"},
     "VT": {"coverage": "https://portal.healthconnect.vermont.gov/", "legalaid": "https://vtlawhelp.org/"},
+    "NC": {"coverage": "https://www.healthcare.gov/",               "legalaid": "https://legalaidnc.org/"},
 }
 
 

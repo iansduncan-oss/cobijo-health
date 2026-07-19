@@ -52,6 +52,11 @@ class StateRules:
     # free floor. (CO has the same 4%/2% cap deferred — reuse these fields when that note is added.)
     payment_cap_pct: Optional[int] = None
     payment_cap_ceiling_pct: Optional[int] = None
+    # True when the eligibility guarantee comes from a binding STATEWIDE PROGRAM (e.g. a Medicaid directed-payment
+    # condition every hospital accepted) rather than a statute. Same modelable free/discount bands, but the pages
+    # must NOT say "{state} law" — they use "_program" i18n variants ("{state}'s hospital financial assistance
+    # program") so the authority is stated honestly. The {law}/fap_law slots carry the program's name.
+    authority_is_program: bool = False
 
     @property
     def is_statutory(self):
@@ -350,8 +355,30 @@ VT = StateRules(
     immigration_excluded=True,   # 18 V.S.A. §9483 explicitly protects undocumented immigrants from exclusion
 )
 
+# North Carolina — Medical Debt Relief Incentive Program (the charity-care standard hospitals must adopt as a
+# condition of enhanced HASP Medicaid payments; CMS-approved 2024-07-26, renewed through mid-2026). NOT a statute
+# — a binding STATEWIDE PROGRAM: all 99 eligible acute-care hospitals opted in, so it's effectively universal and
+# enforced by NCDHHS. So authority_is_program=True (pages say "{state}'s hospital financial assistance program",
+# NOT "North Carolina law" — which would misstate the authority). FREE+DISCOUNT shape: 100% FREE ≤200% FPL, then
+# ≥75% off 200–250% and ≥50% off 250–300% — we model the clean free≤200 / discount≤300 envelope (the 75/50 sub-
+# bands are a note-level refinement like NY's cap). Charity-care tiers began 2025-01-01. Source-verified vs
+# NCDHHS + the CMS-approved HASP directed-payment docs + SHVS spotlight (2026-07). income_cap_pct None (the
+# program's §-payment protections — 5%/3yr plans, debt-sale/credit-report bans, 3% interest — are follow-on
+# notes). immigration_excluded stays False: the program is immigration-NEUTRAL (silent, and explicitly designed
+# to reach undocumented patients) but has no in-terms non-exclusion clause, so no affirmative reassurance note.
+# ⚠️ RE-CHECK at each annual CMS HASP renewal (~mid-2026) — the funding condition, not a permanent statute.
+# Reuses existing free+discount strings + the new _program authority variants — no shape-specific i18n.
+NC = StateRules(
+    code="NC", name="North Carolina",
+    fpl_floor_pct=300, discount_implausible_pct=800,
+    free_care_unusual_pct=200, free_care_implausible_pct=400,
+    fap_law="North Carolina's Medical Debt Relief Program",
+    statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
+    authority_is_program=True,   # binding Medicaid HASP program condition (all 99 acute hospitals), not a statute
+)
+
 STATES = {"CA": CA, "IL": IL, "NY": NY, "MD": MD, "WA": WA, "NJ": NJ, "CO": CO, "OR": OR, "RI": RI, "ME": ME,
-          "MA": MA, "OH": OH, "VT": VT}
+          "MA": MA, "OH": OH, "VT": VT, "NC": NC}
 
 
 def rules_for(state="CA"):

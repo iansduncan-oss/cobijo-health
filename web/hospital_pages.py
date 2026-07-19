@@ -78,7 +78,7 @@ _DIR_SLUG = {"CA": "california-hospitals", "IL": "illinois-hospitals", "NY": "ne
              "MD": "maryland-hospitals", "WA": "washington-hospitals", "NJ": "new-jersey-hospitals",
              "CO": "colorado-hospitals", "OR": "oregon-hospitals", "RI": "rhode-island-hospitals",
              "ME": "maine-hospitals", "MA": "massachusetts-hospitals", "OH": "ohio-hospitals",
-             "VT": "vermont-hospitals"}
+             "VT": "vermont-hospitals", "NC": "north-carolina-hospitals"}
 
 
 def _path(lang, slug=None, kind="hospital", state="CA"):
@@ -516,6 +516,7 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     cites the state law's guaranteed bands (honest legal floor) rather than an extracted per-hospital policy."""
     S = {**i18n.hospital_strings(lang), **i18n.statutory_strings(lang)}
     rules, state, state_name, rural, free_pct, disc_pct, cap, law = _statutory_bands(row)
+    program = rules.authority_is_program   # NC: a binding Medicaid-payment program, not a statute -> "program" copy
     name = _title(row["hospital"])
     city = (row.get("city") or "").title()
     county = row.get("county")
@@ -524,9 +525,11 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     loc = ", ".join([p for p in [city, (county + " County") if county else None, state] if p])
     title = _fill(S["h_h1"], name=name).replace(" — ", " ") + (f" ({city}, {state})" if city else "") + " | Cobijo Health"
     # Pick the tier-shape variant: free-only (ME: no % discount tier), discount-only (CO: no free tier), or
-    # the default free+discount. A free-only state would otherwise print "free or discounted"/"None%".
+    # the default free+discount. A free-only state would otherwise print "free or discounted"/"None%". A program
+    # state (NC) uses the default free+discount bands but the "_program" copy (no "{state} law" overstatement).
     meta_key = ("s_meta_free_only" if disc_pct is None else
-                ("s_meta_discount_only" if free_pct is None else "s_meta"))
+                ("s_meta_discount_only" if free_pct is None else
+                 ("s_meta_program" if program else "s_meta")))
     desc = _fill(S[meta_key], name=name + (f", {city}" if city else ""), state=state_name)
 
     home_url = BASE + ("/" if lang == "en" else f"/{lang}/")
@@ -553,7 +556,8 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     if loc:
         out.append(f'<p class="loc">{_e(loc)}</p>')
     lead_key = ("s_h_lead_free_only" if disc_pct is None else
-                ("s_h_lead_discount_only" if free_pct is None else "s_h_lead"))
+                ("s_h_lead_discount_only" if free_pct is None else
+                 ("s_h_lead_program" if program else "s_h_lead")))
     out.append(f'<p class="lead">{_e(_fill(S[lead_key], name=name, state=state_name))}</p>')
 
     # What the law guarantees — the statutory bands (rural-adjusted), + an honest "legal minimum" caveat.
@@ -567,11 +571,15 @@ def render_statutory_hospital(row, slug, index, lang="en"):
     law_key = ("s_law_p_free_only" if disc_pct is None else
                ("s_law_p_discount_only" if free_pct is None else
                 ("s_law_p" if cap is not None else "s_law_p_nocap")))
-    out.append(f'<div class="card"><h2>{_e(_fill(S["s_law_h"], state=state_name))}</h2>'
+    # The card heading says "What {state} law guarantees" — a program state (NC) uses "What {state}'s program
+    # guarantees". The body uses {law}/fap_law (the program's name), so its text is already authority-accurate.
+    law_h_key = "s_law_h_program" if program else "s_law_h"
+    out.append(f'<div class="card"><h2>{_e(_fill(S[law_h_key], state=state_name))}</h2>'
                f'<p>{_e(_fill(S[law_key], name=name, law=law, free_pct=free_pct, discount_pct=disc_pct, cap=cap))}</p>')
     if rural and rules.has_rural_bands:
         out.append(f'<p>{_e(_fill(S["s_rural_note"], name=name, state=state_name, free_pct=free_pct, discount_pct=disc_pct))}</p>')
-    out.append(f'<p class="note">{_e(_fill(S["s_minimum_note"], name=name))}</p>')
+    min_note_key = "s_minimum_note_program" if program else "s_minimum_note"   # "required" vs "legal" minimum
+    out.append(f'<p class="note">{_e(_fill(S[min_note_key], name=name))}</p>')
     # Free-only states with a statutory monthly-payment cap above the free floor (ME: 4% ≤400% FPL) surface
     # that affordability band as a note — the 200–400% patient still has a citeable protection.
     if rules.payment_cap_pct and rules.payment_cap_ceiling_pct:
@@ -631,6 +639,7 @@ def render_statutory_county(county, index, lang="en", state="IL"):
     S = {**i18n.hospital_strings(lang), **i18n.county_strings(lang), **i18n.statutory_strings(lang)}
     rules = state_rules.rules_for(state)
     state_name, law = rules.name, rules.fap_law
+    program = rules.authority_is_program
     free_pct, disc_pct = rules.free_pct_for(False), rules.discount_pct_for(False)   # metro bands at county level
     cslug = slugify(county)
     canonical = _url(lang, cslug, "county", state)
@@ -660,7 +669,8 @@ def render_statutory_county(county, index, lang="en", state="IL"):
                f'<a href="{dir_path}">{_e(_fill(S["s_dir"], state=state_name))}</a> › {_e(h1)}</p>')
     out.append(f'<h1>{_e(h1)}</h1>')
     c_lead_key = ("s_c_lead_free_only" if disc_pct is None else
-                  ("s_c_lead_discount_only" if free_pct is None else "s_c_lead"))
+                  ("s_c_lead_discount_only" if free_pct is None else
+                   ("s_c_lead_program" if program else "s_c_lead")))
     out.append(f'<p class="lead">{_e(_fill(S[c_lead_key], county=county, state=state_name))}</p>')
 
     # Free-only (ME) names only the free floor; discount-only (CO) can't use the free-tier text ("... at or
@@ -762,9 +772,11 @@ def render_states_hub(states, lang="en"):
     out.append(f'<h2 style="margin:20px 0 2px">{_e(S["st_choose"])}</h2>')
     for st in states:
         dir_path = _path(lang, None, "hospital", st["code"])
+        # A program state (NC) says "under a statewide program", not "under state law".
+        card_key = "st_card_program" if state_rules.rules_for(st["code"]).authority_is_program else "st_card"
         out.append(f'<a class="card" href="{dir_path}" style="display:block;text-decoration:none">'
                    f'<h2>{_e(st["name"])} →</h2>'
-                   f'<p class="note">{_e(_fill(S["st_card"], count=st["count"]))}</p></a>')
+                   f'<p class="note">{_e(_fill(S[card_key], count=st["count"]))}</p></a>')
     out.append(f'<div class="card"><p>{_e(S["st_more"])}</p>'
                f'<a class="linkbtn alt" href="{home}">{_e(S["st_general_btn"])}</a></div>')
     out.append(_foot(S, lang))

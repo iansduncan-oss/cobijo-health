@@ -647,7 +647,12 @@
     "s_immigration": "Su estatus migratorio no puede usarse para decidir si usted califica: la ley de {state} prohíbe a los hospitales tomarlo en cuenta. La elegibilidad depende únicamente del ingreso de su familia.",
     "s_medicaid_cap": "Si le hacen un descuento en su factura, la ley de {state} la limita a una parte de la tarifa de Medicaid: 10% si el ingreso de su hogar es hasta el 300% del Nivel Federal de Pobreza, y 20% hasta el 400%, a menudo muy por debajo del precio de lista. Si su factura es mayor, pida al hospital que la corrija.",
     "s_debt_protection": "Usted está protegido contra el cobro agresivo: la ley de {state} prohíbe que el hospital lo demande, o que fuerce la venta o el embargo hipotecario de su vivienda, para cobrar esta factura cuando el ingreso de su hogar es igual o menor al 400% del Nivel Federal de Pobreza.",
-    "s_apply_deadline": "Solicite dentro de {days} días de recibir su factura: ese es el plazo para reclamar este descuento según la ley de {state}. Cubre cualquier factura de más de $300 por una sola estadía o visita al hospital, así que solicite en cuanto llegue la factura."
+    "s_apply_deadline": "Solicite dentro de {days} días de recibir su factura: ese es el plazo para reclamar este descuento según la ley de {state}. Cubre cualquier factura de más de $300 por una sola estadía o visita al hospital, así que solicite en cuanto llegue la factura.",
+    "s_meta_program": "Vea si califica para atención gratuita o con descuento en {name} según el programa de asistencia financiera hospitalaria de {state}. Gratis y privado — no necesita crear una cuenta.",
+    "s_h_lead_program": "Según el programa de asistencia financiera hospitalaria de {state}, {name} debe ofrecer atención gratuita o con descuento a los pacientes de bajos ingresos y sin seguro que califiquen. Aquí le explicamos lo que el programa le garantiza — y cómo solicitarla.",
+    "s_law_h_program": "Lo que el programa de {state} le garantiza",
+    "s_c_lead_program": "Todos los hospitales del condado de {county} deben ofrecer atención gratuita o con descuento a los pacientes que califiquen, según el programa de asistencia financiera hospitalaria de {state}. Encuentre su hospital abajo.",
+    "s_minimum_note_program": "Este es el mínimo requerido — {name} puede ofrecer una ayuda más generosa. La única forma de saberlo es solicitándola, y solicitarla siempre es gratis."
   },
   "states": {
     "st_title": "Encuentre ayuda económica para su factura de hospital por estado | Cobijo Health",
@@ -657,6 +662,7 @@
     "st_choose": "Elija su estado",
     "st_card": "{count} hospitales · atención gratuita o con descuento según la ley estatal",
     "st_more": "Pronto habrá más estados. Todo hospital sin fines de lucro de EE. UU. está obligado a ofrecer ayuda económica, así que si su estado todavía no aparece, aún puede recibir orientación general.",
-    "st_general_btn": "Obtener orientación general"
+    "st_general_btn": "Obtener orientación general",
+    "st_card_program": "{count} hospitales · atención gratuita o con descuento según un programa estatal"
   }
 }

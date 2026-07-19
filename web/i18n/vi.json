@@ -663,7 +663,12 @@
     "s_immigration": "Tình trạng nhập cư của bạn không thể được dùng để quyết định bạn có đủ điều kiện hay không — luật {state} cấm bệnh viện xem xét điều đó. Việc đủ điều kiện chỉ phụ thuộc vào thu nhập của gia đình bạn.",
     "s_medicaid_cap": "Nếu hóa đơn của bạn được giảm giá, luật {state} giới hạn nó ở một phần của mức Medicaid: 10% nếu thu nhập hộ gia đình đến 300% Mức Nghèo Liên Bang, và 20% đến 400% — thường thấp hơn nhiều so với giá niêm yết. Nếu hóa đơn của bạn cao hơn, hãy yêu cầu bệnh viện sửa lại.",
     "s_debt_protection": "Bạn được bảo vệ khỏi việc thu nợ gắt gao: luật {state} cấm bệnh viện kiện bạn, hoặc ép bán hay tịch thu nhà của bạn, để thu hóa đơn này khi thu nhập hộ gia đình của bạn ở mức 400% Mức Nghèo Liên Bang trở xuống.",
-    "s_apply_deadline": "Hãy nộp đơn trong vòng {days} ngày kể từ khi nhận hóa đơn — đó là hạn chót để xin khoản giảm giá này theo luật {state}. Khoản này áp dụng cho bất kỳ hóa đơn nào trên $300 cho một lần nằm viện hoặc khám bệnh, vì vậy hãy nộp đơn ngay khi hóa đơn đến."
+    "s_apply_deadline": "Hãy nộp đơn trong vòng {days} ngày kể từ khi nhận hóa đơn — đó là hạn chót để xin khoản giảm giá này theo luật {state}. Khoản này áp dụng cho bất kỳ hóa đơn nào trên $300 cho một lần nằm viện hoặc khám bệnh, vì vậy hãy nộp đơn ngay khi hóa đơn đến.",
+    "s_meta_program": "Hãy xem bạn có đủ điều kiện nhận chăm sóc miễn phí hoặc giảm giá tại {name} theo chương trình hỗ trợ tài chính bệnh viện của {state} hay không. Miễn phí và riêng tư — không cần tạo tài khoản.",
+    "s_h_lead_program": "Theo chương trình hỗ trợ tài chính bệnh viện của {state}, {name} phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân thu nhập thấp và không có bảo hiểm đủ điều kiện. Dưới đây là những gì chương trình bảo đảm cho bạn — và cách nộp đơn.",
+    "s_law_h_program": "Những gì chương trình của {state} bảo đảm cho bạn",
+    "s_c_lead_program": "Mọi bệnh viện ở Hạt {county} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo chương trình hỗ trợ tài chính bệnh viện của {state}. Hãy tìm bệnh viện của bạn ở bên dưới.",
+    "s_minimum_note_program": "Đây chỉ là mức tối thiểu bắt buộc — {name} có thể hỗ trợ hào phóng hơn thế. Cách duy nhất để biết là nộp đơn, và nộp đơn thì luôn miễn phí."
   },
   "states": {
     "st_title": "Tìm hỗ trợ tài chính cho hóa đơn bệnh viện của bạn theo tiểu bang | Cobijo Health",
@@ -673,6 +678,7 @@
     "st_choose": "Chọn tiểu bang của bạn",
     "st_card": "{count} bệnh viện · chăm sóc miễn phí hoặc giảm giá theo luật tiểu bang",
     "st_more": "Sắp có thêm nhiều tiểu bang. Mọi bệnh viện phi lợi nhuận ở Hoa Kỳ đều phải cung cấp hỗ trợ tài chính, vì vậy nếu tiểu bang của bạn chưa được liệt kê, bạn vẫn có thể nhận hướng dẫn chung.",
-    "st_general_btn": "Nhận hướng dẫn chung"
+    "st_general_btn": "Nhận hướng dẫn chung",
+    "st_card_program": "{count} bệnh viện · chăm sóc miễn phí hoặc giảm giá theo một chương trình toàn tiểu bang"
   }
 }

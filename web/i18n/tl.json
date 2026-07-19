@@ -663,7 +663,12 @@
     "s_immigration": "Hindi maaaring gamitin ang iyong immigration status para magpasya kung kwalipikado ka — ipinagbabawal ng batas ng {state} sa mga ospital na isaalang-alang ito. Ang pagiging kwalipikado ay nakadepende lamang sa kita ng iyong pamilya.",
     "s_medicaid_cap": "Kung binawasan ang iyong bill, nililimitahan ito ng batas ng {state} sa isang bahagi lamang ng rate ng Medicaid: 10% kung ang kita ng iyong sambahayan ay hanggang 300% ng Federal Poverty Level, at 20% hanggang 400% — kadalasang mas mababa pa kaysa sa nakalimbag na presyo. Kung mas mataas ang iyong bill, hilingin sa ospital na itama ito.",
     "s_debt_protection": "Protektado ka mula sa agresibong paniningil: ipinagbabawal ng batas ng {state} sa ospital na idemanda ka, o pilitin ang pagbebenta o foreclosure ng iyong tahanan, para makolekta ang bill na ito kapag ang kita ng iyong sambahayan ay nasa o mas mababa sa 400% ng Federal Poverty Level.",
-    "s_apply_deadline": "Mag-apply sa loob ng {days} araw mula nang matanggap mo ang iyong bill — iyon ang huling araw para hilingin ang diskwentong ito sa ilalim ng batas ng {state}. Saklaw nito ang anumang bill na higit sa $300 para sa isang pananatili o pagbisita sa ospital, kaya mag-apply agad pagdating ng bill."
+    "s_apply_deadline": "Mag-apply sa loob ng {days} araw mula nang matanggap mo ang iyong bill — iyon ang huling araw para hilingin ang diskwentong ito sa ilalim ng batas ng {state}. Saklaw nito ang anumang bill na higit sa $300 para sa isang pananatili o pagbisita sa ospital, kaya mag-apply agad pagdating ng bill.",
+    "s_meta_program": "Tingnan kung kwalipikado ka para sa libre o may diskwentong pangangalaga sa {name} sa ilalim ng programa ng tulong pinansyal sa ospital ng {state}. Libre at pribado — walang account na kailangan.",
+    "s_h_lead_program": "Sa ilalim ng programa ng tulong pinansyal sa ospital ng {state}, ang {name} ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga kwalipikadong pasyenteng mababa ang kita at walang insurance. Narito kung ano ang ginagarantiya ng programa — at kung paano mag-apply.",
+    "s_law_h_program": "Ang ginagarantiya ng programa ng {state}",
+    "s_c_lead_program": "Bawat ospital sa {county} County ay kailangang mag-alok ng libre o may diskwentong pangangalaga sa mga kwalipikadong pasyente sa ilalim ng programa ng tulong pinansyal sa ospital ng {state}. Hanapin ang iyong ospital sa ibaba.",
+    "s_minimum_note_program": "Ito ang kinakailangang minimum — maaaring mas malaki pa ang itulong ng {name}. Ang tanging paraan para malaman ay mag-apply, at palaging libre ang pag-apply."
   },
   "states": {
     "st_title": "Maghanap ng Tulong Pinansyal para sa Iyong Bill sa Ospital ayon sa Estado | Cobijo Health",
@@ -673,6 +678,7 @@
     "st_choose": "Piliin ang iyong estado",
     "st_card": "{count} na ospital · libre o may diskwentong pangangalaga sa ilalim ng batas ng estado",
     "st_more": "Malapit nang magkaroon ng higit pang mga estado. Bawat nonprofit na ospital sa U.S. ay kailangang mag-alok ng tulong pinansyal, kaya kung wala pa sa listahan ang iyong estado, maaari ka pa ring makakuha ng pangkalahatang gabay.",
-    "st_general_btn": "Kumuha ng pangkalahatang gabay"
+    "st_general_btn": "Kumuha ng pangkalahatang gabay",
+    "st_card_program": "{count} na ospital · libre o may diskwentong pangangalaga sa ilalim ng isang programa ng estado"
   }
 }

@@ -647,7 +647,12 @@
     "s_c_lead_free_only": "Every hospital in {county} County must offer free care to eligible patients under {state} law. Find your hospital below.",
     "s_c_law_p_free_only": "Under {law}, hospitals in {county} County must provide free care to uninsured patients at or below {free_pct}% of the Federal Poverty Level.",
     "s_dir_lead_free_only": "Every {state} hospital must offer free care to patients who qualify under {law}. Choose a hospital to see the income limits and how to apply.",
-    "s_payment_cap": "Even if your income is above the free-care limit, {state} law still protects you: for households up to {payment_cap_ceiling_pct}% of the Federal Poverty Level, {name} must offer a payment plan capped at {payment_cap_pct}% of your monthly income — ask for it."
+    "s_payment_cap": "Even if your income is above the free-care limit, {state} law still protects you: for households up to {payment_cap_ceiling_pct}% of the Federal Poverty Level, {name} must offer a payment plan capped at {payment_cap_pct}% of your monthly income — ask for it.",
+    "s_meta_program": "See if you qualify for free or discounted hospital care at {name} under {state}'s hospital financial assistance program. Free and private — no account needed.",
+    "s_h_lead_program": "Under {state}'s hospital financial assistance program, {name} must offer free or discounted care to eligible low-income and uninsured patients. Here's what the program guarantees — and how to apply.",
+    "s_law_h_program": "What {state}'s program guarantees",
+    "s_c_lead_program": "Every hospital in {county} County must offer free or discounted care to eligible patients under {state}'s hospital financial assistance program. Find your hospital below.",
+    "s_minimum_note_program": "This is the required minimum — {name} may offer more generous help. The only way to know is to apply, and applying is always free."
   },
   "states": {
     "st_title": "Find Financial Help for Your Hospital Bill by State | Cobijo Health",
@@ -656,6 +661,7 @@
     "st_lead": "Cobijo Health is free and private — nothing you enter is saved. Choose your state to see the hospitals we cover and check if you qualify for free or discounted care.",
     "st_choose": "Choose your state",
     "st_card": "{count} hospitals · free or discounted care under state law",
+    "st_card_program": "{count} hospitals · free or discounted care under a statewide program",
     "st_more": "More states are coming soon. Every U.S. nonprofit hospital must offer financial assistance, so if your state isn't listed yet you can still get general guidance.",
     "st_general_btn": "Get general guidance"
   }
