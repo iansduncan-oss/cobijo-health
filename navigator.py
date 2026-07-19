@@ -403,6 +403,9 @@ def statutory_facts(intake, row):
         "income_cap_pct": rules.income_cap_pct,
         "payment_cap_pct": rules.payment_cap_pct,
         "payment_cap_ceiling_pct": rules.payment_cap_ceiling_pct,
+        "payment_cap_pct_professional": rules.payment_cap_pct_professional,
+        "payment_cap_pct_comprehensive": rules.payment_cap_pct_comprehensive,
+        "payment_cap_payoff_months": rules.payment_cap_payoff_months,
         "rural": rural,
         "hospital": row["hospital"].title(),
     }
@@ -433,9 +436,20 @@ def build_statutory_plan_struct(intake, row, lang="en"):
         msg_key = "cc_statutory_over_free_only"
     message = t(lang, msg_key, name=facts["hospital"], law=facts["fap_law"], pct=facts["fpl_pct"],
                 free_pct=facts["free_pct"], discount_pct=facts["discount_pct"], cap=facts["income_cap_pct"])
-    # Above the free floor but within a statutory payment-cap ceiling (ME 200–400% FPL): the hospital must
-    # still offer a payment plan capped at payment_cap_pct% of monthly income — append that citeable protection.
-    if (tier == "over" and facts["payment_cap_pct"] and facts["payment_cap_ceiling_pct"]
+    # Statutory monthly-payment-cap protections, two shapes:
+    #  • CO (payment_cap_payoff_months set): the cap applies INSIDE the discount tier (qualified patients ≤250%
+    #    FPL) and is tiered (4%/2%/6%) + extinguishes the balance after 36 payments — append in the 'discount' tier.
+    #  • ME (payment_cap_pct only): the cap sits ABOVE the free floor (200–400% FPL) — append in the 'over' tier.
+    if (facts["payment_cap_payoff_months"] and tier == "discount"
+            and facts["payment_cap_ceiling_pct"] and facts["fpl_pct"] <= facts["payment_cap_ceiling_pct"]):
+        message += " " + t(lang, "cc_payment_cap_payoff", law=facts["fap_law"],
+                           payment_cap_pct=facts["payment_cap_pct"],
+                           payment_cap_pct_professional=facts["payment_cap_pct_professional"],
+                           payment_cap_pct_comprehensive=facts["payment_cap_pct_comprehensive"],
+                           payment_cap_payoff_months=facts["payment_cap_payoff_months"],
+                           payment_cap_ceiling_pct=facts["payment_cap_ceiling_pct"])
+    elif (tier == "over" and facts["payment_cap_pct"] and facts["payment_cap_ceiling_pct"]
+            and not facts["payment_cap_payoff_months"]
             and facts["fpl_pct"] <= facts["payment_cap_ceiling_pct"]):
         message += " " + t(lang, "cc_payment_cap", law=facts["fap_law"],
                            payment_cap_pct=facts["payment_cap_pct"],

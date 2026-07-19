@@ -580,10 +580,12 @@ def render_statutory_hospital(row, slug, index, lang="en"):
         out.append(f'<p>{_e(_fill(S["s_rural_note"], name=name, state=state_name, free_pct=free_pct, discount_pct=disc_pct))}</p>')
     min_note_key = "s_minimum_note_program" if program else "s_minimum_note"   # "required" vs "legal" minimum
     out.append(f'<p class="note">{_e(_fill(S[min_note_key], name=name))}</p>')
-    # Free-only states with a statutory monthly-payment cap above the free floor (ME: 4% ≤400% FPL) surface
-    # that affordability band as a note — the 200–400% patient still has a citeable protection.
+    # Statutory monthly-payment-cap note, two shapes: ME's cap sits above the free floor ("even if you're above
+    # the free-care limit ..."); CO's applies inside the discount tier and is tiered (4%/2%/6%) + extinguishes the
+    # balance after 36 payments — the payoff variant. payment_cap_payoff_months set -> CO variant.
     if rules.payment_cap_pct and rules.payment_cap_ceiling_pct:
-        out.append(f'<p class="note">{_e(_fill(S["s_payment_cap"], state=state_name, name=name, free_pct=free_pct, payment_cap_pct=rules.payment_cap_pct, payment_cap_ceiling_pct=rules.payment_cap_ceiling_pct))}</p>')
+        cap_key = "s_payment_cap_payoff" if rules.payment_cap_payoff_months else "s_payment_cap"
+        out.append(f'<p class="note">{_e(_fill(S[cap_key], state=state_name, name=name, free_pct=free_pct, payment_cap_pct=rules.payment_cap_pct, payment_cap_ceiling_pct=rules.payment_cap_ceiling_pct, payment_cap_pct_professional=rules.payment_cap_pct_professional, payment_cap_pct_comprehensive=rules.payment_cap_pct_comprehensive, payment_cap_payoff_months=rules.payment_cap_payoff_months))}</p>')
     # Where the statute bars using immigration status (NY §2807-k(9-a)) — a reassurance for the audience.
     if rules.immigration_excluded:
         out.append(f'<p class="note"><strong>{_e(_fill(S["s_immigration"], state=state_name))}</strong></p>')

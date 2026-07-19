@@ -636,6 +636,7 @@
     "s_c_law_p_free_only": "根据 {law}，{county}县的医院必须为收入在联邦贫困线 {free_pct}% 或以下的无保险患者提供免费医疗。",
     "s_dir_lead_free_only": "根据 {law}，{state}的每一家医院都必须为符合条件的患者提供免费医疗服务。选择一家医院，查看收入上限以及如何申请。",
     "s_payment_cap": "即使您的收入超过免费医疗的上限，{state}法律仍然保护您：对于收入不超过联邦贫困线 {payment_cap_ceiling_pct}% 的家庭，{name} 必须提供还款计划，每月还款额不得超过您月收入的 {payment_cap_pct}%——请主动申请。",
+    "s_payment_cap_payoff": "即使您有需要支付的账单，{state}州法律也对其加以限制：对于收入等于或低于联邦贫困线 {payment_cap_ceiling_pct}% 的家庭，您的每月还款额，在医院账单上不得超过您月收入的 {payment_cap_pct}%，在每位医疗提供者的账单上不得超过 {payment_cap_pct_professional}%，在合并账单上不得超过 {payment_cap_pct_comprehensive}%——并且在支付 {payment_cap_payoff_months} 次月供之后，任何剩余余额都将被视为已全额付清。",
     "s_dir": "{state}的医院",
     "s_meta": "根据{state}法律，看看您在 {name} 是否符合免费或减免医疗的条件。免费且私密——无需注册账户。",
     "s_meta_discount_only": "根据{state}州法律，查看您是否有资格在{name}获得折扣医疗服务。免费且私密——无需注册账户。",

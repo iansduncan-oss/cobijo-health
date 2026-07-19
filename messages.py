@@ -74,6 +74,13 @@ MESSAGES = {
         "cc_payment_cap": ("And because you're at or below {payment_cap_ceiling_pct}% of the Federal Poverty "
                            "Level, {law} caps your hospital payment plan at {payment_cap_pct}% of your monthly "
                            "income — ask the hospital to set that up."),
+        # CO shape: appended to the 'discount' message — a tiered monthly-payment cap (4%/2%/6%) that also
+        # extinguishes the balance after 36 payments. A citeable protection while the patient IS in the discount tier.
+        "cc_payment_cap_payoff": ("That same law also caps what you pay each month: no more than {payment_cap_pct}% of "
+                                  "your monthly income on a hospital bill, {payment_cap_pct_professional}% on each "
+                                  "provider's bill, and {payment_cap_pct_comprehensive}% across a combined bill — and "
+                                  "after {payment_cap_payoff_months} monthly payments, any remaining balance is treated "
+                                  "as paid in full. Ask the hospital to set up that payment plan."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("You reported having insurance — we'd still check for cost-sharing help and "
                         "secondary programs."),
@@ -230,6 +237,12 @@ MESSAGES = {
         "cc_payment_cap": ("Y como usted está en o por debajo del {payment_cap_ceiling_pct}% del Nivel Federal "
                            "de Pobreza, {law} limita su plan de pago hospitalario al {payment_cap_pct}% de sus "
                            "ingresos mensuales — pida al hospital que lo establezca."),
+        "cc_payment_cap_payoff": ("Esa misma ley también limita lo que usted paga cada mes: no más del "
+                                  "{payment_cap_pct}% de sus ingresos mensuales en una factura del hospital, "
+                                  "{payment_cap_pct_professional}% en la factura de cada proveedor y "
+                                  "{payment_cap_pct_comprehensive}% en una factura combinada — y después de "
+                                  "{payment_cap_payoff_months} pagos mensuales, cualquier saldo restante se considera "
+                                  "pagado en su totalidad. Pida al hospital que establezca ese plan de pago."),
         # --- screen_benefits (FPL heuristic fallback) ---
         "ben_insured": ("Usted indicó que tiene seguro — de todos modos revisaríamos ayuda con los "
                         "gastos compartidos y programas secundarios."),

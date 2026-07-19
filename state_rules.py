@@ -52,6 +52,17 @@ class StateRules:
     # free floor. (CO has the same 4%/2% cap deferred — reuse these fields when that note is added.)
     payment_cap_pct: Optional[int] = None
     payment_cap_ceiling_pct: Optional[int] = None
+    # CO-shape payment-cap extras (C.R.S. §25.5-3-503, verified 2026-07-18). Unlike ME's single above-the-free-floor
+    # cap, CO's cap applies INSIDE the discount tier (qualified patients ≤ payment_cap_ceiling_pct% FPL) and has a
+    # tiered structure + a debt-extinguishing payoff: payment_cap_pct% of monthly income on a facility bill,
+    # payment_cap_pct_professional% on each professional's bill, payment_cap_pct_comprehensive% across a combined
+    # bill (the 6% aggregate added by SB24-116), and after payment_cap_payoff_months cumulative monthly payments the
+    # remaining balance is treated as PAID IN FULL. payment_cap_payoff_months set -> the CO payoff note variant fires
+    # (in the DISCOUNT tier), distinct from ME's over-the-free-floor note. All default None so every other state is
+    # byte-identical.
+    payment_cap_pct_professional: Optional[int] = None
+    payment_cap_pct_comprehensive: Optional[int] = None
+    payment_cap_payoff_months: Optional[int] = None
     # True when the eligibility guarantee comes from a binding STATEWIDE PROGRAM (e.g. a Medicaid directed-payment
     # condition every hospital accepted) rather than a statute. Same modelable free/discount bands, but the pages
     # must NOT say "{state} law" — they use "_program" i18n variants ("{state}'s hospital financial assistance
@@ -226,6 +237,12 @@ CO = StateRules(
     free_care_unusual_pct=250, free_care_implausible_pct=400,
     fap_law="Colorado Hospital Discounted Care law (HB21-1198, C.R.S. §25.5-3-501 et seq.)",
     statutory_free_pct=None, statutory_discount_pct=250, income_cap_pct=None,
+    # Monthly-payment cap + 36-month debt-extinguishing payoff for qualified patients ≤250% FPL (C.R.S.
+    # §25.5-3-503(1)(b)-(c); 6% aggregate added by SB24-116, verified vs codified statute 2026-07-18):
+    payment_cap_pct=4, payment_cap_ceiling_pct=250,              # ≤4% of monthly income on a facility bill
+    payment_cap_pct_professional=2,                             # ≤2% on each licensed professional's bill
+    payment_cap_pct_comprehensive=6,                            # ≤6% across a combined facility+professional bill
+    payment_cap_payoff_months=36,                              # after 36 monthly payments the balance is paid in full
 )
 
 # Oregon — Hospital Financial Assistance (HB 3076 (2019), codified ORS 442.614). STATUTE-DRIVEN and

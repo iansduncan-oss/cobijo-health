@@ -834,6 +834,49 @@ class TestColoradoStatutory(unittest.TestCase):
             # incl. the <meta> description / snippet: CO law guarantees a discount, not "free or discounted".
             self.assertNotIn("free or discounted", html.lower(), f"{where}: meta/body overstates free")
 
+    def test_co_payment_cap_payoff_pinned(self):
+        # The CO-shape payment-cap fields (C.R.S. §25.5-3-503, incl. the SB24-116 6% aggregate) — a silent
+        # revert to None would drop the citeable 4%/2%/6% cap + 36-month payoff from every CO surface.
+        co = state_rules.rules_for("CO")
+        self.assertEqual(co.payment_cap_pct, 4)                   # facility bill
+        self.assertEqual(co.payment_cap_pct_professional, 2)      # each professional's bill
+        self.assertEqual(co.payment_cap_pct_comprehensive, 6)     # combined bill (SB24-116)
+        self.assertEqual(co.payment_cap_payoff_months, 36)        # balance paid in full after 36 payments
+        self.assertEqual(co.payment_cap_ceiling_pct, 250)         # applies to qualified patients ≤250% FPL
+
+    def test_co_page_renders_payment_cap_payoff_note(self):
+        # The hospital page must surface the payoff note (payoff variant, NOT ME's above-free-floor string),
+        # naming all three caps + the 36-payment payoff, in every language, with no token/None leak.
+        idx = self._hp.build_index([self._row("DENVER HEALTH MEDICAL CENTER", "060052", "DENVER", "Denver")])[0]
+        slug = next(iter(idx))
+        for lang in ("en", "es", "ar", "zh"):
+            html = self._hp.render_statutory_hospital(idx[slug], slug, idx, lang)
+            for n in ("4%", "2%", "6%", "36"):
+                self.assertIn(n, html, f"{lang}: CO payoff note missing '{n}'")
+            self.assertNotRegex(html, r"\{[a-z_]+\}", f"{lang}: unfilled token in payoff note")
+            self.assertNotIn("None", html, f"{lang}: None leak in payoff note")
+        en = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+        self.assertIn("paid in full", en.lower())                 # the debt-extinguishing payoff, stated
+        self.assertNotIn("above the free-care limit", en.lower())  # NOT the ME free-only string
+
+    def test_co_plan_discount_tier_appends_payoff_over_tier_does_not(self):
+        import navigator
+        row = self._row("X HOSPITAL", "060052", "C", "D")
+        # ~182% FPL: in the discount tier -> the payoff protection must be appended.
+        disc = {"first_name": "there", "full_name": "A B", "household_size": 4,
+                "annual_income": 60000, "insurance": "uninsured", "in_collections": True}
+        pd = navigator.build_statutory_plan_struct(disc, row, "en")
+        self.assertEqual(pd["tier"], "discount")
+        msg = pd["charity"]["message"]
+        self.assertIn("paid in full", msg.lower())                # 36-payment payoff surfaced
+        self.assertIn("36", msg)
+        self.assertNotIn("None", msg)
+        # ~273% FPL: over the 250% ceiling -> NOT a qualified patient, no payoff note.
+        over = {**disc, "annual_income": 90000}
+        po = navigator.build_statutory_plan_struct(over, row, "en")
+        self.assertEqual(po["tier"], "over")
+        self.assertNotIn("paid in full", po["charity"]["message"].lower())
+
 
 class TestMaineStatutory(unittest.TestCase):
     """Maine (10th state) — the first FREE-ONLY statutory shape. 22 M.R.S. §1716-A (as rewritten by PL 2025
