@@ -86,6 +86,12 @@ def notify(subject, body):
     key, to = os.environ.get("RESEND_API_KEY"), os.environ.get("NOTIFY_EMAIL")
     frm = os.environ.get("NOTIFY_FROM", "Cobijo Pipeline <pipeline@cobijohealth.org>")
     if not (key and to):
+        # Neither set = email intentionally off (the cron log is the record) — stay quiet.
+        # Exactly one set = a HALF-config: someone MEANT to enable failure alerts but botched it, and
+        # would otherwise get silence (the same trap as the Kuma push-url bug). Say so loudly in the log.
+        if key or to:
+            log(f"  ⚠ email NOT sent: {'NOTIFY_EMAIL' if key else 'RESEND_API_KEY'} is unset "
+                f"(set BOTH or NEITHER). This '{subject}' alert stayed in the log only.")
         return
     payload = json.dumps({"from": frm, "to": [to], "subject": subject,
                           "text": body}).encode()

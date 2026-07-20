@@ -1534,6 +1534,38 @@ class TestKumaPushWiring(unittest.TestCase):
             urllib.request.urlopen = orig
 
 
+class TestRefreshPipelineNotify(unittest.TestCase):
+    """The self-heal pipeline's failure alerts are best-effort email. BOTH env vars unset = intentional
+    'the cron log is the record' mode (stay quiet). Exactly ONE set = a HALF-config that would silently
+    drop alerts (the Kuma-bug class) — notify() must say so loudly in the log so it's never a silent gap."""
+    import refresh_pipeline as _rp
+    import os as _os
+
+    def _run(self, env):
+        saved = {k: self._os.environ.get(k) for k in ("RESEND_API_KEY", "NOTIFY_EMAIL")}
+        logs, orig_log = [], self._rp.log
+        self._rp.log = lambda m: logs.append(m)
+        try:
+            for k in ("RESEND_API_KEY", "NOTIFY_EMAIL"):
+                self._os.environ.pop(k, None)
+            self._os.environ.update(env)
+            self._rp.notify("test-subject", "body")
+        finally:
+            self._rp.log = orig_log
+            for k, v in saved.items():
+                self._os.environ.pop(k, None) if v is None else self._os.environ.__setitem__(k, v)
+        return logs
+
+    def test_neither_set_is_quiet(self):
+        self.assertEqual(self._run({}), [])                       # email intentionally off -> no noise
+
+    def test_key_only_is_loud(self):
+        self.assertTrue(any("NOTIFY_EMAIL is unset" in m for m in self._run({"RESEND_API_KEY": "re_x"})))
+
+    def test_email_only_is_loud(self):
+        self.assertTrue(any("RESEND_API_KEY is unset" in m for m in self._run({"NOTIFY_EMAIL": "a@b.co"})))
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure
