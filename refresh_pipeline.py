@@ -51,7 +51,10 @@ import sys
 import time
 import urllib.request
 
+import statutory_currency_check as _kuma          # reuse the hardened, anti-silence Kuma push helpers
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
+REFRESH_KUMA_FILE = "/opt/cobijo/refresh_kuma_push_url"   # dedicated push monitor for the self-heal run
 DATA = os.path.join(ROOT, "data")
 OUT = os.path.join(ROOT, "output")
 CURRENT = os.path.join(DATA, "dataset_current.json")
@@ -103,6 +106,22 @@ def notify(subject, body):
         log("  (emailed summary)")
     except Exception as e:
         log(f"  (email failed: {type(e).__name__} — summary is in the log)")
+
+
+def push_heartbeat(ok, msg):
+    """Dead-man's-switch heartbeat to a dedicated Uptime-Kuma push monitor for the self-heal run.
+    Complements notify() (email, best-effort, OFF on this box): a heartbeat also catches a DEAD cron —
+    if the weekly run never fires, Kuma's interval lapses and alerts on its own, which no email can do.
+    Reuses the currency check's anti-silence resolver so a misconfigured push-url file is loud, not silent.
+    No-ops quietly when nothing is configured (the file simply isn't there), so it's safe to ship before
+    the prod Kuma monitor exists."""
+    url, warn = _kuma.resolve_kuma_url(env_var="COBIJO_REFRESH_KUMA_PUSH_URL",
+                                       file_var="COBIJO_REFRESH_KUMA_PUSH_URL_FILE",
+                                       default_file=REFRESH_KUMA_FILE)
+    if warn:
+        log(f"  ⚠ {warn}")
+    if url:
+        _kuma._kuma_push(url, ok, msg)
 
 
 def _report_counts():
@@ -264,5 +283,18 @@ def main():
     return 0
 
 
+_HEARTBEAT_MSG = {0: "self-heal ok", 1: "self-heal FAILED / rolled back — see freshness.log",
+                  2: "self-heal degenerate scrape or cap exceeded — human needed"}
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    real_run = "--dry-run" not in sys.argv          # a manual dry-run must not touch the weekly monitor
+    try:
+        code = main()
+    except BaseException as e:                       # crash -> push DOWN now; Kuma's interval is the backstop
+        if real_run:
+            push_heartbeat(False, f"self-heal CRASHED: {type(e).__name__}")
+        raise
+    if real_run:
+        push_heartbeat(code == 0, _HEARTBEAT_MSG.get(code, f"self-heal exit {code}"))
+    sys.exit(code)

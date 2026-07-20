@@ -1566,6 +1566,53 @@ class TestRefreshPipelineNotify(unittest.TestCase):
         self.assertTrue(any("RESEND_API_KEY is unset" in m for m in self._run({"NOTIFY_EMAIL": "a@b.co"})))
 
 
+class TestRefreshHeartbeat(unittest.TestCase):
+    """The self-heal pipeline's dead-man's-switch heartbeat to its OWN Kuma monitor: pushes up/down, reuses
+    the shared anti-silence resolver (loud on a misconfigured file), and no-ops quietly when unconfigured
+    so it's safe to ship before the prod monitor exists."""
+    import refresh_pipeline as _rp
+    import statutory_currency_check as _scc
+    import os as _os
+    import tempfile as _tf
+
+    def _capture(self, env):
+        calls, logs = [], []
+        orig_push, orig_log = self._scc._kuma_push, self._rp.log
+        self._scc._kuma_push = lambda url, ok, msg: calls.append((url, ok, msg)) or True
+        self._rp.log = lambda m: logs.append(m)
+        keys = ("COBIJO_REFRESH_KUMA_PUSH_URL", "COBIJO_REFRESH_KUMA_PUSH_URL_FILE")
+        saved = {k: self._os.environ.get(k) for k in keys}
+        try:
+            for k in keys:
+                self._os.environ.pop(k, None)
+            self._os.environ.update(env)
+            self._rp.push_heartbeat(True, "self-heal ok")
+        finally:
+            self._scc._kuma_push, self._rp.log = orig_push, orig_log
+            for k, v in saved.items():
+                self._os.environ.pop(k, None) if v is None else self._os.environ.__setitem__(k, v)
+        return calls, logs
+
+    def test_pushes_when_env_url_set(self):
+        calls, _ = self._capture({"COBIJO_REFRESH_KUMA_PUSH_URL": "https://k/api/push/refresh"})
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][0], "https://k/api/push/refresh")
+        self.assertTrue(calls[0][1])                                   # ok=True -> status up
+        self.assertIn("self-heal", calls[0][2])
+
+    def test_noop_quiet_when_unconfigured(self):
+        with self._tf.TemporaryDirectory() as d:                       # missing file -> nothing configured
+            calls, logs = self._capture({"COBIJO_REFRESH_KUMA_PUSH_URL_FILE": self._os.path.join(d, "nope")})
+            self.assertEqual(calls, [])
+            self.assertEqual(logs, [])
+
+    def test_loud_when_misconfigured(self):
+        with self._tf.TemporaryDirectory() as d:                       # a dir at the path -> OSError -> loud
+            calls, logs = self._capture({"COBIJO_REFRESH_KUMA_PUSH_URL_FILE": d})
+            self.assertEqual(calls, [])
+            self.assertTrue(any("UNREADABLE" in m for m in logs))
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure

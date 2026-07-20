@@ -73,21 +73,25 @@ def _kuma_push(url, up, msg):
 DEFAULT_KUMA_URL_FILE = "/opt/cobijo/kuma_push_url"
 
 
-def resolve_kuma_url(environ=None, default_file=DEFAULT_KUMA_URL_FILE):
-    """Resolve the Uptime-Kuma push URL, distinguishing 'not configured' (fine — stay quiet) from
+def resolve_kuma_url(environ=None, default_file=DEFAULT_KUMA_URL_FILE,
+                     env_var="COBIJO_KUMA_PUSH_URL", file_var="COBIJO_KUMA_PUSH_URL_FILE"):
+    """Resolve an Uptime-Kuma push URL, distinguishing 'not configured' (fine — stay quiet) from
     'configured but UNUSABLE' (loud). This closes the silent-failure that once disabled the heartbeat:
-    the cron `cat`s the URL file into COBIJO_KUMA_PUSH_URL, but when the file was unreadable by the cron
-    user the export became an EMPTY string — indistinguishable from 'never configured', so main() took the
-    benign 'not set' branch and the alert quietly died. Now, if the env var is empty we look for the file
+    the cron `cat`s the URL file into the env var, but when the file was unreadable by the cron user the
+    export became an EMPTY string — indistinguishable from 'never configured', so main() took the benign
+    'not set' branch and the alert quietly died. Now, if the env var is empty we look for the file
     ourselves: a present-but-unreadable/empty file yields a non-None WARNING instead of silence.
+
+    env_var/file_var/default_file are parameterized so each monitor (currency check, self-heal pipeline)
+    can point at its OWN Kuma push monitor while sharing this one anti-silence resolver.
 
     Returns (url, warning): url='' when there is genuinely nothing configured; warning is None normally,
     or a loud human-actionable string when a configured source exists but produced no usable URL."""
     env = os.environ if environ is None else environ
-    url = (env.get("COBIJO_KUMA_PUSH_URL") or "").strip()
+    url = (env.get(env_var) or "").strip()
     if url:
         return url, None
-    path = env.get("COBIJO_KUMA_PUSH_URL_FILE") or default_file
+    path = env.get(file_var) or default_file
     if path and os.path.exists(path):
         try:
             data = open(path, encoding="utf-8").read().strip()
