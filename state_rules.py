@@ -225,9 +225,10 @@ MD = StateRules(
 # The law sets TWO tiers by hospital SIZE/SYSTEM (not rural): large systems (owned by a system with 3+ acute
 # hospitals, or big-bed hospitals in the most populous / a southern-border county) free ≤300%/discount→400%;
 # ALL OTHER hospitals free ≤200%/discount→300%. Source-verified vs app.leg.wa.gov RCW 70.170.060 + WA AG
-# guidance (2026-07). We pin the "other-hospital" tier as the UNIVERSAL FLOOR every WA hospital guarantees —
-# fits Cobijo's honest "legal minimum, the hospital may offer more, apply to find out" framing (large systems
-# exceed it). The large-system 300/400 tier needs a system-size classifier the CMS roster lacks (a follow-on).
+# guidance (2026-07). We pin the "other-hospital" tier here as the UNIVERSAL FLOOR every WA hospital guarantees
+# (used on the county/directory/hub surfaces — honest "legal minimum, apply to find out" framing). The
+# large-system 300/400 tier IS now modeled per-hospital via WA_TIER1_CCNS + hospital_bands() below (classified
+# off WA DOH's authoritative tier list), so a Tier-1 hospital's OWN page + /plan cite the accurate 300/400.
 # income_cap_pct None (mechanism is a 75%/50% discount schedule, no income/Medicaid cap). immigration_excluded
 # stays False: the immigration bar is AG+DOH GUIDANCE, not statute text (set the flag only where the law says
 # so in terms — as NY's §2807-k(9-a) does). No rural/CAH bands.
@@ -238,6 +239,48 @@ WA = StateRules(
     fap_law="Washington Charity Care Law (RCW 70.170.060)",
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
 )
+
+# WA is a TWO-TIER state (RCW 70.170.060(5)): the 200/300 bands above are the statewide FLOOR every WA
+# hospital guarantees (Tier 2). "Large" hospitals must go further — FREE ≤300% FPL + discount to 400%
+# (Tier 1). The larger tier is a three-prong OR test: owned by a health system operating 3+ acute hospitals
+# in WA, OR >300 licensed beds in King County, OR >200 licensed beds in a 450k+ southern-border (Clark) county.
+# Rather than re-derive that test (bed counts + system rosters the CMS file lacks), we classify off the
+# AUTHORITATIVE per-hospital list WA DOH publishes: "Washington Charity Care Hospital Tiers" (DOH 346-149,
+# Nov 2025 — doh.wa.gov/.../hospital-patient-information-and-charity-care; corroborated by atg.wa.gov/charitycare).
+# The DOH list keys on WA license #, so these were matched to our roster by facility name + city → CCN
+# (incl. the CHI-Franciscan/VMFH renames Harrison→St Michael, Highline→St Anne, and MultiCare/Providence
+# acquisitions). FAIL-SAFE by design: any WA hospital NOT in this set stays at the 200/300 floor (the honest
+# minimum — a miss under-promises, never over-promises). Re-check when DOH revises the list. Verified 2026-07-20.
+WA_TIER1_CCNS = frozenset({
+    # MultiCare (3+ acute system) + its Wellfound JV
+    "500015", "500139", "500154", "500044", "500079", "503301", "504009", "500129", "500119", "500036", "504016",
+    # PeaceHealth
+    "501340", "500041", "500030", "500050", "501329",
+    # Providence (incl. Kadlec) + Swedish (Providence)
+    "500019", "500077", "500058", "501326", "500014", "500054", "501309", "500002", "500024",
+    "500026", "500152", "500027", "500025",
+    # UW Medicine
+    "500064", "500008", "500088",
+    # Virginia Mason Franciscan Health (VMFH / CommonSpirit) — incl. renames Harrison→St Michael, Highline→St Anne
+    "500151", "500021", "501335", "500141", "500108", "500005", "500039", "500011",
+    # Large standalone hospitals (bed-count prong) + Seattle Children's
+    "500124", "500051", "500150", "503300",
+})
+
+
+def hospital_bands(row):
+    """Effective (rules, rural, free_pct, discount_pct) for a SPECIFIC hospital row — the per-hospital bands.
+    Accounts for the rural/CAH lower bands AND Washington's two-tier law: a WA hospital on the DOH Tier-1 list
+    guarantees free ≤300%/discount→400% instead of the 200/300 statewide floor. Fail-safe — an unmatched WA
+    hospital stays at the floor. Used ONLY by the per-hospital surfaces (hospital page + /plan); the
+    county/directory/hub pages deliberately cite the statewide floor via rules.free_pct_for()."""
+    rules = rules_for(row.get("state"))
+    rural = row.get("hospital_type") == "Critical Access Hospitals"
+    free_pct, disc_pct = rules.free_pct_for(rural), rules.discount_pct_for(rural)
+    if rules.code == "WA" and str(row.get("ccn")) in WA_TIER1_CCNS:
+        free_pct, disc_pct = 300, 400
+    return rules, rural, free_pct, disc_pct
+
 
 # New Jersey — Hospital Care Payment Assistance Program / "Charity Care" (N.J.S.A. 26:2H-18.60; N.J.A.C.
 # 10:52-11). STATUTE-DRIVEN and STATEWIDE (uniform statewide program, no rural/CAH distinction). The state

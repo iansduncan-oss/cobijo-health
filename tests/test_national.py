@@ -1753,6 +1753,81 @@ class TestHardshipNotes(unittest.TestCase):
             self.assertNotRegex(p["charity"]["message"], r"\{[a-z_]+\}")
 
 
+class TestWashingtonTwoTier(unittest.TestCase):
+    """WA is the first PER-HOSPITAL two-tier state (RCW 70.170.060(5)): "large" hospitals (DOH Tier-1 list)
+    guarantee free ≤300%/discount→400%; all others stay at the 200/300 statewide floor. The upgrade applies
+    ONLY to the per-hospital surfaces (hospital page + /plan); county/directory keep the honest floor.
+    Fail-safe: a hospital not on the list stays at 200/300 (under-promises, never over-promises)."""
+    import hospital_pages as _hp
+    import navigator as _nav
+    import state_rules as _sr
+
+    def _roster(self):
+        import server
+        return server.STATUTORY_STATES["WA"]["hospitals"]        # slug -> row (real served roster)
+
+    def _row(self, idx, ccn):
+        return next(r for r in idx.values() if str(r["ccn"]) == ccn)
+
+    def test_tier1_ccns_all_exist_in_roster(self):
+        # Guard against a typo'd CCN or a roster drift silently dropping an upgrade.
+        ccns = {str(r["ccn"]) for r in self._roster().values()}
+        missing = sorted(c for c in self._sr.WA_TIER1_CCNS if c not in ccns)
+        self.assertEqual(missing, [], f"Tier-1 CCNs not in the WA roster: {missing}")
+        self.assertGreater(len(self._sr.WA_TIER1_CCNS), 40)      # sanity: the full large-system set
+
+    def test_bands_tier1_vs_tier2(self):
+        idx = self._roster()
+        # Tier-1 (Providence Regional Everett, Harborview, Harrison→St Michael VMFH) -> 300/400
+        for ccn in ("500014", "500064", "500039"):
+            _, _, f, d = self._sr.hospital_bands(self._row(idx, ccn))
+            self.assertEqual((f, d), (300, 400), f"{ccn} should be Tier-1 300/400")
+        # Tier-2 (Confluence, Kaiser WA, EvergreenHealth Monroe, a small CAH) -> the 200/300 floor
+        for ccn in ("500016", "500052", "500084", "501319"):
+            _, _, f, d = self._sr.hospital_bands(self._row(idx, ccn))
+            self.assertEqual((f, d), (200, 300), f"{ccn} should stay at the 200/300 floor")
+
+    def test_hospital_page_reflects_tier(self):
+        idx = self._roster()
+        t1_slug = next(s for s, r in idx.items() if str(r["ccn"]) == "500014")
+        t2_slug = next(s for s, r in idx.items() if str(r["ccn"]) == "500016")
+        h1 = self._hp.render_statutory_hospital(idx[t1_slug], t1_slug, idx, "en")
+        h2 = self._hp.render_statutory_hospital(idx[t2_slug], t2_slug, idx, "en")
+        self.assertIn("at or below 300", h1)                     # Tier-1 page cites the higher floor
+        self.assertIn("at or below 200", h2)                     # Tier-2 page cites the statewide floor
+        self.assertNotIn("at or below 300", h2)                  # ...and never over-promises
+
+    def test_county_and_directory_keep_the_floor(self):
+        # The per-hospital upgrade must NOT leak into the statewide-floor surfaces. The county page cites the
+        # 200% floor; the directory is a hospital list that cites no % at all — both must never show 300.
+        idx = self._roster()
+        county = self._row(idx, "500014")["county"]              # a county with a Tier-1 hospital
+        c = self._hp.render_statutory_county(county, idx, "en", "WA")
+        d = self._hp.render_statutory_directory(idx, "en", "WA")
+        self.assertIn("at or below 200", c, "county: statewide floor present")
+        for html, where in ((c, "county"), (d, "directory")):
+            self.assertNotIn("at or below 300", html, f"{where}: floor surface must not show the Tier-1 300")
+
+    def test_plan_tier_differs_by_hospital(self):
+        idx = self._roster()
+        base = {"first_name": "x", "full_name": "A B", "household_size": 4,
+                "insurance": "uninsured", "in_collections": True}
+        inc280 = int(self._nav.poverty_limit(4) * 2.8)          # ~280% FPL
+        inc380 = int(self._nav.poverty_limit(4) * 3.8)          # ~380% FPL
+        t1, t2 = self._row(idx, "500014"), self._row(idx, "500016")
+        # 280% FPL: free at a Tier-1 hospital (≤300) vs discount at a Tier-2 hospital (200<x≤300)
+        self.assertEqual(self._nav.build_statutory_plan_struct({**base, "annual_income": inc280}, t1, "en")["tier"], "free")
+        self.assertEqual(self._nav.build_statutory_plan_struct({**base, "annual_income": inc280}, t2, "en")["tier"], "discount")
+        # 380% FPL: discount at Tier-1 (≤400) vs over at Tier-2 (>300)
+        p1 = self._nav.build_statutory_plan_struct({**base, "annual_income": inc380}, t1, "en")
+        p2 = self._nav.build_statutory_plan_struct({**base, "annual_income": inc380}, t2, "en")
+        self.assertEqual(p1["tier"], "discount")
+        self.assertEqual(p2["tier"], "over")
+        for p in (p1, p2):
+            self.assertNotIn("None", p["charity"]["message"])
+            self.assertNotIn("{", p["charity"]["message"])
+
+
 class TestAllStatutoryStatesNoLeak(unittest.TestCase):
     """One comprehensive guard over the REAL served rosters (server.STATUTORY_STATES) — the automated
     version of the manual per-session "0 None%/token leaks across every state × page × language" check.

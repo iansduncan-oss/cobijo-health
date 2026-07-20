@@ -371,16 +371,19 @@ def build_generic_plan_struct(intake, lang="en"):
     }
 
 
-def statutory_tier(pct, rules, rural=False):
-    """The tier a STATUTE-DRIVEN state's law assigns a patient at `pct`% FPL — no per-hospital FAP needed
-    (the law sets the thresholds). Rural/Critical-Access hospitals use the lower bands. free -> discount -> over."""
-    free_pct = rules.free_pct_for(rural)
-    disc_pct = rules.discount_pct_for(rural)
+def _tier_for_bands(pct, free_pct, disc_pct):
+    """free -> discount -> over for a patient at `pct`% FPL given effective free/discount ceilings."""
     if free_pct is not None and pct <= free_pct:
         return "free"
     if disc_pct is not None and pct <= disc_pct:
         return "discount"
     return "over"
+
+
+def statutory_tier(pct, rules, rural=False):
+    """The tier a STATUTE-DRIVEN state's law assigns a patient at `pct`% FPL — no per-hospital FAP needed
+    (the law sets the thresholds). Rural/Critical-Access hospitals use the lower bands. free -> discount -> over."""
+    return _tier_for_bands(pct, rules.free_pct_for(rural), rules.discount_pct_for(rural))
 
 
 def statutory_facts(intake, row):
@@ -391,15 +394,16 @@ def statutory_facts(intake, row):
     rules = state_rules.rules_for(row.get("state"))
     if not rules.is_statutory:
         return None
-    rural = row.get("hospital_type") == "Critical Access Hospitals"
+    # Row-aware bands: rural/CAH lower bands + WA's Tier-1 300/400 upgrade for large-system hospitals.
+    rules, rural, free_pct, disc_pct = state_rules.hospital_bands(row)
     pct = fpl_percent(intake["annual_income"], intake["household_size"])
     return {
         "state": rules.code,
         "fap_law": rules.fap_law,
         "fpl_pct": pct,
-        "tier": statutory_tier(pct, rules, rural),
-        "free_pct": rules.free_pct_for(rural),
-        "discount_pct": rules.discount_pct_for(rural),
+        "tier": _tier_for_bands(pct, free_pct, disc_pct),
+        "free_pct": free_pct,
+        "discount_pct": disc_pct,
         "income_cap_pct": rules.income_cap_pct,
         "payment_cap_pct": rules.payment_cap_pct,
         "payment_cap_ceiling_pct": rules.payment_cap_ceiling_pct,

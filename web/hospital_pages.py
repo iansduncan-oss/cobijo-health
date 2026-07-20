@@ -504,11 +504,12 @@ def hospital_paths(index):
 
 def _statutory_bands(row):
     """(rules, state_code, state_name, rural, free_pct, discount_pct, cap, law) for a statute row.
-    Rural/Critical-Access hospitals use the lower statutory bands."""
-    rules = state_rules.rules_for(row.get("state"))
-    rural = row.get("hospital_type") == "Critical Access Hospitals"
+    Rural/Critical-Access hospitals use the lower statutory bands; WA Tier-1 hospitals use the higher
+    300/400 bands (state_rules.hospital_bands handles both). Per-hospital surface only — the county/
+    directory pages cite the statewide floor instead."""
+    rules, rural, free_pct, disc_pct = state_rules.hospital_bands(row)
     return (rules, rules.code, rules.name, rural,
-            rules.free_pct_for(rural), rules.discount_pct_for(rural), rules.income_cap_pct, rules.fap_law)
+            free_pct, disc_pct, rules.income_cap_pct, rules.fap_law)
 
 
 def render_statutory_hospital(row, slug, index, lang="en"):
