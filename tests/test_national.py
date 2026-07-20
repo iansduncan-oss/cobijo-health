@@ -1466,7 +1466,8 @@ class TestKumaPushWiring(unittest.TestCase):
     def test_file_fallback_read(self):
         with self._tf.TemporaryDirectory() as d:
             p = self._os.path.join(d, "kuma_push_url")
-            open(p, "w").write("https://k/api/push/fromfile\n")
+            with open(p, "w") as fh:
+                fh.write("https://k/api/push/fromfile\n")
             url, warn = self._scc.resolve_kuma_url({"COBIJO_KUMA_PUSH_URL_FILE": p})
             self.assertEqual(url, "https://k/api/push/fromfile")   # trailing newline stripped
             self.assertIsNone(warn)
@@ -1481,7 +1482,8 @@ class TestKumaPushWiring(unittest.TestCase):
     def test_empty_file_is_loud(self):
         with self._tf.TemporaryDirectory() as d:
             p = self._os.path.join(d, "kuma_push_url")
-            open(p, "w").write("   \n")
+            with open(p, "w") as fh:
+                fh.write("   \n")
             url, warn = self._scc.resolve_kuma_url({"COBIJO_KUMA_PUSH_URL_FILE": p})
             self.assertEqual(url, "")
             self.assertIsNotNone(warn)

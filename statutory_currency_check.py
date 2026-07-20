@@ -94,7 +94,8 @@ def resolve_kuma_url(environ=None, default_file=DEFAULT_KUMA_URL_FILE,
     path = env.get(file_var) or default_file
     if path and os.path.exists(path):
         try:
-            data = open(path, encoding="utf-8").read().strip()
+            with open(path, encoding="utf-8") as fh:
+                data = fh.read().strip()
         except OSError as e:
             return "", (f"kuma: push-url file {path} exists but is UNREADABLE ({e.__class__.__name__}) — "
                         f"heartbeat DISABLED; fix ownership/perms so the cron user can read it")
