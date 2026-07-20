@@ -70,6 +70,36 @@ def _kuma_push(url, up, msg):
         return False
 
 
+DEFAULT_KUMA_URL_FILE = "/opt/cobijo/kuma_push_url"
+
+
+def resolve_kuma_url(environ=None, default_file=DEFAULT_KUMA_URL_FILE):
+    """Resolve the Uptime-Kuma push URL, distinguishing 'not configured' (fine — stay quiet) from
+    'configured but UNUSABLE' (loud). This closes the silent-failure that once disabled the heartbeat:
+    the cron `cat`s the URL file into COBIJO_KUMA_PUSH_URL, but when the file was unreadable by the cron
+    user the export became an EMPTY string — indistinguishable from 'never configured', so main() took the
+    benign 'not set' branch and the alert quietly died. Now, if the env var is empty we look for the file
+    ourselves: a present-but-unreadable/empty file yields a non-None WARNING instead of silence.
+
+    Returns (url, warning): url='' when there is genuinely nothing configured; warning is None normally,
+    or a loud human-actionable string when a configured source exists but produced no usable URL."""
+    env = os.environ if environ is None else environ
+    url = (env.get("COBIJO_KUMA_PUSH_URL") or "").strip()
+    if url:
+        return url, None
+    path = env.get("COBIJO_KUMA_PUSH_URL_FILE") or default_file
+    if path and os.path.exists(path):
+        try:
+            data = open(path, encoding="utf-8").read().strip()
+        except OSError as e:
+            return "", (f"kuma: push-url file {path} exists but is UNREADABLE ({e.__class__.__name__}) — "
+                        f"heartbeat DISABLED; fix ownership/perms so the cron user can read it")
+        if not data:
+            return "", f"kuma: push-url file {path} exists but is EMPTY — heartbeat DISABLED"
+        return data, None
+    return "", None                                     # genuinely unconfigured — silence is correct here
+
+
 def main():
     today = datetime.date.today()
     rows, problems = evaluate(state_rules.STATES, today)
@@ -79,13 +109,16 @@ def main():
     ok = not problems
     if problems:
         print("\n⚠️  RE-VERIFY program authority: " + ", ".join(f"{c}:{s}" for c, s, _ in problems))
-    url = os.environ.get("COBIJO_KUMA_PUSH_URL")
+    url, kuma_warn = resolve_kuma_url()
+    if kuma_warn:                                       # never silent again: a broken alert path is loud + fails
+        print(f"\n⚠️  {kuma_warn}", file=sys.stderr)
     if url:
         msg = "all program states current" if ok else "re-verify: " + ", ".join(c for c, _, _ in problems)
         _kuma_push(url, ok, msg)
     elif not ok:
-        print("(COBIJO_KUMA_PUSH_URL not set — alert stayed local; cron exit-1 is the only signal)", file=sys.stderr)
-    sys.exit(0 if ok else 1)
+        print("(no Kuma push URL configured — alert stayed local; cron exit-1 is the only signal)", file=sys.stderr)
+    # exit nonzero if a program state needs re-verify OR the alert path itself is misconfigured
+    sys.exit(0 if (ok and not kuma_warn) else 1)
 
 
 if __name__ == "__main__":

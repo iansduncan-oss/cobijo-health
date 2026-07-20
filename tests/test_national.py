@@ -1448,6 +1448,92 @@ class TestStatutoryCurrencyCheck(unittest.TestCase):
         self.assertIn("NC", tracked)
 
 
+class TestKumaPushWiring(unittest.TestCase):
+    """Self-test that the Uptime-Kuma alert path stays WIRED — regression guard for the prod bug where the
+    push-url file was unreadable by the cron user, so the heartbeat silently died (an empty env var looked
+    identical to 'not configured'). resolve_kuma_url() must now tell 'nothing configured' apart from
+    'configured but unusable', and _kuma_push must build a correct status/msg URL."""
+    import statutory_currency_check as _scc
+    import tempfile as _tf
+    import os as _os
+
+    # --- resolve_kuma_url: the anti-silence contract ---
+    def test_env_var_wins(self):
+        url, warn = self._scc.resolve_kuma_url({"COBIJO_KUMA_PUSH_URL": "https://k/api/push/tok"})
+        self.assertEqual(url, "https://k/api/push/tok")
+        self.assertIsNone(warn)
+
+    def test_file_fallback_read(self):
+        with self._tf.TemporaryDirectory() as d:
+            p = self._os.path.join(d, "kuma_push_url")
+            open(p, "w").write("https://k/api/push/fromfile\n")
+            url, warn = self._scc.resolve_kuma_url({"COBIJO_KUMA_PUSH_URL_FILE": p})
+            self.assertEqual(url, "https://k/api/push/fromfile")   # trailing newline stripped
+            self.assertIsNone(warn)
+
+    def test_unconfigured_is_quiet(self):
+        with self._tf.TemporaryDirectory() as d:
+            missing = self._os.path.join(d, "nope")
+            url, warn = self._scc.resolve_kuma_url({"COBIJO_KUMA_PUSH_URL_FILE": missing})
+            self.assertEqual(url, "")
+            self.assertIsNone(warn)                                # genuinely nothing configured -> silence OK
+
+    def test_empty_file_is_loud(self):
+        with self._tf.TemporaryDirectory() as d:
+            p = self._os.path.join(d, "kuma_push_url")
+            open(p, "w").write("   \n")
+            url, warn = self._scc.resolve_kuma_url({"COBIJO_KUMA_PUSH_URL_FILE": p})
+            self.assertEqual(url, "")
+            self.assertIsNotNone(warn)
+            self.assertIn("EMPTY", warn)
+
+    def test_unreadable_file_is_loud(self):
+        # A DIRECTORY at the path makes open() raise OSError deterministically for ANY user (unlike chmod,
+        # which root ignores) — stands in for the real 'present but unreadable by the cron user' failure.
+        with self._tf.TemporaryDirectory() as d:
+            url, warn = self._scc.resolve_kuma_url({"COBIJO_KUMA_PUSH_URL_FILE": d})
+            self.assertEqual(url, "")
+            self.assertIsNotNone(warn)
+            self.assertIn("UNREADABLE", warn)
+
+    # --- _kuma_push: correct heartbeat URL, and it never crashes the cron ---
+    def test_push_builds_status_and_encodes_msg(self):
+        import urllib.request
+        seen = {}
+
+        class _Resp:
+            status = 200
+            def getcode(self): return 200            # real HTTPResponse has both; getattr default is eager
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+
+        def _fake_urlopen(u, timeout=None):
+            seen["url"] = u
+            return _Resp()
+
+        orig = urllib.request.urlopen
+        urllib.request.urlopen = _fake_urlopen
+        try:
+            self.assertTrue(self._scc._kuma_push("https://k/api/push/tok", False, "re-verify: NC"))
+            self.assertIn("status=down", seen["url"])
+            self.assertIn("msg=re-verify%3A%20NC", seen["url"])    # msg is URL-encoded
+            self._scc._kuma_push("https://k/api/push/tok?x=1", True, "ok")
+            self.assertIn("&status=up", seen["url"])               # '&' when the URL already has a query
+        finally:
+            urllib.request.urlopen = orig
+
+    def test_push_failure_returns_false_not_raise(self):
+        import urllib.request
+        def _boom(u, timeout=None):
+            raise OSError("network down")
+        orig = urllib.request.urlopen
+        urllib.request.urlopen = _boom
+        try:
+            self.assertFalse(self._scc._kuma_push("https://k/api/push/tok", True, "ok"))  # loud + False, no crash
+        finally:
+            urllib.request.urlopen = orig
+
+
 class TestStatutoryProtectionNotes(unittest.TestCase):
     """H1/H2/M3: statute-backed extras a patient can act on, each gated by a state_rules flag so a claim
     only shows where the law says so — NY's named Medicaid-rate cap (H1) + no-lawsuit/no-foreclosure
