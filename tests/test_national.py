@@ -1638,5 +1638,88 @@ class TestAllStatutoryStatesNoLeak(unittest.TestCase):
                     self._hp.render_statutory_hospital(idx[slug], slug, idx, "en"), f"{code}/en {slug}")
 
 
+class TestStatutoryStateQAInvariants(unittest.TestCase):
+    """Automates the OTHER manual per-session correctness checks — the ones beyond raw None%/token leaks —
+    as invariants keyed off the live state_rules values, so they can't drift from the data:
+      (A) authority framing: the program-currency caveat ("renews each year") + the "statewide program"
+          hub card appear IFF the state's authority is a program (NC), never for a statute state — and a
+          program state never calls its authority "<State> law".
+      (B) /plan tiers: at incomes derived from EACH state's own free/discount thresholds, the plan resolves
+          to the right tier (free / discount / over) with a leak-free message — covers discount-only (CO),
+          free-only (ME/OH), and free+discount shapes without hand-tuned incomes.
+      (C) immigration note: the reassurance paragraph renders on the hospital page IFF immigration_excluded.
+    A new state, a flipped flag, or a renderer change that forgets one of these now fails loudly."""
+    import hospital_pages as _hp
+    import re as _re
+    _IMMIGRATION_MARK = "Your immigration status cannot be used to decide if you qualify"
+
+    def _states(self):
+        import server
+        return server.STATUTORY_STATES
+
+    def _row(self, code):
+        return {"hospital": "SAMPLE REGIONAL MEDICAL CENTER", "ccn": "000001", "city": "Testville",
+                "county": "Testville", "state": code, "phone": "(555) 555-0100", "status": "statutory",
+                "policy": None, "hospital_type": "Acute Care Hospitals"}
+
+    def _income_at_fpl(self, pct):
+        import navigator
+        return int(navigator.poverty_limit(4) * pct / 100)   # household of 4; deterministic
+
+    def test_authority_program_vs_law_framing(self):
+        for code in self._states():
+            r = state_rules.rules_for(code)
+            idx = self._hp.build_index([self._row(code)])[0]
+            slug = next(iter(idx))
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+            c = self._hp.render_statutory_county("Testville", idx, "en", code)
+            for html, where in ((h, "hospital"), (c, "county")):
+                self.assertEqual("renews each year" in html, r.authority_is_program,
+                                 f"{code} {where}: program-currency caveat must appear IFF program-authority")
+                if r.authority_is_program:
+                    self.assertNotIn(f"{r.name.lower()} law", html.lower(),
+                                     f"{code} {where}: a program state must NOT call its authority '<state> law'")
+            hub = self._hp.render_states_hub([{"name": r.name, "code": code, "count": 10}], "en")
+            self.assertEqual("statewide program" in hub, r.authority_is_program,
+                             f"{code}: hub card 'statewide program' must appear IFF program-authority")
+
+    def test_plan_tiers_match_state_thresholds(self):
+        import navigator
+        base = {"first_name": "there", "full_name": "A B", "household_size": 4,
+                "insurance": "uninsured", "in_collections": True}
+        for code in self._states():
+            r = state_rules.rules_for(code)
+            f, d = r.statutory_free_pct, r.statutory_discount_pct
+            cases = []
+            if f is not None:
+                cases.append((int(f * 0.4), "free"))              # well inside the free band
+            if f is not None and d is not None:
+                cases.append((int((f + d) / 2), "discount"))       # between free ceiling and discount ceiling
+            elif d is not None and f is None:
+                cases.append((int(d * 0.4), "discount"))           # discount-only (CO)
+            top = d if d is not None else f
+            cases.append((top + 80, "over"))                       # comfortably above the top ceiling
+            for pct, expected in cases:
+                struct = navigator.build_statutory_plan_struct(
+                    {**base, "annual_income": self._income_at_fpl(pct)}, self._row(code), "en")
+                self.assertEqual(struct["tier"], expected,
+                                 f"{code}: {pct}% FPL should be '{expected}' (free={f} disc={d})")
+                msg = struct["charity"]["message"]
+                self.assertTrue(msg, f"{code}/{expected}: empty plan message")
+                self.assertNotIn("None%", msg, f"{code}/{expected}: None% leak in plan message")
+                self.assertEqual(self._re.findall(r"\{[a-z_]+\}", msg), [],
+                                 f"{code}/{expected}: unfilled token in plan message")
+
+    def test_immigration_note_iff_excluded(self):
+        for code in self._states():
+            r = state_rules.rules_for(code)
+            idx = self._hp.build_index([self._row(code)])[0]
+            slug = next(iter(idx))
+            h = self._hp.render_statutory_hospital(idx[slug], slug, idx, "en")
+            self.assertEqual(self._IMMIGRATION_MARK in h, r.immigration_excluded,
+                             f"{code}: immigration reassurance note must render IFF immigration_excluded "
+                             f"(flag={r.immigration_excluded})")
+
+
 if __name__ == "__main__":
     unittest.main()
