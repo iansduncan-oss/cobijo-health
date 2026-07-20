@@ -1586,5 +1586,57 @@ class TestHardshipNotes(unittest.TestCase):
             self.assertNotRegex(p["charity"]["message"], r"\{[a-z_]+\}")
 
 
+class TestAllStatutoryStatesNoLeak(unittest.TestCase):
+    """One comprehensive guard over the REAL served rosters (server.STATUTORY_STATES) — the automated
+    version of the manual per-session "0 None%/token leaks across every state × page × language" check.
+
+    Every session the correctness pass eyeballs a few statutory pages for two recurring failure modes:
+      (1) a literal "None%" — a free-tier string rendered for a state whose free_pct is None (the CO
+          discount-only / ME free-only class of bug), and
+      (2) an unfilled "{token}" — a dropped placeholder printing "{law}"/"{discount_pct}" to a patient.
+    This test renders EVERY statutory state's hospital + county + directory in ALL languages and fails on
+    either, so a new state, a new i18n string, or a bad data row can't reintroduce the leak unnoticed.
+    Uses the actual loaded datasets, so it also covers data-row-specific leaks the hand-built per-state
+    tests can't see."""
+    import hospital_pages as _hp
+    import re as _re
+
+    def _states(self):
+        import server
+        return server.STATUTORY_STATES
+
+    def _assert_clean(self, html, where):
+        self.assertNotIn("None%", html, f"{where}: 'None%' leak (free-tier string on a None free_pct?)")
+        self.assertNotIn(">None<", html, f"{where}: bare 'None' leaked into rendered text")
+        left = self._re.findall(r"\{[a-z_]+\}", html)
+        self.assertEqual(left, [], f"{where}: unfilled placeholder(s) {sorted(set(left))}")
+
+    def test_every_state_hospital_county_directory_all_langs(self):
+        states = self._states()
+        self.assertTrue(states, "no statutory states loaded — dataset load regressed")
+        langs = list(self._hp.i18n.LANGS)
+        for code, st in states.items():
+            idx = st["hospitals"]
+            self.assertTrue(idx, f"{code}: empty hospital index")
+            slug = next(iter(idx))
+            county = next(iter(self._hp.county_index(idx).values()))
+            for lang in langs:
+                self._assert_clean(
+                    self._hp.render_statutory_hospital(idx[slug], slug, idx, lang), f"{code}/{lang} hospital")
+                self._assert_clean(
+                    self._hp.render_statutory_county(county, idx, lang, code), f"{code}/{lang} county")
+                self._assert_clean(
+                    self._hp.render_statutory_directory(idx, lang, code), f"{code}/{lang} directory")
+
+    def test_every_hospital_row_renders_clean_en(self):
+        # Data-row guard: a single bad roster row (e.g. a missing field that renders None%) would slip past
+        # the sampled all-langs test above. Render EVERY served hospital in English and assert no leak.
+        for code, st in self._states().items():
+            idx = st["hospitals"]
+            for slug in idx:
+                self._assert_clean(
+                    self._hp.render_statutory_hospital(idx[slug], slug, idx, "en"), f"{code}/en {slug}")
+
+
 if __name__ == "__main__":
     unittest.main()
