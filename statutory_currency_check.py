@@ -62,8 +62,13 @@ def _kuma_push(url, up, msg):
     """Fire one Uptime-Kuma push heartbeat. Returns True on HTTP 200."""
     sep = "&" if "?" in url else "?"
     full = f"{url}{sep}status={'up' if up else 'down'}&msg={urllib.parse.quote(msg)}"
+    # Send an explicit descriptive User-Agent: Cloudflare (in front of status.aviontechs.com)
+    # blocks the default `Python-urllib/*` bot signature with 403, which silently killed this
+    # heartbeat. A named UA passes. See [[cloudflare-bot-fight-blocks-sns]].
+    req = urllib.request.Request(full, headers={
+        "User-Agent": "CobijoHealth-Monitor/1.0 (+https://cobijohealth.org)"})
     try:
-        with urllib.request.urlopen(full, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:
             return getattr(resp, "status", resp.getcode()) == 200
     except Exception as e:                                   # network/URL error — never crash the cron
         print(f"kuma push failed: {e}", file=sys.stderr)

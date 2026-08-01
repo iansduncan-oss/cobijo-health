@@ -234,6 +234,12 @@ def main():
     run([PY, "scripts/reextract_changed.py", "prep"])
     run([PY, "extract_llm.py", "--dataset", "data/reextract_changed_source.json",
          "--out", "data/extracted_changed.json"])
+    # 3a. OCR fallback: HCAI increasingly re-publishes scanned image PDFs the text extractor can't
+    #     read (status=needs_ocr). Re-read those via Claude native-PDF OCR, verify-and-hold: adopt
+    #     only when the OCR'd numbers match what we serve; hold (keep old data) when they differ, so
+    #     OCR can never silently change a served charity-care threshold. Rewrites extracted_changed.
+    ocr = run([PY, "scripts/ocr_fallback_changed.py"])
+    log(ocr.stdout.strip())
     merge = run([PY, "scripts/reextract_changed.py", "merge"])
     log(merge.stdout.strip())
 

@@ -235,18 +235,40 @@ def _guid(url):
     return (url or "").split("id=")[-1][:36]
 
 
+_last_pdf_fetch = [0.0]     # monotonic ts of the last real attachment-host fetch (module-wide spacing)
+PDF_FETCH_GAP = 1.5        # seconds between fetches — HCAI's attachment gateway 403s on bursts
+
+
 def download_pdf(url, dest, force=False):
     """Fetch url -> dest. Cached by default (skip if already on disk). Pass force=True to always
     re-fetch — the freshness --content check needs a TRULY-live copy to catch a same-URL silent
-    re-upload (a cached copy would just re-hash to the old content and miss the change)."""
+    re-upload (a cached copy would just re-hash to the old content and miss the change).
+
+    Be polite to HCAI's attachment gateway (api.hdc.hcai.ca.gov): its Azure WAF rate-limits bursts
+    with 403s (a burst once got us blocked for hours). Space real fetches out by PDF_FETCH_GAP and
+    back off — never hammer — on 403/429/5xx; hammering only prolongs a WAF block. On a cache hit we
+    neither wait nor fetch, so re-runs stay fast."""
     if not force and os.path.exists(dest) and os.path.getsize(dest) > 0:
         return
     os.makedirs(os.path.dirname(dest) or ".", exist_ok=True)   # PDF_DIR may not exist yet (fresh box)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=90) as r:
-        data = r.read()
-    with open(dest, "wb") as f:
-        f.write(data)
+    for attempt in range(4):
+        wait = PDF_FETCH_GAP - (time.monotonic() - _last_pdf_fetch[0])
+        if wait > 0:
+            time.sleep(wait)
+        try:
+            with urllib.request.urlopen(req, timeout=90) as r:
+                data = r.read()
+            _last_pdf_fetch[0] = time.monotonic()
+            with open(dest, "wb") as f:
+                f.write(data)
+            return
+        except HTTPError as e:
+            _last_pdf_fetch[0] = time.monotonic()
+            if e.code in (403, 429, 500, 502, 503) and attempt < 3:
+                time.sleep(min(30, 4 * 2 ** attempt))          # 4s, 8s, 16s — polite, not a hammer
+                continue
+            raise                                              # give up -> caller marks needs_ocr/held
 
 
 def pdf_text(url, force=False):

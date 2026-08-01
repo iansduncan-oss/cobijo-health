@@ -1510,7 +1510,10 @@ class TestKumaPushWiring(unittest.TestCase):
             def __exit__(self, *a): return False
 
         def _fake_urlopen(u, timeout=None):
-            seen["url"] = u
+            # _kuma_push now passes a urllib.request.Request (so it can set a User-Agent);
+            # normalise to the URL string and capture the UA for the regression assertion below.
+            seen["url"] = u.full_url if hasattr(u, "full_url") else u
+            seen["ua"] = u.get_header("User-agent") if hasattr(u, "get_header") else None
             return _Resp()
 
         orig = urllib.request.urlopen
@@ -1519,6 +1522,9 @@ class TestKumaPushWiring(unittest.TestCase):
             self.assertTrue(self._scc._kuma_push("https://k/api/push/tok", False, "re-verify: NC"))
             self.assertIn("status=down", seen["url"])
             self.assertIn("msg=re-verify%3A%20NC", seen["url"])    # msg is URL-encoded
+            # Named UA is mandatory: Cloudflare 403s the default `Python-urllib/*` bot signature,
+            # which once silently killed this heartbeat. Guard against that regression.
+            self.assertTrue(seen["ua"] and "Cobijo" in seen["ua"])
             self._scc._kuma_push("https://k/api/push/tok?x=1", True, "ok")
             self.assertIn("&status=up", seen["url"])               # '&' when the URL already has a query
         finally:
