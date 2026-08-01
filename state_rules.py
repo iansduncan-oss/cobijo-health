@@ -490,10 +490,14 @@ NC = StateRules(
     fap_law="North Carolina's Medical Debt Relief Program",
     statutory_free_pct=200, statutory_discount_pct=300, income_cap_pct=None,
     authority_is_program=True,   # binding Medicaid HASP program condition (all 99 acute hospitals), not a statute
-    # Currency: CMS approved HASP "Year 3" through 2026-06-30; Year-4 (SFY2027) renewal UNCONFIRMED as of
-    # 2026-07-18 (two verify-first passes found no primary-source approval; the charity-care condition is NOT
-    # decoupled into statute — HB367 died in committee 2023). The pages stay up with the evergreen currency
-    # note (fails safe); the check below alerts us to re-verify. Bump this date when Year-4 is source-verified.
+    # Currency: CMS approved HASP "Year 3" through 2026-06-30 (NCDHHS press release 2025-02-05, "…approved for
+    # another year", covers July 2025–June 2026). Year-4 (SFY2027, 2026-07-01..2027-06-30) renewal STILL
+    # UNCONFIRMED as of 2026-07-31 — a THIRD verify-first pass found no primary-source CMS/NCDHHS approval for
+    # SFY2027 (Year-3 was announced ~Feb 2025, ~5mo before its July start; no equivalent Year-4 notice exists and
+    # we're now past the July-1 start). OBBB grandfathering is expected to let HASP continue through 2028 but with
+    # a FROZEN dollar pool (per CMS guidance 2026-02-02) — a ceiling, NOT an affirmative SFY2027 approval. The
+    # charity-care condition is NOT decoupled into statute (HB367 died in committee 2023). Pages fail safe on the
+    # evergreen note; the check below alerts us to re-verify. Bump this date ONLY when Year-4 is source-verified.
     program_confirmed_through="2026-06-30",
     program_renewal_watch="Watch NCDHHS press feed for the HASP Year-4/SFY2027 'approved for another year' release; hard horizon: OBBB grandfathering ends 2028.",
 )
