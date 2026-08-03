@@ -33,7 +33,7 @@ from urllib.error import URLError, HTTPError
 BASE = "https://syfphr.hcai.ca.gov"
 LIST_URL = f"{BASE}/FacilityList.aspx"
 DETAIL_URL = BASE + "/SearchDetail.aspx?oshpdid={oshpdid}"
-UA = "medical-navigator-research/0.1 (nonprofit charity-care dataset prototype)"
+UA = "medical-navigator-research/0.1 (open charity-care research dataset prototype)"
 
 # 2026 HHS Federal Poverty Guidelines — 48 contiguous states + DC, annual USD.
 # Source: ASPE 2026 (effective 1/13/2026). Update each January when HHS publishes.

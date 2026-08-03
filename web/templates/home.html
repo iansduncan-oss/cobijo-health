@@ -369,6 +369,14 @@ document.getElementById("hospital").addEventListener("input", ()=>{ presetOshpdi
 (function(){ let fired=false;
   const mark=()=>{ if(fired) return; fired=true; track('tool_started',{referred: presetOshpdid?"hospital_page":"direct"}); };
   document.getElementById("f").addEventListener("focusin", mark, {once:true}); })();
+// Reach vs. iteration. `tool_started` is capped at one per page load, so an UNCAPPED
+// `plan_generated` made the pair uncomparable: one person adjusting their income three times
+// produced 3 plans against 1 start, and "plans / starts" could exceed 100%. That mismatch is how
+// 25 plan events got read as "25 patients helped" (they were ~6 visitor IDs). Cap the headline
+// reach event to one per page load and send re-runs as `plan_regenerated`, so iteration stays
+// measurable without inflating reach. Page-scoped variable only — nothing stored, consistent with
+// the no-storage design. NOTE: restart() must NOT reset this; a restart is the same human.
+let planFired=false;
 function showRecover(on){ const r=document.getElementById("recover"); if(r) r.hidden=!on; }
 function runGeneric(){                 // "get general guidance" — re-run with no specific hospital
   showRecover(false);
@@ -393,7 +401,11 @@ async function runPlan(){
     const d=await res.json();
     lastResult=d.result; lastLetter=d.letter;
     renderResult(d.result);
-    track('plan_generated',{tier:d.result.tier, language:lang, hospital:d.result.hospital.name});
+    if(!planFired){ planFired=true;
+      track('plan_generated',{tier:d.result.tier, language:lang, hospital:d.result.hospital.name});
+    } else {
+      track('plan_regenerated',{tier:d.result.tier, language:lang, hospital:d.result.hospital.name});
+    }
     document.getElementById("letter").textContent=d.letter;
     { const ref=d.letter_ref, rb=document.getElementById("letterref");   // translated reference (non-EN only)
       if(ref){ document.getElementById("letterref_h").textContent=ref.heading;

@@ -42,7 +42,7 @@ import time
 import urllib.request
 from urllib.error import URLError, HTTPError
 
-UA = "cobijo-health-research/0.2 (nonprofit charity-care dataset; contact ian@aviontechs.com)"
+UA = "cobijo-health-research/0.2 (open charity-care research dataset; contact ian@aviontechs.com)"
 PDF_DIR = "data/pdfs"
 CACHE_DIR = "data/extract_cache"     # one <sha>.json per unique policy corpus (resume)
 API_URL = "https://api.anthropic.com/v1/messages"

@@ -12,21 +12,18 @@
     "f_partners": "Dành cho đối tác",
     "f_dir": "Tất cả bệnh viện ở California",
     "f_gh": "GitHub",
-    "foot1": "<b>Cobijo Health</b> — một tổ chức phi lợi nhuận ở California (đang trong quá trình xin cấp phép 501(c)(3)). Công cụ này cung cấp thông tin, không phải tư vấn pháp lý hay y tế. Miễn phí &amp; mã nguồn mở. · <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>",
     "mt_note": "Trang này được dịch với sự hỗ trợ của máy và đang được người bản ngữ xem lại. Bản tiếng Anh là bản chính thức. Phát hiện lỗi? Hãy gửi email tới hello@cobijohealth.org.",
-    "skip": "Chuyển đến nội dung chính"
+    "skip": "Chuyển đến nội dung chính",
+    "foot1": "<b>Cobijo Health</b> — một dự án phi lợi nhuận độc lập. Công cụ này cung cấp thông tin, không phải tư vấn pháp lý hay y tế. Miễn phí và mã nguồn mở. · <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>"
   },
   "about": {
     "title": "Giới thiệu về Cobijo Health — chúng tôi là ai & công cụ hoạt động thế nào",
-    "meta_desc": "Cobijo Health là một tổ chức phi lợi nhuận ở California (đang trong quá trình xin cấp phép 501(c)(3)) xây dựng một công cụ miễn phí, đa ngôn ngữ giúp bệnh nhân nhận được hỗ trợ tài chính cho hóa đơn y tế. Chúng tôi là ai, công cụ hoạt động thế nào, và dữ liệu của chúng tôi đến từ đâu.",
     "h1": "Giới thiệu về Cobijo Health",
-    "lead": "Cobijo Health là một tổ chức phi lợi nhuận ở California (đang trong quá trình xin cấp phép 501(c)(3)) xây dựng một công cụ miễn phí, đa ngôn ngữ giúp những bệnh nhân thu nhập thấp, không có bảo hiểm, và người nhập cư nhận được sự hỗ trợ tài chính mà luật pháp cho phép họ được hưởng đối với hóa đơn y tế của mình.",
     "mission_h": "Vì sao chúng tôi tồn tại",
     "mission_p": "Mọi bệnh viện ở California đều bị luật pháp bắt buộc — Đạo luật Định giá Công bằng của Bệnh viện — phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân không đủ khả năng trả hóa đơn. Các bệnh viện phi lợi nhuận cũng phải làm như vậy theo luật liên bang (IRS §501(r)). Nhưng sự hỗ trợ này thực tế lại bị giấu kín: quy định của mỗi bệnh viện nằm trong một tệp PDF pháp lý dày đặc riêng biệt, hiếm khi được dịch và không bao giờ tập trung ở một nơi. Những người đủ điều kiện lại bị chuyển sang bộ phận đòi nợ. Nhiệm vụ của Cobijo là trở thành cánh cửa đầu tiên đưa bạn đến với sự hỗ trợ mà bạn vốn đã được hưởng.",
     "how_h": "Công cụ hoạt động thế nào",
     "how_p": "Bạn cho chúng tôi biết bệnh viện, thu nhập, và số người trong hộ gia đình của bạn. Chỉ trong vài giây, Cobijo cho bạn biết liệu bạn có thể đủ điều kiện nhận dịch vụ chăm sóc miễn phí hoặc giảm giá tại đúng bệnh viện đó hay không — kèm theo giới hạn thu nhập — kiểm tra xem bạn có đủ điều kiện cho Medi-Cal và Covered California không, giải thích các quyền của bạn nếu hóa đơn bị chuyển sang đòi nợ, và soạn cho bạn một lá thư yêu cầu sẵn sàng để gửi đi. Công cụ miễn phí, hoạt động bằng nhiều ngôn ngữ, và không lưu lại bất cứ điều gì bạn nhập vào.",
     "ai_h": "Cách chúng tôi sử dụng AI (và nơi con người vẫn nắm quyền quyết định)",
-    "ai_p": "Lý do công cụ này có thể tồn tại là nhờ AI. Chúng tôi dùng các mô hình ngôn ngữ lớn để đọc hàng trăm tệp PDF chính sách hỗ trợ tài chính của các bệnh viện và trích xuất các quy định về điều kiện chính xác của từng nơi vào một bộ dữ liệu duy nhất, gọn gàng, mở. AI làm việc đọc và soạn thảo; con người kiểm tra những trường hợp đặc biệt được đánh dấu. Điều kiện của bạn đối với các phúc lợi công được tính bằng các quy tắc phúc lợi công mã nguồn mở (PolicyEngine), chứ không phải phỏng đoán. AI hỗ trợ — nó không bao giờ đưa ra quyết định cuối cùng thay bạn, và chỉ có bệnh viện mới có thể phê duyệt sự hỗ trợ cho bạn.",
     "data_h": "Thông tin của chúng tôi đến từ đâu",
     "src1": "Sổ đăng ký chính thức về chính sách hỗ trợ tài chính của bệnh viện California (HCAI)",
     "src2": "Đạo luật Định giá Công bằng của Bệnh viện California (Bộ luật Y tế &amp; An toàn §127400 và các điều tiếp theo)",
@@ -34,21 +31,23 @@
     "src4": "Các quy định về điều kiện của Medi-Cal và Covered California (thông qua PolicyEngine)",
     "src_note": "Mọi thứ Cobijo xây dựng — bộ dữ liệu và các công cụ — đều là mã nguồn mở và dữ liệu mở, nên bất kỳ ai cũng có thể kiểm tra công việc của chúng tôi hoặc phát triển thêm từ đó.",
     "team_h": "Ai đứng sau công cụ này",
-    "team_p": "Cobijo Health được thành lập bởi <b>Ian Duncan</b>, người trực tiếp xây dựng toàn bộ sản phẩm. Chúng tôi đang tuyển một ban điều hành sáng lập độc lập — một luật sư về phi lợi nhuận/y tế, một kế toán viên công chứng/thủ quỹ, một chuyên gia về tiếp cận chăm sóc sức khỏe, một người gây quỹ, và một thành viên cộng đồng có trải nghiệm thực tế — và đang nộp hồ sơ xin quy chế 501(c)(3). Nếu bạn muốn giúp đỡ, chúng tôi rất mong được nghe từ bạn.",
     "involve_h": "Tham gia cùng chúng tôi",
     "involve_lead": "Cobijo Health còn non trẻ, cởi mở và được xây dựng công khai. Có ba cách để giúp đỡ — tất cả đều thiết thực và không cách nào đòi hỏi tiền bạc.",
     "involve_board_h": "Tham gia hội đồng sáng lập của chúng tôi",
-    "involve_board_p": "Chúng tôi đang tuyển năm thành viên hội đồng độc lập trong khi nộp hồ sơ xin quy chế 501(c)(3): một luật sư về phi lợi nhuận hoặc y tế, một kế toán viên công chứng hoặc thủ quỹ, một chuyên gia về tiếp cận chăm sóc sức khỏe, một người gây quỹ, và một thành viên cộng đồng từng trải qua nợ y tế. Chỉ vài giờ mỗi quý, nhưng tác động thực sự. <a href=\"mailto:hello@cobijohealth.org?subject=Founding%20board\">Gửi email cho chúng tôi</a>.",
     "involve_help_h": "Tình nguyện hoặc hợp tác",
     "involve_help_p": "Chúng tôi đặc biệt cần <b>người bản ngữ</b> để rà soát các bản dịch — chúng tôi phục vụ 10 ngôn ngữ, hiện được hỗ trợ bằng máy. Chúng tôi cũng rất mong được kết nối với các phòng khám, tổ chức trợ giúp pháp lý và tổ chức cộng đồng tiếp cận những bệnh nhân mà Cobijo hướng tới. <a href=\"mailto:hello@cobijohealth.org?subject=Volunteer%20or%20partner\">Gửi email cho chúng tôi</a>.",
     "involve_support_h": "Ủng hộ công việc mã nguồn mở",
-    "involve_support_p": "Mọi thứ — các công cụ và bộ dữ liệu — đều miễn phí và mã nguồn mở. Hãy gắn sao (Star) hoặc đóng góp cho <a href=\"https://github.com/iansduncan-oss/cobijo-health\">dự án trên GitHub</a> — đây là một lợi ích công cộng thực sự, và mỗi chút hiển thị đều giúp bệnh nhân tìm thấy nó.",
     "disc_card": "<b>Cobijo Health cung cấp cho bạn thông tin, không phải tư vấn pháp lý, y tế, tài chính hay thuế.</b> Kết quả chỉ là ước tính dựa trên những gì bạn nhập vào và chính sách công khai của bệnh viện — chúng không phải là một quyết định hay một sự bảo đảm. Chỉ có bệnh viện mới có thể quyết định bạn có đủ điều kiện hay không. Cobijo không liên kết với, không được xác nhận bởi, và không thay mặt cho bất kỳ bệnh viện nào.",
-    "contact": "hello@cobijohealth.org"
+    "contact": "hello@cobijohealth.org",
+    "lead": "Cobijo Health là một dự án phi lợi nhuận độc lập đang xây dựng một công cụ miễn phí, đa ngôn ngữ giúp bệnh nhân thu nhập thấp, không có bảo hiểm và người nhập cư nhận được khoản hỗ trợ tài chính cho hóa đơn y tế mà luật pháp cho phép họ.",
+    "meta_desc": "Cobijo Health là một dự án phi lợi nhuận độc lập đang xây dựng một công cụ miễn phí, đa ngôn ngữ giúp bệnh nhân nhận hỗ trợ tài chính cho hóa đơn y tế. Chúng tôi là ai, công cụ hoạt động ra sao, và dữ liệu đến từ đâu.",
+    "team_p": "Cobijo Health do <b>Ian Duncan</b> sáng lập, người tự xây dựng toàn bộ sản phẩm. Chúng tôi đang tìm kiếm sự bảo trợ tài chính từ một tổ chức 501(c)(3) đã thành lập, và đang xây dựng một nhóm cố vấn: một luật sư về phi lợi nhuận hoặc y tế, một chuyên gia về tiếp cận chăm sóc sức khỏe, và những người từng trải qua nợ y tế. Nếu bạn muốn giúp đỡ, chúng tôi rất mong được nghe từ bạn.",
+    "involve_board_p": "Chúng tôi đang tìm cố vấn và người rà soát tình nguyện: một luật sư về phi lợi nhuận hoặc y tế, một chuyên gia về tiếp cận chăm sóc sức khỏe, người có thể kiểm tra quy định cứu trợ y tế của một tiểu bang mỗi năm một lần, và những người từng trải qua nợ y tế. Chỉ vài giờ mỗi năm, nhưng tạo tác động thật sự. <a href=\"mailto:hello@cobijohealth.org?subject=Advising%20Cobijo\">Gửi email cho chúng tôi</a>.",
+    "involve_support_p": "Công cụ này miễn phí và mã nguồn mở, và chúng tôi đang công bố bộ dữ liệu theo từng tiểu bang. Hãy gắn sao hoặc đóng góp cho <a href=\"https://github.com/iansduncan-oss/cobijo-health\">dự án trên GitHub</a> — đây là một lợi ích công cộng thực sự, và mỗi chút hiển thị đều giúp bệnh nhân tìm thấy nó.",
+    "ai_p": "AI ở đây chỉ làm một việc: đọc. Chúng tôi dùng mô hình ngôn ngữ lớn để đọc các file PDF chính sách hỗ trợ tài chính của bệnh viện và rút ra quy định đủ điều kiện của từng nơi thành một bộ dữ liệu có cấu trúc — công việc mà nếu làm thủ công sẽ mất nhiều năm. Ở hầu hết các tiểu bang, quy định đến thẳng từ luật tiểu bang, không có mô hình nào tham gia. <b>Không có AI nào chạy khi bạn dùng công cụ này.</b> Kết quả của bạn được tính bằng các quy định đã công bố, và điều kiện hưởng phúc lợi bằng bộ quy tắc phúc lợi công mã nguồn mở (PolicyEngine). Mỗi con số do AI đọc đều được lưu kèm tài liệu nguồn và ngày hiệu lực. Chỉ bệnh viện mới có thể phê duyệt khoản hỗ trợ của bạn."
   },
   "privacy": {
     "title": "Quyền riêng tư — Cobijo Health",
-    "meta_desc": "Cobijo Health không lưu lại câu trả lời của bạn. Những gì bạn nhập vào chỉ được dùng để tính ra kết quả cho bạn, ngay tại thời điểm đó, và không bao giờ được lưu trữ, bán, hay chia sẻ.",
     "h1": "Quyền riêng tư của bạn",
     "summary": "Nói ngắn gọn: Chúng tôi không lưu lại câu trả lời của bạn. Không bao giờ.",
     "intro": "Cobijo Health là một công cụ miễn phí giúp bạn tìm hiểu xem mình có thể đủ điều kiện nhận dịch vụ chăm sóc từ thiện của bệnh viện hay không, và tạo ra một lá thư yêu cầu mà bạn có thể sử dụng. Chúng tôi xây dựng công cụ này để bảo vệ quyền riêng tư của bạn.",
@@ -66,13 +65,14 @@
     "analytics_h": "Phân tích dữ liệu",
     "analytics_p": "Chúng tôi dùng công cụ phân tích tôn trọng quyền riêng tư (Plausible) để đếm số người truy cập các trang của chúng tôi. Công cụ này không dùng cookie và không thu thập thông tin cá nhân. Nó không thể thấy được câu trả lời trong biểu mẫu của bạn.",
     "third_h": "Các dịch vụ khác",
-    "third_p": "Trang web của chúng tôi được cung cấp thông qua các dịch vụ lưu trữ và bảo mật tiêu chuẩn (chẳng hạn như Cloudflare). Những dịch vụ này giúp trang web tải một cách an toàn. Chúng không nhận được câu trả lời trong biểu mẫu của bạn.",
     "changes_h": "Thay đổi",
     "changes_p": "Nếu chúng tôi thay đổi chính sách này, chúng tôi sẽ cập nhật trên trang này và thay đổi ngày ở bên dưới.",
     "contact_h": "Liên hệ",
     "contact_p": "Có câu hỏi? Hãy gửi email tới <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>.",
     "effective": "Ngày có hiệu lực: Tháng 7 năm 2026",
-    "nonprofit_note": "Cobijo Health là một tổ chức phi lợi nhuận ở California (đang trong quá trình xin cấp phép 501(c)(3))."
+    "meta_desc": "Cobijo Health không lưu câu trả lời của bạn. Những gì bạn nhập chỉ dùng để tính kết quả ngay lúc đó, và không bao giờ được lưu trữ hay bán. Nó không bao giờ được chia sẻ với bệnh viện, chính phủ hay cơ quan di trú.",
+    "nonprofit_note": "Cobijo Health là một dự án phi lợi nhuận độc lập.",
+    "third_p": "Trang web của chúng tôi được phân phối qua các dịch vụ lưu trữ và bảo mật tiêu chuẩn (như Cloudflare). Những dịch vụ này giúp trang tải an toàn và không nhận câu trả lời của bạn. Có một dịch vụ thì có nhận: để kiểm tra xem bạn có thể đủ điều kiện Medicaid hoặc ACA hay không, máy chủ của chúng tôi gửi một hộ gia đình ẩn danh — mức thu nhập, số người trong hộ và tiểu bang của bạn, không có tên, thông tin liên lạc, bệnh viện hay bất kỳ câu trả lời nào khác — tới PolicyEngine, một tổ chức phi lợi nhuận mã nguồn mở chuyên tính điều kiện hưởng phúc lợi. Yêu cầu được gửi từ máy chủ của chúng tôi, nên PolicyEngine không bao giờ thấy thiết bị hay vị trí của bạn, và không có gì nhận dạng bạn. Nếu dịch vụ đó không khả dụng, chúng tôi tính toán ngay trên máy chủ của mình. Chúng tôi không bao giờ bán, cho thuê hay trao đổi câu trả lời của bạn với bất kỳ ai."
   },
   "faq": {
     "title": "Câu hỏi thường gặp — Cobijo Health",
@@ -80,9 +80,7 @@
     "h1": "Câu hỏi thường gặp",
     "intro": "Những câu trả lời thành thật cho các câu hỏi mà mọi người hỏi nhiều nhất. Vẫn còn thắc mắc? Hãy gửi email tới hello@cobijohealth.org.",
     "q1": "Có thật sự miễn phí không?",
-    "a1": "Đúng vậy. Cobijo Health hoàn toàn miễn phí để sử dụng, không có điều kiện ràng buộc gì. Chúng tôi là một tổ chức phi lợi nhuận, không phải doanh nghiệp — chúng tôi không tính phí bạn, và không lấy phần trăm nào từ số tiền bạn tiết kiệm được. Không có gì để mua và không cần tạo tài khoản.",
     "q2": "Thông tin của tôi có an toàn không? Bạn có lưu lại những gì tôi nhập vào không?",
-    "a2": "Chúng tôi hoàn toàn không lưu lại câu trả lời của bạn. Những gì bạn nhập vào chỉ được dùng để tính ra kết quả cho bạn ngay tại thời điểm đó, rồi sau đó biến mất — không có tài khoản, không có cơ sở dữ liệu chứa câu trả lời của bạn, và chúng tôi không bao giờ bán hay chia sẻ chúng. Chúng tôi sẽ không bao giờ chia sẻ những gì bạn nhập vào với bệnh viện của bạn, chính phủ, hay cơ quan di trú. Xem <a href=\"privacy\">trang Quyền riêng tư</a> của chúng tôi để biết chi tiết.",
     "q3": "Việc nhận hỗ trợ có làm ảnh hưởng đến hồ sơ di trú của tôi không (\"gánh nặng xã hội\")?",
     "a3": "Đối với hầu hết mọi người, không. Theo các quy định hiện hành của liên bang, việc sử dụng Medi-Cal, CHIP, Covered California, chăm sóc cấp cứu, hoặc chương trình hỗ trợ tài chính (chăm sóc từ thiện) của bệnh viện <b>không</b> bị tính là bất lợi cho bạn trong bài kiểm tra di trú về \"gánh nặng xã hội\" (public charge) — và chăm sóc từ thiện của bệnh viện thậm chí không phải là một phúc lợi của chính phủ. Quy định về gánh nặng xã hội cũng không áp dụng cho nhiều người, bao gồm những người gia hạn thẻ xanh, người xin nhập quốc tịch, và các trường hợp tị nạn, được cho tị nạn, U-visa, T-visa, và VAWA. Đây là thông tin chung, không phải tư vấn pháp lý, và các quy định di trú có thể thay đổi. Đối với trường hợp cụ thể của bạn, xin hãy trao đổi với một luật sư di trú đáng tin cậy hoặc một tổ chức trợ giúp pháp lý phi lợi nhuận trước khi đưa ra quyết định.",
     "q4": "Tôi có thể dùng công cụ này nếu tôi không có giấy tờ không?",
@@ -94,15 +92,15 @@
     "q7": "Tôi có cần bảo hiểm để dùng công cụ này không?",
     "a7": "Không. Cobijo được xây dựng đặc biệt cho những bệnh nhân không có bảo hiểm và tự thanh toán, nhưng những bệnh nhân có bảo hiểm mà phải tự trả nhiều tiền túi cũng có thể đủ điều kiện nhận hỗ trợ. Hãy nhập tình huống của bạn và chúng tôi sẽ cho bạn biết những gì có thể áp dụng.",
     "q8": "Ai đứng sau Cobijo, và đây có phải là một tổ chức phi lợi nhuận thực sự không?",
-    "a8": "Cobijo Health được thành lập bởi Ian Duncan và là một tổ chức phi lợi nhuận ở California đang trong quá trình thành lập (quy chế 501(c)(3) đang chờ phê duyệt). Đây là mã nguồn mở và được xây dựng vì lợi ích công cộng. Tìm hiểu thêm trên <a href=\"about\">trang Giới thiệu</a> của chúng tôi.",
     "q9": "Cobijo hỗ trợ những ngôn ngữ nào?",
-    "a9": "Cobijo hoạt động bằng tiếng Anh, tiếng Tây Ban Nha, tiếng Trung, tiếng Việt, tiếng Tagalog, tiếng Hàn, tiếng Armenia, tiếng Farsi, tiếng Ả Rập, và tiếng Nga. Hãy dùng menu ngôn ngữ ở đầu mỗi trang để chuyển đổi."
+    "a9": "Cobijo hoạt động bằng tiếng Anh, tiếng Tây Ban Nha, tiếng Trung, tiếng Việt, tiếng Tagalog, tiếng Hàn, tiếng Armenia, tiếng Farsi, tiếng Ả Rập, và tiếng Nga. Hãy dùng menu ngôn ngữ ở đầu mỗi trang để chuyển đổi.",
+    "a1": "Có. Cobijo Health hoàn toàn miễn phí, không có điều kiện ẩn. Nó hoạt động như một dự án phi lợi nhuận — không ai kiếm lời từ nó, chúng tôi không thu phí bạn, và không lấy phần trăm từ khoản bạn tiết kiệm được. Không có gì để mua và không cần tạo tài khoản.",
+    "a2": "Chúng tôi hoàn toàn không lưu câu trả lời của bạn. Những gì bạn nhập chỉ dùng để tính kết quả ngay lúc đó, rồi biến mất — không có tài khoản và không có cơ sở dữ liệu chứa câu trả lời của bạn. Chúng tôi không bao giờ bán, và không bao giờ chia sẻ chúng với bệnh viện, chính phủ hay cơ quan di trú. Một ngoại lệ kỹ thuật, để bạn nắm rõ toàn bộ: để kiểm tra điều kiện Medicaid và ACA, máy chủ của chúng tôi gửi một hộ gia đình ẩn danh — mức thu nhập, số người trong hộ và tiểu bang, không có gì nhận dạng bạn — tới PolicyEngine, một công cụ quy tắc phi lợi nhuận mã nguồn mở. Xem <a href=\"privacy\">trang Quyền riêng tư</a> của chúng tôi để biết chi tiết.",
+    "a8": "Cobijo Health do Ian Duncan sáng lập. Đây là một dự án phi lợi nhuận độc lập — chưa phải là một pháp nhân riêng — và đang tìm kiếm sự bảo trợ tài chính từ một tổ chức 501(c)(3) đã thành lập, điều này cho phép nó hoạt động như một dự án từ thiện. Dự án là mã nguồn mở và được xây dựng vì lợi ích công. Tìm hiểu thêm tại <a href=\"about\">trang Giới thiệu</a>."
   },
   "support": {
     "title": "Ủng hộ Cobijo Health",
-    "meta_desc": "Giúp bệnh nhân California được nhẹ gánh tài chính từ hóa đơn y tế. Cobijo Health là một tổ chức phi lợi nhuận miễn phí, cởi mở, đang trong quá trình thành lập — đây là cách bạn có thể giúp.",
     "h1": "Ủng hộ công việc này",
-    "lead": "Cobijo Health miễn phí cho mọi bệnh nhân, và sẽ luôn như vậy. Chúng tôi là một tổ chức phi lợi nhuận California đang trong quá trình thành lập, được xây dựng một cách công khai. Đây là cách bạn giúp chúng tôi tiếp cận nhiều người hơn.",
     "give_h": "Quyên góp",
     "give_p": "Sự ủng hộ của bạn chi trả cho những điều thiết yếu — duy trì công cụ hoạt động trực tuyến, cập nhật dữ liệu về chính sách hỗ trợ tài chính của từng bệnh viện tại California, và dịch chúng sang những ngôn ngữ mà bệnh nhân của chúng tôi thực sự sử dụng.",
     "give_soon": "Chúng tôi đang hoàn tất đơn vị bảo trợ tài chính để các khoản đóng góp được khấu trừ thuế và đến trực tiếp với sứ mệnh. Quyên góp tài chính sẽ sớm mở tại đây. Trong lúc chờ đợi, những cách giúp đỡ dưới đây cũng quan trọng không kém — và bạn có thể gửi email tới <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a> nếu muốn quyên góp ngay bây giờ.",
@@ -111,26 +109,28 @@
     "spread_h": "Lan tỏa thông tin",
     "spread_p": "Những bệnh nhân cần điều này nhất lại là những người khó tiếp cận nhất. Hãy chia sẻ cobijohealth.org với một phòng khám, một nhân viên xã hội, một tuyên truyền viên cộng đồng, một nhóm cộng đồng, hoặc bất kỳ ai giúp đỡ người khác với hóa đơn y tế.",
     "board_h": "Tham gia hội đồng sáng lập của chúng tôi",
-    "board_p": "Chúng tôi đang tuyển năm giám đốc độc lập trong khi nộp hồ sơ xin quy chế 501(c)(3) — đặc biệt hoan nghênh kinh nghiệm về phi lợi nhuận, pháp lý, tài chính, tiếp cận y tế, hoặc niềm tin cộng đồng. Gửi email tới <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>.",
     "volunteer_h": "Tình nguyện hoặc hợp tác",
     "volunteer_p": "Chúng tôi đặc biệt cần người bản ngữ rà soát bản dịch của chúng tôi ở 10 ngôn ngữ, và các đối tác — phòng khám, nhóm trợ giúp pháp lý, tổ chức cộng đồng — phục vụ bệnh nhân đang đối mặt với hóa đơn y tế.",
     "oss_h": "Gắn sao hoặc đóng góp trên GitHub",
-    "oss_p": "Công cụ và bộ dữ liệu đều miễn phí và mã nguồn mở. Hãy gắn sao hoặc đóng góp cho <a href=\"https://github.com/iansduncan-oss/cobijo-health\">dự án trên GitHub</a> — mỗi chút hiển thị đều giúp bệnh nhân tìm thấy nó.",
-    "contact": "Gửi email cho chúng tôi"
+    "contact": "Gửi email cho chúng tôi",
+    "lead": "Cobijo Health miễn phí cho mọi bệnh nhân, và sẽ luôn như vậy. Đây là một dự án phi lợi nhuận độc lập, được xây dựng công khai và đang tìm kiếm sự bảo trợ tài chính. Đây là cách bạn có thể giúp chúng tôi tiếp cận nhiều người hơn.",
+    "meta_desc": "Giúp bệnh nhân California giảm bớt gánh nặng hóa đơn y tế. Cobijo Health là một dự án phi lợi nhuận miễn phí và cởi mở — đây là cách bạn có thể giúp.",
+    "oss_p": "Công cụ này miễn phí và mã nguồn mở, và chúng tôi đang công bố bộ dữ liệu theo từng tiểu bang. Hãy gắn sao hoặc đóng góp cho <a href=\"https://github.com/iansduncan-oss/cobijo-health\">dự án trên GitHub</a> — đây là một lợi ích công cộng thực sự, và mỗi chút hiển thị đều giúp bệnh nhân tìm thấy nó.",
+    "board_p": "Chúng tôi đang tìm cố vấn và người rà soát tình nguyện — đặc biệt hoan nghênh kinh nghiệm về pháp lý, tiếp cận chăm sóc sức khỏe hoặc niềm tin cộng đồng, và bất kỳ ai sẵn sàng kiểm tra quy định cứu trợ y tế của một tiểu bang mỗi năm một lần. Gửi email tới <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>."
   },
   "partners": {
     "title": "Thêm trợ giúp miễn phí về hóa đơn y tế vào trang của bạn — Cobijo Health",
     "meta_desc": "Phòng khám, văn phòng trợ giúp pháp lý và nhóm cộng đồng: nhúng công cụ hóa đơn y tế miễn phí, đa ngôn ngữ của Cobijo Health vào trang web của bạn chỉ với một dòng mã.",
     "h1": "Đưa trợ giúp miễn phí về hóa đơn y tế lên trang của bạn",
     "lead": "Nếu những người bạn phục vụ gặp khó khăn với hóa đơn y tế, hãy thêm công cụ miễn phí của Cobijo Health vào trang web của bạn. Nó hoạt động ngay trên trang của bạn, bằng 10 ngôn ngữ — và không có gì được lưu lại.",
-    "why1": "Miễn phí mãi mãi — chúng tôi là tổ chức phi lợi nhuận. Không tốn phí, không cần tài khoản, không bán gì cả.",
     "why2": "10 ngôn ngữ — mọi người nhận trợ giúp bằng ngôn ngữ họ nói.",
     "why3": "Một dòng mã — nó nằm trên trang của bạn; không cần bảo trì gì cả.",
     "how_h": "Thêm chỉ trong một bước",
     "how_p": "Dán dòng này vào HTML trang web của bạn tại nơi bạn muốn công cụ xuất hiện. Đổi data-lang để mở bằng ngôn ngữ khác — ví dụ es, zh hoặc vi.",
     "copy_btn": "Sao chép mã",
     "preview_h": "Xem trước trực tiếp",
-    "contact": "Có câu hỏi, hoặc muốn phiên bản gắn thương hiệu chung? Gửi email cho chúng tôi tại"
+    "contact": "Có câu hỏi, hoặc muốn phiên bản gắn thương hiệu chung? Gửi email cho chúng tôi tại",
+    "why1": "Miễn phí vĩnh viễn — một dự án phi lợi nhuận. Không tốn phí, không cần tài khoản, không có gì để bán."
   },
   "plan": {
     "cc_free": "Bạn có khả năng đủ điều kiện nhận **CHĂM SÓC MIỄN PHÍ**. {name} cung cấp dịch vụ chăm sóc từ thiện miễn phí/toàn phần lên đến {free:.0f}% Mức Nghèo Liên bang{upto}, và hộ gia đình của bạn ở khoảng ~{pct:.0f}%.",
@@ -238,7 +238,6 @@
     "go": "Nhận kế hoạch của tôi",
     "letter_summary": "Lá thư yêu cầu sẵn sàng để gửi của bạn (tiếng Anh)",
     "copy": "Sao chép thư",
-    "foot": "Cobijo Health · tổ chức phi lợi nhuận ở California (đang trong quá trình thành lập) · không phải tư vấn pháp lý hay y tế",
     "browse": "Xem hỗ trợ tài chính tại tất cả các bệnh viện ở California →",
     "err_hospital": "Chúng tôi không tìm thấy bệnh viện đó — hãy thử chọn nó từ danh sách.",
     "err_generic": "Đã xảy ra sự cố. Vui lòng thử lại.",
@@ -281,7 +280,8 @@
     "youraddress_ph": "Đường, Thành phố, Tiểu bang, Mã ZIP",
     "yourphone": "Số điện thoại của bạn",
     "yourphone_ph": "(555) 555-5555",
-    "browse_states": "Xem bệnh viện theo tiểu bang →"
+    "browse_states": "Xem bệnh viện theo tiểu bang →",
+    "foot": "Cobijo Health · một dự án phi lợi nhuận độc lập · không phải tư vấn pháp lý hay y tế"
   },
   "hospital": {
     "h_home": "Trang chủ",
@@ -318,12 +318,12 @@
     "h_copied": "Đã sao chép ✓",
     "h_print": "In",
     "h_meta": "Tìm hiểu xem bạn có đủ điều kiện nhận chăm sóc bệnh viện miễn phí hoặc giảm giá tại {name} hay không. Giới hạn thu nhập, giấy tờ cần thiết, mẫu đơn đăng ký và cách nộp đơn — miễn phí.",
-    "h_foot": "Cobijo Health là một công cụ phi lợi nhuận miễn phí (California 501(c)(3) đang trong quá trình thành lập). Chúng tôi không liên kết với bệnh viện này và đây là thông tin chung, không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận các chi tiết trong chính sách chính thức của bệnh viện. Dữ liệu lấy từ hồ sơ Đạo luật Định giá Công bằng của Bệnh viện thuộc HCAI California.",
     "h_check_bill": "Kiểm tra hóa đơn của bạn",
     "h_dir_title": "Danh bạ hỗ trợ tài chính & chăm sóc từ thiện của bệnh viện California | Cobijo Health",
     "h_dir_meta": "Xem các chương trình hỗ trợ tài chính và chăm sóc từ thiện của mọi bệnh viện ở California. Giới hạn thu nhập, mẫu đơn đăng ký và cách nộp đơn — miễn phí, từ Cobijo Health.",
     "h_dir_h1": "Danh bạ hỗ trợ tài chính của bệnh viện California",
-    "h_dir_lead": "Mọi bệnh viện ở California đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân không đủ khả năng trả hóa đơn. Tìm bệnh viện của bạn bên dưới để xem giới hạn thu nhập và cách nộp đơn — hoặc kiểm tra hóa đơn cụ thể của bạn."
+    "h_dir_lead": "Mọi bệnh viện ở California đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân không đủ khả năng trả hóa đơn. Tìm bệnh viện của bạn bên dưới để xem giới hạn thu nhập và cách nộp đơn — hoặc kiểm tra hóa đơn cụ thể của bạn.",
+    "h_foot": "Cobijo Health là công cụ miễn phí của một dự án phi lợi nhuận độc lập. Chúng tôi không liên kết với bệnh viện này và đây là thông tin chung, không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận chi tiết trong chính sách chính thức của bệnh viện. Dữ liệu lấy từ hồ sơ Định giá Công bằng Bệnh viện của HCAI California."
   },
   "county": {
     "c_h1": "Hỗ trợ tài chính của bệnh viện tại Quận {county}, California",
@@ -658,7 +658,6 @@
     "s_dir_h1": "Danh bạ hỗ trợ tài chính của bệnh viện ở {state}",
     "s_dir_lead": "Mọi bệnh viện ở {state} đều phải cung cấp dịch vụ chăm sóc miễn phí hoặc giảm giá cho những bệnh nhân đủ điều kiện theo {law}. Hãy chọn một bệnh viện để xem giới hạn thu nhập và cách nộp đơn.",
     "s_dir_lead_discount_only": "Mọi bệnh viện ở bang {state} đều phải cung cấp dịch vụ chăm sóc có giảm giá cho những bệnh nhân đủ điều kiện theo {law}. Hãy chọn một bệnh viện để xem các giới hạn thu nhập và cách nộp đơn.",
-    "s_foot": "Cobijo Health là một công cụ phi lợi nhuận miễn phí (California 501(c)(3) đang trong quá trình thành lập). Chúng tôi không liên kết với bệnh viện này và đây là thông tin chung, không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận các chi tiết với bệnh viện và trong chính sách hỗ trợ tài chính chính thức của bệnh viện.",
     "s_law_p_nocap": "Theo {law}, {name} phải cung cấp dịch vụ chăm sóc MIỄN PHÍ cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc thấp hơn {free_pct}% Mức Nghèo Liên bang, và chăm sóc giảm giá cho bệnh nhân có thu nhập lên đến {discount_pct}%.",
     "s_law_p_discount_only": "Theo {law}, {name} phải cung cấp dịch vụ chăm sóc được giảm giá cho bệnh nhân không có bảo hiểm có thu nhập bằng hoặc dưới {discount_pct}% Mức Nghèo Liên bang, đồng thời giới hạn cả số tiền bạn bị tính và khoản thanh toán hàng tháng của bạn.",
     "s_immigration": "Tình trạng nhập cư của bạn không thể được dùng để quyết định bạn có đủ điều kiện hay không — luật {state} cấm bệnh viện xem xét điều đó. Việc đủ điều kiện chỉ phụ thuộc vào thu nhập của gia đình bạn.",
@@ -676,7 +675,8 @@
     "s_debt_protection_md": "Một khi bạn đủ điều kiện được chăm sóc miễn phí hoặc giảm chi phí, luật của {state} giúp hóa đơn không tăng thêm: bệnh viện không được tính lãi trước khi có phán quyết của tòa, không được báo khoản nợ cho các cơ quan tín dụng, và không được kiện bạn vì một hóa đơn từ ${debt_suit_floor_usd} trở xuống.",
     "s_catastrophic_cap": "Luật của {state} cũng giới hạn tổng hóa đơn của bạn: nếu thu nhập hộ gia đình của bạn bằng hoặc thấp hơn {catastrophic_ceiling_pct}% Mức Nghèo Liên Bang, bệnh viện phải giảm hóa đơn để bạn không bao giờ nợ quá {catastrophic_cap_pct}% thu nhập hộ gia đình của mình.",
     "s_medical_hardship": "{state} không đặt giới hạn thu nhập cho chương trình hỗ trợ Khó Khăn Y Tế: nếu các hóa đơn y tế hợp lệ của bạn vượt quá khoảng {medical_hardship_entry_pct}% thu nhập của bạn — tỷ lệ cao hơn nếu bạn kiếm được nhiều hơn — Mạng Lưới An Toàn Y Tế có thể chi trả phần còn lại. Hãy nộp đơn ngay cả khi thu nhập của bạn cao hơn các mức giới hạn ghi ở đây.",
-    "s_charity_excess": "Nếu các hóa đơn y tế đủ điều kiện của bạn vượt quá {charity_excess_pct}% thu nhập hàng năm, {state} sẽ chi trả toàn bộ phần vượt quá tỷ lệ đó — mỗi gia đình một lần mỗi năm, ngoài phần giảm giá theo thang trượt."
+    "s_charity_excess": "Nếu các hóa đơn y tế đủ điều kiện của bạn vượt quá {charity_excess_pct}% thu nhập hàng năm, {state} sẽ chi trả toàn bộ phần vượt quá tỷ lệ đó — mỗi gia đình một lần mỗi năm, ngoài phần giảm giá theo thang trượt.",
+    "s_foot": "Cobijo Health là công cụ miễn phí của một dự án phi lợi nhuận độc lập. Chúng tôi không liên kết với bệnh viện này, và đây là thông tin chung — không phải tư vấn pháp lý, y tế hay tài chính. Hãy luôn xác nhận chi tiết với bệnh viện và trong chính sách hỗ trợ tài chính chính thức của họ."
   },
   "states": {
     "st_title": "Tìm hỗ trợ tài chính cho hóa đơn bệnh viện của bạn theo tiểu bang | Cobijo Health",

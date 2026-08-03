@@ -23,8 +23,9 @@ SITE = "https://cobijohealth.org"
 DEFAULT = "en"
 
 # The one lever for the /support page's Donate button. Empty = no financial-giving path is live yet
-# (Cobijo is a 501(c)(3) *in formation*; a fiscal sponsor must be confirmed before we can solicit
-# tax-deductible gifts). While empty, /support shows an honest "giving opens soon" note and the
+# (Cobijo is NOT incorporated and has no 501(c)(3) — it is an independent project seeking Model A
+# fiscal sponsorship; a sponsor must be confirmed before we can solicit tax-deductible gifts).
+# While empty, /support shows an honest "giving opens soon" note and the
 # non-monetary ways to help. Set this to the donation URL — fiscal-sponsor page, GitHub Sponsors, or
 # a Stripe payment link — and the button appears. That is the ONLY change needed to turn giving on.
 SUPPORT_URL = ""
@@ -76,7 +77,10 @@ ORG_JSONLD = '<script type="application/ld+json">' + json.dumps({
                     "medical bills — hospital charity care and Medi-Cal / Covered California screening."),
     "email": "hello@cobijohealth.org",
     "foundingDate": "2026",
-    "nonprofitStatus": "Nonprofit501c3",
+    # No `nonprofitStatus` key: that property asserts a legal tax status, and Cobijo has none —
+    # not incorporated, no 501(c)(3), none pending. It was asserting "Nonprofit501c3" to every
+    # crawler until 2026-08-03. Do not re-add it until a determination letter exists (or, under
+    # fiscal sponsorship, it belongs to the SPONSOR, not to Cobijo).
     "areaServed": {"@type": "State", "name": "California"},
     "contactPoint": {"@type": "ContactPoint", "email": "hello@cobijohealth.org",
                      "contactType": "customer support",

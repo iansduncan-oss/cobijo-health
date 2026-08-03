@@ -52,7 +52,7 @@ ES_ENDPOINT = (
 )
 POLICY_POST_TYPE = "hospital_policies"
 HDC_ATTACHMENT = "api.hdc.hcai.ca.gov/Public/Extract/Attachment"
-UA = "cobijo-health-research/0.2 (nonprofit charity-care dataset; contact ian@aviontechs.com)"
+UA = "cobijo-health-research/0.2 (open charity-care research dataset; contact ian@aviontechs.com)"
 
 
 # --- HTTP -------------------------------------------------------------------

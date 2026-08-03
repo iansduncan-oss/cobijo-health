@@ -2,8 +2,9 @@
 
 A free, multilingual tool that helps low-income, uninsured, rural, and immigrant patients find
 and access financial help for hospital bills — **charity care**, **government-benefit screening**
-(Medi-Cal / ACA), and **medical-debt navigation**. California-first. Being built as a California
-nonprofit public benefit corporation (501(c)(3) in formation).
+(Medi-Cal / ACA), and **medical-debt navigation**. California-first. Cobijo Health is an
+independent project — **not incorporated, and it holds no 501(c)(3)**. It is seeking fiscal
+sponsorship by an established 501(c)(3) so it can operate as a charitable project.
 
 **The moat:** no open, structured dataset of every CA hospital's financial-assistance rules
 exists. California's HCAI publishes the policies only as per-hospital PDFs (the current lookup no
@@ -114,6 +115,8 @@ python3 navigator.py --offline ...         # skip PolicyEngine (no network)
 - **`funding/`** — `funding-targets.md` (prioritized funders; fiscal sponsorship as the
   pre-501(c)(3) unlock) and `applications/` (ready-to-use application drafts + executive summary).
 - **`board/`** — `board-recruitment-brief.md` (the 5 seats) + `board-outreach-kit.md` (templates).
+  **SUPERSEDED (2026-08-03):** these assume own-entity incorporation. Under Model A fiscal
+  sponsorship Cobijo is a program *of* the sponsor and needs **no board**. Do not send as written.
 
 ## Tests
 `python3 -m unittest test_cobijo` — stdlib, no deps or network. Covers the charity-care match,
@@ -131,8 +134,24 @@ PolicyEngine call needs network, with a heuristic fallback). `reportlab` for `ma
   [`DATA-LICENSE.md`](DATA-LICENSE.md). Open source + open data, so the tools and the dataset are
   a genuine public good.
 
+### About the data in `cobijo_charity_care_dataset.json`
+- **469 California hospitals**, each row carrying the policy URL, a `source_sha256` of the document
+  it was read from, and the effective date — so any number here can be checked against the
+  hospital's own published policy rather than taken on trust.
+- **26 rows are flagged `needs_review`** and are published *as flagged*, not withheld. Publishing
+  the known-uncertain records is what makes the QA claim checkable; hiding them would make the
+  dataset look better than it is.
+- **`last_verified_at` is deliberately null.** No independent verification pass has run yet.
+  `extracted_at` is an inferred upper bound, tagged with its basis. An empty field is the honest
+  representation of "nobody has checked this since extraction."
+- **Contact fields are transcribed from the hospitals' own published financial-assistance
+  policies** — these are the addresses and phone numbers each hospital publishes *so that patients
+  can reach it*. Republishing them serves that same purpose. They are business contact points, not
+  personal data we collected.
+
 ## Status
 The moat dataset is **built — 465 of 469 California hospitals** extracted and assembled, validated
 against HSC §127405. The full pipeline — extraction, assembly, QA, navigator, PolicyEngine, Spanish
-— is built, tested (66 unit tests), and running. Org formation is gated on recruiting the founding
-board (see `docs/legal/founding-runbook.md`).
+— is built, tested, and running. Cobijo is **not incorporated and holds no 501(c)(3)**; it is
+seeking Model A fiscal sponsorship by an established 501(c)(3). Options and costs are laid out in
+`tasks/entity-and-funding-strategy.md`.

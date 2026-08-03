@@ -690,7 +690,28 @@ class TestWebI18n(unittest.TestCase):
     def _fields(s):
         return {n for _, n, _, _ in string.Formatter().parse(s) if n}
 
+    # Strings deliberately removed from every non-English locale on 2026-08-03 because their
+    # translations asserted things that are NOT TRUE: that Cobijo is "a California nonprofit
+    # (501(c)(3) in formation)" — no entity was ever incorporated and no application is pending —
+    # and that answers are "never shared", which omitted the PolicyEngine eligibility call.
+    # English is the documented fallback, so removing them serves the CORRECTED English rather than
+    # a false translation. A true sentence in the wrong language beats a false one in the right one.
+    #
+    # These are a translation DEBT, not a design. Each entry is removed from this list the moment a
+    # human translator supplies the corrected string — and the test below fails if that is forgotten,
+    # so the debt cannot quietly become permanent.
+    PENDING_RETRANSLATION = {
+        ("privacy", "third_p"), ("privacy", "meta_desc"), ("privacy", "nonprofit_note"),
+        ("faq", "a1"), ("faq", "a2"), ("faq", "a8"),
+        ("about", "ai_p"), ("about", "involve_support_p"), ("about", "meta_desc"),
+        ("about", "lead"), ("about", "team_p"), ("about", "involve_board_p"),
+        ("support", "lead"), ("support", "oss_p"), ("support", "meta_desc"), ("support", "board_p"),
+        ("partners", "why1"), ("common", "foot1"), ("tool", "foot"),
+        ("hospital", "h_foot"), ("statutory", "s_foot"),
+    }
+
     def test_all_langs_have_english_keys(self):
+        """No UNINTENTIONAL translation gaps. Intentional ones must be enumerated above."""
         en = self._raw("en")
         for lang in web_i18n.LANGS:
             if lang == "en":
@@ -700,7 +721,93 @@ class TestWebI18n(unittest.TestCase):
                 if not isinstance(keys, dict):
                     continue
                 missing = set(keys) - set(data.get(sec, {}))
-                self.assertEqual(missing, set(), f"{lang}.{sec} missing keys: {missing}")
+                unexpected = {k for k in missing if (sec, k) not in self.PENDING_RETRANSLATION}
+                self.assertEqual(
+                    unexpected, set(), f"{lang}.{sec} missing keys: {unexpected}"
+                )
+
+    # Languages that have been re-translated since the 2026-08-03 correction. Everything NOT listed
+    # here still falls back to English for the PENDING_RETRANSLATION keys.
+    RETRANSLATED = {"es", "zh", "vi", "ko", "ru"}
+
+    def test_pending_retranslation_list_is_not_stale(self):
+        """A retranslated language must supply EVERY pending key — no half-done locales.
+
+        Without this, PENDING_RETRANSLATION would silently become a permanent hole in the parity
+        check — the exact way a temporary exception turns into an unnoticed one.
+        """
+        for lang in sorted(self.RETRANSLATED):
+            data = self._raw(lang)
+            missing = {f"{s}.{k}" for s, k in self.PENDING_RETRANSLATION if k not in data.get(s, {})}
+            self.assertEqual(
+                missing, set(),
+                f"{lang} is in RETRANSLATED but is missing: {sorted(missing)}",
+            )
+        for lang in web_i18n.LANGS:
+            if lang == "en" or lang in self.RETRANSLATED:
+                continue
+            data = self._raw(lang)
+            present = {f"{s}.{k}" for s, k in self.PENDING_RETRANSLATION if k in data.get(s, {})}
+            self.assertEqual(
+                present, set(),
+                f"{lang} has translations for pending keys — add it to RETRANSLATED: {sorted(present)}",
+            )
+
+    def test_translations_preserve_load_bearing_facts(self):
+        """A translation may read differently; it may NOT drop a fact that carries legal weight.
+
+        The real risk in translating this copy is not awkward phrasing — it is a version that
+        quietly loses "we send your income to PolicyEngine", or breaks the link a patient needs, or
+        turns "seeking 501(c)(3) sponsorship" into a claim of BEING a 501(c)(3). These invariants
+        are deliberately language-agnostic so they hold for all nine locales, not just Spanish.
+        """
+        import re as _re
+
+        en = self._raw("en")
+        for lang in sorted(self.RETRANSLATED):
+            data = self._raw(lang)
+            for sec, key in sorted(self.PENDING_RETRANSLATION):
+                src, dst = en[sec][key], data[sec][key]
+                where = f"{lang}.{sec}.{key}"
+
+                # 1. Proper nouns that ARE the disclosure survive verbatim.
+                for token in ("PolicyEngine", "Cloudflare", "Medicaid", "Cobijo Health"):
+                    self.assertEqual(
+                        token in src, token in dst,
+                        f"{where}: '{token}' presence differs from English — a dropped proper noun "
+                        f"here is a dropped disclosure",
+                    )
+
+                # 2. Entity status. English says 501(c)(3) only when describing what we are SEEKING;
+                #    a translation must not add or remove that token.
+                self.assertEqual(
+                    src.count("501(c)(3)"), dst.count("501(c)(3)"),
+                    f"{where}: '501(c)(3)' count changed — this is the claim that was false sitewide",
+                )
+
+                # 3. Links and markup survive: same URLs, same tag counts.
+                self.assertEqual(
+                    _re.findall(r'href="([^"]+)"', src), _re.findall(r'href="([^"]+)"', dst),
+                    f"{where}: href targets differ from English",
+                )
+                for tag in ("<b>", "</b>", "<a ", "</a>"):
+                    self.assertEqual(
+                        src.count(tag), dst.count(tag), f"{where}: '{tag}' count differs from English"
+                    )
+
+                # 4. Not silently truncated or padded into something unreviewable.
+                #    Bounds are SCRIPT-AWARE: CJK encodes a clause in far fewer characters than
+                #    English, so a correct Chinese translation lands near 0.35x. A flat 0.5x floor
+                #    flagged a complete zh string as truncated -- the threshold was wrong, not the
+                #    translation. Vietnamese runs long (diacritics + analytic grammar), so it needs
+                #    more headroom above.
+                lo, hi = {"zh": (0.25, 1.0), "ko": (0.35, 1.3), "vi": (0.6, 2.8)}.get(lang, (0.5, 2.5))
+                ratio = len(dst) / max(len(src), 1)
+                self.assertTrue(
+                    lo <= ratio <= hi,
+                    f"{where}: length ratio {ratio:.2f} outside [{lo}, {hi}] for {lang} — "
+                    f"likely truncated or padded",
+                )
 
     def test_format_fields_match_english(self):
         en = self._raw("en")
@@ -725,6 +832,72 @@ class TestWebI18n(unittest.TestCase):
                 html = web_i18n.render(page, lang)
                 left = re.findall(r"{{[A-Za-z_]+}}", html)
                 self.assertEqual(left, [], f"{page}/{lang} leftover placeholders: {set(left)}")
+
+
+class TestNoEntityClaimInRenderedPages(unittest.TestCase):
+    """No page, in any language, may assert that Cobijo IS a nonprofit corporation or a 501(c)(3).
+
+    Why this test exists, and why it checks RENDERED HTML rather than the i18n catalogs: the
+    2026-08-03 sweep corrected every false entity string in `web/i18n/*.json` and was reported as
+    covering "all user-facing copy". It did not. `web/i18n.py` injects an Organization JSON-LD block
+    into home + landing, and that block carried `"nonprofitStatus": "Nonprofit501c3"` — a
+    machine-readable assertion of 501(c)(3) status, aimed at exactly the crawlers that decide how
+    this project is described. It survived the sweep because the sweep's boundary was the JSON
+    catalogs and the claim lived one file outside it.
+
+    So the boundary here is the egress point: whatever a browser or crawler actually receives.
+    Any future source of the claim — a new template, a meta tag, another schema block, a fourth
+    copy of the footer — is caught, because none of them can reach a user without passing here.
+
+    Permitted: describing what Cobijo is SEEKING ("seeking fiscal sponsorship by an established
+    501(c)(3)"), and describing OTHER parties ("nonprofit hospitals must...", IRS §501(r),
+    "an open-source nonprofit" = PolicyEngine). Those are true and load-bearing.
+    """
+
+    # Substrings that assert Cobijo's own legal status. Matched case-insensitively against the
+    # rendered HTML of every page in every language.
+    FORBIDDEN = (
+        "nonprofitstatus",                 # schema.org property — asserts a tax status, full stop
+        "501(c)(3) in formation",
+        "501(c)(3) (in formation)",
+        "nonprofit public benefit corporation",
+        "california nonprofit corporation",
+        "is a 501(c)(3)",
+        "we are a 501(c)(3)",
+    )
+
+    def test_no_page_claims_cobijo_is_a_nonprofit_entity(self):
+        for page in web_i18n.PAGES:
+            for lang in web_i18n.LANGS:
+                html = web_i18n.render(page, lang).lower()
+                for claim in self.FORBIDDEN:
+                    self.assertNotIn(
+                        claim, html,
+                        f"{page}/{lang} asserts Cobijo's legal status ({claim!r}). Cobijo is NOT "
+                        f"incorporated and holds no 501(c)(3). Say what it is SEEKING instead.",
+                    )
+
+    def test_org_jsonld_is_valid_and_status_free(self):
+        """The JSON-LD must parse and must not carry a tax-status property.
+
+        Parsed rather than grepped: a malformed block is silently ignored by crawlers, which would
+        make the guard above pass while the structured data is broken.
+        """
+        import re
+
+        html = web_i18n.render("home", "en")
+        blocks = re.findall(
+            r'<script type="application/ld\+json">(.*?)</script>', html, re.S
+        )
+        self.assertTrue(blocks, "home/en lost its JSON-LD entirely")
+        for raw in blocks:
+            data = _json.loads(raw)          # raises if the schema block is malformed
+            for obj in (data if isinstance(data, list) else [data]):
+                self.assertNotIn(
+                    "nonprofitStatus", obj,
+                    "JSON-LD asserts nonprofitStatus. Cobijo has no tax-exempt status; under "
+                    "fiscal sponsorship the status belongs to the SPONSOR, not to Cobijo.",
+                )
 
 
 class TestPrintHandout(unittest.TestCase):

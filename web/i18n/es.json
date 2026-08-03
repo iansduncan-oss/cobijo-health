@@ -12,21 +12,18 @@
     "f_partners": "Para socios",
     "f_dir": "Todos los hospitales de California",
     "f_gh": "GitHub",
-    "foot1": "<b>Cobijo Health</b> — una organización sin fines de lucro de California (501(c)(3) en formación). Esta herramienta ofrece información, no asesoría legal ni médica. Gratis &amp; de código abierto. · <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>",
     "mt_note": "Esta página se tradujo con ayuda de una máquina y está siendo revisada por hablantes nativos. La versión en inglés es la que manda. ¿Ve un error? Escriba a hello@cobijohealth.org.",
-    "skip": "Saltar al contenido principal"
+    "skip": "Saltar al contenido principal",
+    "foot1": "<b>Cobijo Health</b> — un proyecto sin fines de lucro independiente. Esta herramienta ofrece información, no asesoramiento legal ni médico. Gratis y de código abierto. · <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>"
   },
   "about": {
     "title": "Sobre Cobijo Health — quiénes somos y cómo funciona",
-    "meta_desc": "Cobijo Health es una organización sin fines de lucro de California (501(c)(3) en formación) que crea una herramienta gratuita y en varios idiomas para ayudar a los pacientes a conseguir ayuda económica con sus facturas médicas. Quiénes somos, cómo funciona y de dónde vienen nuestros datos.",
     "h1": "Sobre Cobijo Health",
-    "lead": "Cobijo Health es una organización sin fines de lucro de California (501(c)(3) en formación) que crea una herramienta gratuita y en varios idiomas para ayudar a los pacientes de bajos ingresos, sin seguro e inmigrantes a conseguir la ayuda económica para sus facturas médicas a la que tienen derecho por ley.",
     "mission_h": "Por qué existimos",
     "mission_p": "La ley obliga a todos los hospitales de California — a través de la Ley de Precios Justos de los Hospitales (Hospital Fair Pricing Act) — a ofrecer atención gratuita o con descuento a los pacientes que no pueden pagar sus facturas. Los hospitales sin fines de lucro deben hacer lo mismo por ley federal (IRS §501(r)). Pero en la práctica esta ayuda está escondida: las reglas de cada hospital están en un PDF legal aparte, largo y difícil de entender, que casi nunca se traduce y nunca está reunido en un solo lugar. Las personas que sí califican terminan en cobranzas. El trabajo de Cobijo es ser la puerta de entrada a la ayuda que ya le corresponde.",
     "how_h": "Cómo funciona",
     "how_p": "Usted nos dice su hospital, sus ingresos y el tamaño de su hogar. En segundos, Cobijo le dice si podría calificar para atención gratuita o con descuento en ese hospital en particular — con el límite de ingresos —, revisa si califica para Medi-Cal y Covered California, le explica sus derechos si una factura está en cobranzas y le escribe una carta de solicitud lista para enviar. Es gratis, funciona en muchos idiomas y no guarda nada de lo que usted escribe.",
     "ai_h": "Cómo usamos la inteligencia artificial (y dónde las personas siguen a cargo)",
-    "ai_p": "Esto puede existir gracias a la inteligencia artificial. Usamos modelos de lenguaje grandes para leer los PDF de las políticas de ayuda económica de cientos de hospitales y sacar las reglas exactas de cada uno para reunirlas en una sola base de datos limpia y abierta. La inteligencia artificial hace la lectura y escribe los borradores; las personas revisan los casos difíciles que se marcan. Si usted califica para beneficios públicos se calcula con reglas abiertas de beneficios públicos (PolicyEngine), no a la adivinanza. La inteligencia artificial ayuda — nunca toma la decisión final por usted, y solo el hospital puede aprobar su ayuda.",
     "data_h": "De dónde viene nuestra información",
     "src1": "El registro oficial de políticas de ayuda económica de los hospitales de California (HCAI)",
     "src2": "La Ley de Precios Justos de los Hospitales de California (Health &amp; Safety Code §127400 y siguientes)",
@@ -34,21 +31,23 @@
     "src4": "Las reglas de elegibilidad de Medi-Cal y Covered California (a través de PolicyEngine)",
     "src_note": "Todo lo que crea Cobijo — la base de datos y las herramientas — es de código abierto y datos abiertos, para que cualquiera pueda revisar nuestro trabajo o construir sobre él.",
     "team_h": "Quiénes estamos detrás",
-    "team_p": "Cobijo Health fue fundada por <b>Ian Duncan</b>, quien construye el producto de principio a fin. Estamos formando una junta directiva fundadora e independiente — un abogado de organizaciones sin fines de lucro o de salud, un contador público/tesorero, un experto en acceso a la salud, un recaudador de fondos y una persona de la comunidad con experiencia propia — y tramitando el estatus 501(c)(3). Si le gustaría ayudar, nos encantaría saber de usted.",
     "involve_h": "Cómo participar",
     "involve_lead": "Cobijo Health está en sus inicios, es abierto y se construye a la vista de todos. Hay tres formas de ayudar, todas reales y ninguna requiere dinero.",
     "involve_board_h": "Únase a nuestra junta fundadora",
-    "involve_board_p": "Estamos formando cinco directores independientes mientras tramitamos el estatus 501(c)(3): un abogado de organizaciones sin fines de lucro o de salud, un contador público o tesorero, un experto en acceso a la salud, un recaudador de fondos y una persona de la comunidad con experiencia propia de deudas médicas. Unas pocas horas por trimestre, un impacto real. <a href=\"mailto:hello@cobijohealth.org?subject=Founding%20board\">Escríbanos</a>.",
     "involve_help_h": "Voluntariado o alianzas",
     "involve_help_p": "Necesitamos especialmente <b>hablantes nativos</b> que revisen nuestras traducciones: ofrecemos 10 idiomas, actualmente con asistencia automática. También nos encantaría saber de clínicas, grupos de asistencia legal y organizaciones comunitarias que llegan a los pacientes para quienes fue creado Cobijo. <a href=\"mailto:hello@cobijohealth.org?subject=Volunteer%20or%20partner\">Escríbanos</a>.",
     "involve_support_h": "Apoye el trabajo abierto",
-    "involve_support_p": "Todo —las herramientas y los datos— es gratuito y de código abierto. Dé una estrella o contribuya en <a href=\"https://github.com/iansduncan-oss/cobijo-health\">el proyecto en GitHub</a>: es un bien público genuino, y cada poco de visibilidad ayuda a que los pacientes lo encuentren.",
     "disc_card": "<b>Cobijo Health le da información, no asesoría legal, médica, financiera ni de impuestos.</b> Los resultados son cálculos aproximados basados en lo que usted escribe y en las políticas públicas de los hospitales — no son una decisión ni una garantía. Solo el hospital puede decidir si usted califica. Cobijo no está afiliado a ningún hospital, ni cuenta con su respaldo, ni actúa en su nombre.",
-    "contact": "hello@cobijohealth.org"
+    "contact": "hello@cobijohealth.org",
+    "lead": "Cobijo Health es un proyecto sin fines de lucro independiente que construye una herramienta gratuita y multilingüe para ayudar a pacientes de bajos ingresos, sin seguro e inmigrantes a obtener la ayuda económica que les corresponde por ley para sus facturas médicas.",
+    "meta_desc": "Cobijo Health es un proyecto sin fines de lucro independiente que construye una herramienta gratuita y multilingüe para ayudar a pacientes a obtener ayuda económica para sus facturas médicas. Quiénes somos, cómo funciona y de dónde vienen nuestros datos.",
+    "team_p": "Cobijo Health fue fundado por <b>Ian Duncan</b>, quien construye el producto de principio a fin. Estamos buscando patrocinio fiscal de una organización 501(c)(3) establecida, y formando un grupo asesor: un abogado de salud o de organizaciones sin fines de lucro, un experto en acceso a la salud, y personas con experiencia propia con deudas médicas. Si quiere ayudar, nos encantaría saber de usted.",
+    "involve_board_p": "Buscamos asesores y revisores voluntarios: un abogado de salud o de organizaciones sin fines de lucro, un experto en acceso a la salud, alguien que pueda revisar las reglas de caridad de un estado una vez al año, y personas con experiencia propia con deudas médicas. Unas pocas horas al año, impacto real. <a href=\"mailto:hello@cobijohealth.org?subject=Advising%20Cobijo\">Escríbanos</a>.",
+    "involve_support_p": "La herramienta es gratuita y de código abierto, y estamos publicando los datos estado por estado. Ponga una estrella o contribuya al <a href=\"https://github.com/iansduncan-oss/cobijo-health\">proyecto en GitHub</a> — es un bien público genuino, y cada poco de visibilidad ayuda a que los pacientes lo encuentren.",
+    "ai_p": "La IA hace un solo trabajo aquí: leer. Usamos modelos de lenguaje para leer los PDF de las políticas de ayuda económica de los hospitales y extraer las reglas de elegibilidad de cada uno en un conjunto de datos estructurado — un trabajo que de otro modo tomaría años de transcripción manual. En la mayoría de los estados las reglas vienen directamente de la ley estatal, sin ningún modelo involucrado. <b>Ninguna IA se ejecuta cuando usted usa esta herramienta.</b> Su resultado se calcula con reglas publicadas, y su elegibilidad para beneficios con reglas públicas de código abierto (PolicyEngine). Cada número leído por IA se guarda junto con el documento del que salió y su fecha de vigencia. Solo el hospital puede aprobar su ayuda."
   },
   "privacy": {
     "title": "Privacidad — Cobijo Health",
-    "meta_desc": "Cobijo Health no guarda sus respuestas. Lo que usted escribe se usa solo para calcular su resultado, en el momento, y nunca se guarda, se vende ni se comparte.",
     "h1": "Su privacidad",
     "summary": "En pocas palabras: No guardamos sus respuestas. Nunca.",
     "intro": "Cobijo Health es una herramienta gratuita que le ayuda a averiguar si podría calificar para la atención caritativa de un hospital, y crea una carta de solicitud que usted puede usar. La creamos para proteger su privacidad.",
@@ -66,13 +65,14 @@
     "analytics_h": "Analítica",
     "analytics_p": "Usamos una herramienta de analítica que respeta la privacidad (Plausible) para contar cuántas personas visitan nuestras páginas. No usa cookies ni recopila información personal. No puede ver sus respuestas del formulario.",
     "third_h": "Otros servicios",
-    "third_p": "Nuestro sitio web funciona con servicios comunes de alojamiento y seguridad (como Cloudflare). Estos ayudan a que el sitio cargue de forma segura. No reciben sus respuestas del formulario.",
     "changes_h": "Cambios",
     "changes_p": "Si cambiamos esta política, la actualizaremos en esta página y cambiaremos la fecha de abajo.",
     "contact_h": "Contacto",
     "contact_p": "¿Preguntas? Escriba a <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>.",
     "effective": "Fecha de vigencia: julio de 2026",
-    "nonprofit_note": "Cobijo Health es una organización sin fines de lucro de California (501(c)(3) en formación)."
+    "meta_desc": "Cobijo Health no guarda sus respuestas. Lo que usted ingresa se usa solo para calcular su resultado, en el momento, y nunca se almacena ni se vende. Nunca se comparte con su hospital, el gobierno ni inmigración.",
+    "nonprofit_note": "Cobijo Health es un proyecto sin fines de lucro independiente.",
+    "third_p": "Nuestro sitio web se entrega a través de servicios estándar de alojamiento y seguridad (como Cloudflare). Estos ayudan a que el sitio cargue de forma segura y no reciben sus respuestas. Un servicio sí las recibe: para verificar si usted podría calificar para Medicaid o cobertura de ACA, nuestro servidor envía un hogar anónimo — su monto de ingresos, el tamaño de su hogar y su estado, sin nombre, datos de contacto, hospital ni ninguna otra respuesta — a PolicyEngine, una organización sin fines de lucro de código abierto que calcula la elegibilidad para beneficios. La solicitud sale de nuestro servidor, así que PolicyEngine nunca ve su dispositivo ni su ubicación, y nada lo identifica a usted. Si no está disponible, hacemos el cálculo en nuestro propio servidor. Nunca vendemos, alquilamos ni intercambiamos sus respuestas con nadie."
   },
   "faq": {
     "title": "Preguntas frecuentes — Cobijo Health",
@@ -80,9 +80,7 @@
     "h1": "Preguntas frecuentes",
     "intro": "Respuestas honestas a las preguntas que la gente hace más. ¿Sigue con dudas? Escriba a hello@cobijohealth.org.",
     "q1": "¿De verdad es gratis?",
-    "a1": "Sí. Cobijo Health es completamente gratis, sin trucos. Somos una organización sin fines de lucro, no un negocio — no le cobramos, y no nos quedamos con una parte de lo que usted ahorre. No hay nada que comprar ni ninguna cuenta que crear.",
     "q2": "¿Está segura mi información? ¿Guardan lo que escribo?",
-    "a2": "No guardamos sus respuestas para nada. Lo que usted escribe se usa solo para calcular su resultado en el momento, y luego desaparece — no hay cuenta, no hay una base de datos con sus respuestas, y nunca las vendemos ni las compartimos. Nunca compartiremos lo que usted escribe con su hospital, el gobierno ni inmigración. Vea nuestra <a href=\"privacy\">página de Privacidad</a> para más detalles.",
     "q3": "¿Recibir ayuda perjudicará mi caso de inmigración (\"carga pública\")?",
     "a3": "Para la mayoría de las personas, no. Según las reglas federales actuales, usar Medi-Cal, CHIP, Covered California, atención de emergencia o el programa de ayuda económica (atención caritativa) de un hospital <b>no</b> cuenta en su contra en la prueba de inmigración de \"carga pública\" — y la atención caritativa de un hospital no es un beneficio del gobierno en absoluto. La carga pública tampoco aplica a muchas personas, incluyendo las renovaciones de la green card, quienes solicitan la ciudadanía, y los casos de refugiados, asilados, visa U, visa T y VAWA. Esta es información general, no asesoría legal, y las reglas de inmigración pueden cambiar. Para su situación específica, por favor hable con un abogado de inmigración de confianza o con una organización de ayuda legal sin fines de lucro antes de tomar una decisión.",
     "q4": "¿Puedo usar esto si soy indocumentado?",
@@ -94,15 +92,15 @@
     "q7": "¿Necesito tener seguro para usar esto?",
     "a7": "No. Cobijo está hecho especialmente para pacientes sin seguro y que pagan de su propio bolsillo, pero los pacientes con seguro que tienen facturas altas de su bolsillo también pueden calificar para ayuda. Cuéntenos su situación y le diremos qué podría aplicarle.",
     "q8": "¿Quién está detrás de Cobijo, y es una organización sin fines de lucro de verdad?",
-    "a8": "Cobijo Health fue fundada por Ian Duncan y es una organización sin fines de lucro de California que está en proceso de formarse (con el estatus 501(c)(3) en trámite). Es de código abierto y se creó en beneficio del público. Conozca más en nuestra <a href=\"about\">página Quiénes somos</a>.",
     "q9": "¿Qué idiomas habla Cobijo?",
-    "a9": "Cobijo funciona en inglés, español, chino, vietnamita, tagalo, coreano, armenio, farsi, árabe y ruso. Use el menú de idiomas en la parte de arriba de cualquier página para cambiar."
+    "a9": "Cobijo funciona en inglés, español, chino, vietnamita, tagalo, coreano, armenio, farsi, árabe y ruso. Use el menú de idiomas en la parte de arriba de cualquier página para cambiar.",
+    "a1": "Sí. Cobijo Health es completamente gratis, sin trampas. Funciona como un proyecto sin fines de lucro — nadie se beneficia económicamente, no le cobramos, y no nos quedamos con parte de lo que usted ahorre. No hay nada que comprar ni cuenta que crear.",
+    "a2": "No guardamos sus respuestas en absoluto. Lo que usted escribe se usa solo para calcular su resultado en el momento, y luego desaparece — no hay cuenta ni base de datos con sus respuestas. Nunca las vendemos, y nunca las compartimos con su hospital, el gobierno ni inmigración. Una excepción técnica, para que tenga el panorama completo: para verificar su elegibilidad para Medicaid y ACA, nuestro servidor envía un hogar anónimo — monto de ingresos, tamaño del hogar y estado, sin nada que lo identifique — a PolicyEngine, un motor de reglas sin fines de lucro y de código abierto. Vea nuestra <a href=\"privacy\">página de Privacidad</a> para más detalles.",
+    "a8": "Cobijo Health fue fundado por Ian Duncan. Es un proyecto sin fines de lucro independiente — todavía no es una entidad legal separada — y está buscando patrocinio fiscal de una organización 501(c)(3) establecida, lo que le permitiría operar como proyecto caritativo. Es de código abierto y construido en el interés público. Conozca más en nuestra <a href=\"about\">página Acerca de</a>."
   },
   "support": {
     "title": "Apoya a Cobijo Health",
-    "meta_desc": "Ayuda a los pacientes de California a obtener alivio financiero de sus facturas médicas. Cobijo Health es una organización sin fines de lucro gratuita y abierta en formación: así puedes ayudar.",
     "h1": "Apoya este trabajo",
-    "lead": "Cobijo Health es gratis para cada paciente, y siempre lo será. Somos una organización sin fines de lucro de California en formación, construida de forma abierta. Así puedes ayudarnos a llegar a más personas.",
     "give_h": "Dona",
     "give_p": "Tu apoyo cubre lo esencial: mantener la herramienta en línea, actualizar nuestros datos sobre la política de asistencia financiera de cada hospital de California y traducirla a los idiomas que nuestros pacientes realmente hablan.",
     "give_soon": "Estamos finalizando nuestro patrocinador fiscal para que las donaciones sean deducibles de impuestos y vayan directamente a la misión. Las donaciones económicas se habilitarán aquí pronto. Mientras tanto, las formas de ayudar que aparecen abajo cuentan igual, y puedes escribir a <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a> si deseas donar ahora.",
@@ -111,26 +109,28 @@
     "spread_h": "Corre la voz",
     "spread_p": "Los pacientes que más lo necesitan son los más difíciles de alcanzar. Comparte cobijohealth.org con una clínica, un trabajador social, una promotora, un grupo comunitario o cualquier persona que ayude a otros con facturas médicas.",
     "board_h": "Únete a nuestra junta fundadora",
-    "board_p": "Estamos reclutando cinco directores independientes mientras solicitamos el estatus 501(c)(3); damos especial bienvenida a experiencia en organizaciones sin fines de lucro, derecho, finanzas, acceso a la salud o confianza comunitaria. Escribe a <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>.",
     "volunteer_h": "Ofrece tu tiempo o colabora",
     "volunteer_p": "Necesitamos especialmente hablantes nativos que revisen nuestras traducciones en 10 idiomas, y socios (clínicas, grupos de asistencia legal, organizaciones comunitarias) que atiendan a pacientes con facturas médicas.",
     "oss_h": "Danos una estrella o contribuye en GitHub",
-    "oss_p": "La herramienta y los datos son gratuitos y de código abierto. Danos una estrella o contribuye al <a href=\"https://github.com/iansduncan-oss/cobijo-health\">proyecto en GitHub</a>: cada poco de visibilidad ayuda a que los pacientes lo encuentren.",
-    "contact": "Escríbenos"
+    "contact": "Escríbenos",
+    "lead": "Cobijo Health es gratis para cada paciente, y siempre lo será. Es un proyecto sin fines de lucro independiente, construido de forma abierta y buscando patrocinio fiscal. Así puede ayudarnos a llegar a más personas.",
+    "meta_desc": "Ayude a pacientes de California a obtener alivio de sus facturas médicas. Cobijo Health es un proyecto sin fines de lucro, gratuito y abierto — así puede ayudar.",
+    "oss_p": "La herramienta es gratuita y de código abierto, y estamos publicando los datos estado por estado. Ponga una estrella o contribuya al <a href=\"https://github.com/iansduncan-oss/cobijo-health\">proyecto en GitHub</a> — es un bien público genuino, y cada poco de visibilidad ayuda a que los pacientes lo encuentren.",
+    "board_p": "Buscamos asesores y revisores voluntarios — con experiencia legal, en acceso a la salud o en confianza comunitaria especialmente bienvenida, y cualquier persona dispuesta a verificar las reglas de caridad de un estado una vez al año. Escriba a <a href=\"mailto:hello@cobijohealth.org\">hello@cobijohealth.org</a>."
   },
   "partners": {
     "title": "Agregue ayuda gratuita con facturas médicas a su sitio — Cobijo Health",
     "meta_desc": "Clínicas, oficinas de asistencia legal y grupos comunitarios: integre la herramienta gratuita y multilingüe de Cobijo Health en su sitio web con una sola línea de código.",
     "h1": "Ponga ayuda gratuita con facturas médicas en su sitio",
     "lead": "Si las personas a las que sirve tienen dificultades con facturas médicas, agregue la herramienta gratuita de Cobijo Health a su sitio web. Funciona directamente en su página, en 10 idiomas, y nunca se guarda nada.",
-    "why1": "Gratis para siempre — somos una organización sin fines de lucro. Sin costo, sin cuenta, nada que vender.",
     "why2": "10 idiomas — las personas reciben ayuda en el idioma que hablan.",
     "why3": "Una línea de código — vive en su página; no hay nada que mantener.",
     "how_h": "Agréguela en un solo paso",
     "how_p": "Pegue esta línea en el HTML de su sitio donde quiera que aparezca la herramienta. Cambie data-lang para abrirla en otro idioma — por ejemplo es, zh o vi.",
     "copy_btn": "Copiar código",
     "preview_h": "Vista previa en vivo",
-    "contact": "¿Preguntas, o quiere una versión con su marca? Escríbanos a"
+    "contact": "¿Preguntas, o quiere una versión con su marca? Escríbanos a",
+    "why1": "Gratis para siempre — un proyecto sin fines de lucro. Sin costo, sin cuenta, nada que vender."
   },
   "plan": {
     "cc_free": "Es probable que usted califique para **atención GRATUITA**. {name} da atención gratuita/caritativa completa hasta el {free:.0f}% del Nivel Federal de Pobreza{upto}, y su hogar está en ~{pct:.0f}%.",
@@ -222,7 +222,6 @@
     "go": "Obtener mi plan",
     "letter_summary": "Su carta de solicitud lista para enviar (en inglés)",
     "copy": "Copiar carta",
-    "foot": "Cobijo Health · organización sin fines de lucro de California (en formación) · no es asesoría legal ni médica",
     "browse": "Vea la ayuda económica en todos los hospitales de California →",
     "err_hospital": "No pudimos encontrar ese hospital — intente seleccionarlo de la lista.",
     "err_generic": "Algo salió mal. Por favor intente de nuevo.",
@@ -265,7 +264,8 @@
     "youraddress_ph": "Calle, Ciudad, Estado, Código postal",
     "yourphone": "Su teléfono",
     "yourphone_ph": "(555) 555-5555",
-    "browse_states": "Buscar hospitales por estado →"
+    "browse_states": "Buscar hospitales por estado →",
+    "foot": "Cobijo Health · un proyecto sin fines de lucro independiente · no es asesoramiento legal ni médico"
   },
   "hospital": {
     "h_home": "Inicio",
@@ -302,12 +302,12 @@
     "h_copied": "Copiado ✓",
     "h_print": "Imprimir",
     "h_meta": "Averigüe si califica para atención hospitalaria gratuita o con descuento en {name}. Límites de ingresos, documentos requeridos, el formulario de solicitud y cómo solicitarla — gratis.",
-    "h_foot": "Cobijo Health es una herramienta gratuita sin fines de lucro (California 501(c)(3) en formación). No estamos afiliados a este hospital y esto es información general, no asesoría legal, médica ni financiera. Confirme siempre los detalles en la política oficial del hospital. Datos obtenidos de las presentaciones de la Ley de Precios Justos de Hospitales del HCAI de California.",
     "h_check_bill": "Revise su factura",
     "h_dir_title": "Directorio de ayuda económica y atención caritativa de hospitales de California | Cobijo Health",
     "h_dir_meta": "Vea los programas de ayuda económica y atención caritativa de cada hospital de California. Límites de ingresos, formularios de solicitud y cómo solicitarla, gratis — de Cobijo Health.",
     "h_dir_h1": "Directorio de ayuda económica de hospitales de California",
-    "h_dir_lead": "Todo hospital de California debe ofrecer atención gratuita o con descuento a los pacientes que no pueden pagar sus facturas. Encuentre su hospital abajo para ver sus límites de ingresos y cómo solicitarla — o revise su factura específica."
+    "h_dir_lead": "Todo hospital de California debe ofrecer atención gratuita o con descuento a los pacientes que no pueden pagar sus facturas. Encuentre su hospital abajo para ver sus límites de ingresos y cómo solicitarla — o revise su factura específica.",
+    "h_foot": "Cobijo Health es una herramienta gratuita de un proyecto sin fines de lucro independiente. No estamos afiliados a este hospital y esto es información general, no asesoramiento legal, médico ni financiero. Confirme siempre los detalles en la política oficial del hospital. Datos obtenidos de las presentaciones de Precios Justos de Hospitales de HCAI de California."
   },
   "county": {
     "c_h1": "Ayuda económica de hospitales en el condado de {county}, California",
@@ -642,7 +642,6 @@
     "s_dir_h1": "Directorio de ayuda económica de hospitales de {state}",
     "s_dir_lead": "Todo hospital de {state} debe ofrecer atención gratuita o con descuento a los pacientes que califican según {law}. Elija un hospital para ver los límites de ingresos y cómo solicitarla.",
     "s_dir_lead_discount_only": "Todo hospital de {state} debe ofrecer atención con descuento a los pacientes que reúnan los requisitos según {law}. Elija un hospital para ver los límites de ingresos y cómo solicitarla.",
-    "s_foot": "Cobijo Health es una herramienta gratuita sin fines de lucro (California 501(c)(3) en formación). No estamos afiliados a este hospital y esto es información general, no asesoría legal, médica ni financiera. Confirme siempre los detalles con el hospital y en su política oficial de asistencia financiera.",
     "s_law_p_nocap": "Según {law}, {name} debe ofrecer atención GRATUITA a los pacientes sin seguro que estén en o por debajo del {free_pct}% del Nivel Federal de Pobreza, y atención con descuento a los pacientes de hasta el {discount_pct}%.",
     "s_law_p_discount_only": "Según {law}, {name} debe ofrecer atención con descuento a los pacientes sin seguro que estén en o por debajo del {discount_pct}% del Nivel Federal de Pobreza, limitando tanto lo que le cobran como sus pagos mensuales.",
     "s_immigration": "Su estatus migratorio no puede usarse para decidir si usted califica: la ley de {state} prohíbe a los hospitales tomarlo en cuenta. La elegibilidad depende únicamente del ingreso de su familia.",
@@ -660,7 +659,8 @@
     "s_debt_protection_md": "Una vez que califica para atención gratuita o a costo reducido, la ley de {state} evita que la cuenta crezca: el hospital no puede cobrar intereses antes de un fallo judicial, no puede reportar la deuda a las agencias de crédito, ni demandarlo por una cuenta de ${debt_suit_floor_usd} o menos.",
     "s_catastrophic_cap": "La ley de {state} también limita el total de su cuenta: si el ingreso de su hogar es igual o inferior al {catastrophic_ceiling_pct}% del Nivel Federal de Pobreza, el hospital debe reducir la cuenta para que nunca deba más del {catastrophic_cap_pct}% del ingreso de su hogar.",
     "s_medical_hardship": "{state} no fija un límite de ingresos para su ayuda por Dificultad Médica: si sus gastos médicos elegibles superan aproximadamente el {medical_hardship_entry_pct}% de sus ingresos — una proporción mayor si gana más — la Red de Seguridad de Salud puede cubrir el resto. Solicítela aunque sus ingresos superen los límites indicados aquí.",
-    "s_charity_excess": "Si sus gastos médicos elegibles superan el {charity_excess_pct}% de sus ingresos anuales, {state} cubre por completo todo lo que exceda esa proporción — una vez por familia cada año, además del descuento de escala móvil."
+    "s_charity_excess": "Si sus gastos médicos elegibles superan el {charity_excess_pct}% de sus ingresos anuales, {state} cubre por completo todo lo que exceda esa proporción — una vez por familia cada año, además del descuento de escala móvil.",
+    "s_foot": "Cobijo Health es una herramienta gratuita de un proyecto sin fines de lucro independiente. No estamos afiliados a este hospital, y esto es información general — no asesoramiento legal, médico ni financiero. Confirme siempre los detalles con el hospital y en su política oficial de ayuda económica."
   },
   "states": {
     "st_title": "Encuentre ayuda económica para su factura de hospital por estado | Cobijo Health",
