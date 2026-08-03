@@ -150,6 +150,55 @@ def dollars_for(row, table, household):
     return tbl.get(str(household), tbl.get(household))
 
 
+def free_care_ceiling_is_untrustworthy(row):
+    """True when this row's served free-care ceiling is contradicted by its own source document.
+
+    ## This rule was wrong once. The history is the point.
+
+    The first version keyed on `free_care.fpl_ceiling_pct == discount_payment.fpl_ceiling_pct`,
+    reasoning that 81 of 469 live rows matched and 80 sat at exactly 400% — the AB 1020 statutory
+    maximum — so the extractor must be filling both slots with the ceiling when it could not find a
+    distinct free-care threshold.
+
+    Re-extracting all 81 from source on 2026-08-03 disproved that:
+
+        7   genuinely wrong        (BARLOW RESPIRATORY 400/400 -> 250/400 on re-read)
+        47  verifiably CORRECT     source quote grants "FULL FREE CARE" / "FULL CHARITY CARE"
+                                   at that threshold - single-tier policies, no discount band
+        25  ambiguous
+        2   no text layer
+
+    A ~9% true-positive rate. Those 47 are the *most generous* hospitals in the corpus — they write
+    off the entire bill for anyone under 400% FPL — and the rule was suppressing exactly that answer,
+    telling a patient at 150% FPL "we could not read this hospital's limits" when the policy plainly
+    said the whole bill goes away. Failing safe is only safe when the flag is right; a heuristic that
+    is wrong 91% of the time inflicts a real cost in the other direction.
+
+    The grounding gate flagged 6 of those 81 and re-extraction found 7 truly wrong. **Evidence beat
+    structure by an order of magnitude**, so the rule now asks the only question that actually
+    matters: does the number we serve appear in the document we claim to have read it from?
+
+    `grounding.verdict` is written into each row offline by `grounding.py` (no fetch at serve time):
+
+        ungrounded    the source was read and the number is NOT in it     -> suppress
+        stale_source  the document changed since extraction               -> suppress
+        unverifiable  no text layer; we could not check either way        -> SERVE
+        grounded      confirmed present near poverty-level language       -> serve
+
+    `unverifiable` deliberately still serves. It carries no evidence against the number, and
+    suppressing on absence-of-evidence is the same mistake as the equality rule — it would silently
+    withhold answers from scanned-policy hospitals for no reason beyond our own inability to check.
+    Only positive evidence of a problem withholds a number.
+
+    A row with no grounding verdict at all (dataset predates the gate) serves — the gate is an
+    added check, and its absence must not retroactively suppress the corpus.
+    """
+    g = row.get("grounding")
+    if not isinstance(g, dict):
+        return False
+    return g.get("verdict") in ("ungrounded", "stale_source")
+
+
 def match_charity_care(row, pct, household, insured, lang="en"):
     """Return (tier, plain_language) for this patient at this hospital, from its policy."""
     pol = row["policy"]
@@ -159,6 +208,15 @@ def match_charity_care(row, pct, household, insured, lang="en"):
     tiers = dp.get("tiers") or []
     disc_ceiling = dp.get("fpl_ceiling_pct")
     hmc = pol.get("high_medical_cost") or {}
+
+    # 0. Fail-safe: a number our own source document contradicts is not one we may act on. Routes to
+    #    "apply" via the existing cc_unknown copy, which already says the right thing ("we couldn't
+    #    read the exact limits; every California hospital must offer free or discounted care; apply
+    #    anyway") and is already translated and reviewed in all 10 languages — no new eligibility
+    #    copy, no translation debt. Takes the ROW, not the policy: the verdict is row-level
+    #    provenance written by grounding.py, not a property of the policy object.
+    if free_care_ceiling_is_untrustworthy(row):
+        return "unknown", t(lang, "cc_unknown", name=name, pct=pct)
 
     # 1. Free / full charity care.
     if free is not None and pct <= free:

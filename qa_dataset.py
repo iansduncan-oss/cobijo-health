@@ -164,6 +164,28 @@ def check_row(row):
             if t["fpl_high_pct"] > dc:
                 f.append(("MEDIUM", "tier_geometry", f"tier to {t['fpl_high_pct']}% exceeds stated discount ceiling {dc}%"))
 
+    # 2b. Single-tier policy — free-care ceiling equals the discount ceiling.
+    #
+    #     THIS RULE SHIPPED AT "HIGH — almost certainly not found and defaulted" AND THAT WAS WRONG.
+    #     The reasoning was that 81 of 469 live rows matched with 80 at exactly 400% (the AB 1020
+    #     statutory maximum), so the extractor must be defaulting. Re-extracting all 81 from source
+    #     on 2026-08-03 settled it: 7 genuinely wrong, **47 verifiably correct** (their own source
+    #     quote grants "FULL FREE CARE" / "FULL CHARITY CARE" at that threshold — real single-tier
+    #     policies that write off the whole bill under 400% FPL), 25 ambiguous, 2 no text layer.
+    #
+    #     So equality is NOT evidence of an extraction failure. It is mostly evidence of a generous
+    #     hospital. LOW, and worded as an observation rather than an accusation: the shape is worth
+    #     a human glance, but it is not a defect and must not be auto-queued for re-extraction.
+    #
+    #     The rule that actually catches the bad ones is the numeric grounding gate (grounding.py),
+    #     which flagged 6 of these 81 against 7 truly wrong. Evidence beat structure by ~10x; if you
+    #     are tempted to raise this severity again, run the gate instead.
+    if fc is not None and dc is not None and fc == dc:
+        shadowed = f"; {len(tiers)} discount tier(s) sit under it" if tiers else ""
+        f.append(("LOW", "single_tier",
+                  f"free-care ceiling equals discount ceiling ({fc}%){shadowed} — usually a genuine "
+                  f"single-tier policy (full write-off under the ceiling); confirm via grounding"))
+
     # 3. Dollar-table integrity — recompute from the same helper that produced them.
     if not _tables_match(dollar_table(fc), row.get("free_care_income_ceiling_by_household")):
         f.append(("HIGH", "dollar_table", "free-care dollar table does not match its FPL% — stale/misaligned"))

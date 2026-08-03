@@ -128,6 +128,88 @@ class TestMatchCharityCare(unittest.TestCase):
         self.assertIn("GRATUITA", msg)
 
 
+class TestGroundingFailSafe(unittest.TestCase):
+    """A served number is withheld only when the SOURCE DOCUMENT contradicts it.
+
+    This class replaces TestCollapsedTierFailSafe, which pinned a rule that turned out to be wrong.
+    That rule withheld free care whenever free_ceiling == discount_ceiling, on the theory that the
+    extractor was defaulting to the 400% statutory maximum. Re-extracting all 81 matching rows from
+    source on 2026-08-03: 7 genuinely wrong, **47 verifiably correct** single-tier policies whose own
+    quote grants "FULL FREE CARE" at that threshold, 25 ambiguous, 2 unreadable. The rule was hiding
+    a full write-off from patients at the most generous hospitals in the corpus.
+
+    The replacement keys on grounding.py's verdict — does the number appear in the document we claim
+    to have read it from — which flagged 6 of those 81 against 7 truly wrong.
+    """
+
+    def _row(self, verdict=None, free=200, disc=400):
+        row = make_row(free=free, disc=disc)
+        if verdict is not None:
+            row["grounding"] = {"verdict": verdict, "checked": 2}
+        return row
+
+    def test_ungrounded_row_does_not_promise_free(self):
+        """The case the gate exists for: the source does not support the number we serve."""
+        tier, msg = navigator.match_charity_care(self._row("ungrounded"), pct=100,
+                                                 household=4, insured=False)
+        self.assertEqual(tier, "unknown")
+        self.assertNotIn("FREE", msg)
+        self.assertIn("Apply anyway", msg)
+
+    def test_stale_source_is_withheld(self):
+        """The document moved under us, so the number may describe a superseded policy."""
+        tier, _ = navigator.match_charity_care(self._row("stale_source"), pct=100,
+                                               household=4, insured=False)
+        self.assertEqual(tier, "unknown")
+
+    def test_unverifiable_is_still_served(self):
+        """No text layer means no evidence EITHER WAY.
+
+        Withholding on absence-of-evidence is the same mistake the equality rule made — it would
+        silently deny answers to scanned-policy hospitals for no reason but our own blind spot.
+        """
+        tier, _ = navigator.match_charity_care(self._row("unverifiable"), pct=100,
+                                               household=4, insured=False)
+        self.assertEqual(tier, "free")
+
+    def test_grounded_row_is_served(self):
+        tier, _ = navigator.match_charity_care(self._row("grounded"), pct=100,
+                                               household=4, insured=False)
+        self.assertEqual(tier, "free")
+
+    def test_row_with_no_verdict_is_served(self):
+        """A dataset predating the gate must not be retroactively suppressed by its absence."""
+        self.assertFalse(navigator.free_care_ceiling_is_untrustworthy(self._row()))
+        tier, _ = navigator.match_charity_care(self._row(), pct=100, household=4, insured=False)
+        self.assertEqual(tier, "free")
+
+    def test_single_tier_policy_is_no_longer_suppressed(self):
+        """THE REGRESSION THIS EXISTS TO PREVENT.
+
+        free == discount == 400% is the shape of a hospital that writes off the entire bill under
+        400% FPL. 47 live rows are exactly that. Serving them is the whole point.
+        """
+        row = self._row("grounded", free=400, disc=400)
+        tier, msg = navigator.match_charity_care(row, pct=150, household=4, insured=False)
+        self.assertEqual(tier, "free", "single-tier full-write-off policy must still grant free care")
+        self.assertIn("FREE", msg)
+
+    def test_live_corpus_suppression_is_evidence_backed(self):
+        """Every row the live dataset suppresses must carry a verdict justifying it."""
+        import json
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        path = os.path.join(root, "data", "cobijo_charity_care_dataset.json")
+        if not os.path.exists(path):
+            self.skipTest("generated dataset not present")
+        with open(path, encoding="utf-8") as f:
+            rows = json.load(f)
+        for r in rows:
+            if navigator.free_care_ceiling_is_untrustworthy(r):
+                self.assertIn((r.get("grounding") or {}).get("verdict"),
+                              ("ungrounded", "stale_source"),
+                              f"{r.get('hospital')} suppressed without evidence")
+
+
 class TestScreenBenefits(unittest.TestCase):
     """Exercise the offline FPL heuristic (no network)."""
     def setUp(self):
@@ -433,10 +515,30 @@ class TestQAChecks(unittest.TestCase):
     def test_free_care_outlier_severity(self):
         # Free care above the 400% floor is unusual (MEDIUM verify), not an error; only implausibly
         # high free care (>600%) is HIGH.
-        med = qa_dataset.check_row(make_row(free=500, disc=500))
+        # NOTE: free and disc must DIFFER here. This fixture used free=500/disc=500 until 2026-08-03,
+        # when the collapsed_tiers rule landed and correctly raised HIGH on equal ceilings — which is
+        # a different defect than the one this test is about. Keep them distinct so this test measures
+        # free-care severity and nothing else.
+        med = qa_dataset.check_row(make_row(free=500, disc=600))
         self.assertFalse([f for f in med if f[0] == "HIGH"])
         self.assertTrue(any(c == "outlier" and s == "MEDIUM" for s, c, _ in med))
-        self.assertTrue(any(s == "HIGH" for s, *_ in qa_dataset.check_row(make_row(free=800, disc=800))))
+        self.assertTrue(any(s == "HIGH" for s, *_ in qa_dataset.check_row(make_row(free=800, disc=900))))
+
+    def test_single_tier_is_low_not_high(self):
+        """free == discount is usually a GENEROUS hospital, not a defect.
+
+        This assertion is inverted from what shipped on 2026-08-03. The rule flagged it HIGH with
+        "almost certainly not found and defaulted"; re-extraction of all 81 matching live rows found
+        47 verifiably correct single-tier policies against 7 genuinely wrong. Severity must stay LOW
+        so these do not get auto-queued for re-extraction — use the grounding gate to find the real
+        errors.
+        """
+        findings = qa_dataset.check_row(make_row(free=400, disc=400))
+        self.assertTrue(any(c == "single_tier" and s == "LOW" for s, c, _ in findings))
+        self.assertFalse([f for f in findings if f[1] == "single_tier" and f[0] == "HIGH"])
+        # ...and a two-tier row is left alone entirely.
+        self.assertFalse([f for f in qa_dataset.check_row(make_row(free=200, disc=400))
+                          if f[1] == "single_tier"])
 
     def test_dollar_table_mismatch(self):
         row = make_row()
