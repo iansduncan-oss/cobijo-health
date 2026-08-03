@@ -132,6 +132,7 @@ def text_is_intelligible(text):
 GROUNDED, UNGROUNDED, UNVERIFIABLE, STALE = "grounded", "ungrounded", "unverifiable", "stale_source"
 UNREADABLE = "unreadable_source"   # text layer present but decoded to mojibake — see text_is_intelligible
 OCR_ONLY = "ocr_extracted"         # garbled text layer, but the number came from a native PDF read
+TIERS_ONLY = "tier_edges_ungrounded"   # headline ceilings verify; only sliding-scale band edges don't
 
 # Below this, `pdftotext` produced nothing usable — a scanned document with no text layer. Mirrors
 # the threshold extract_llm.py uses to route a hospital to needs_ocr, so the two agree on what
@@ -220,10 +221,12 @@ def check_row(row, corpus, window=DEFAULT_WINDOW):
     if corpus is None:
         return {"verdict": UNVERIFIABLE, "checked": 0,
                 "findings": [{"label": "*", "reason": "corpus could not be rebuilt"}]}
-    if len(corpus.strip()) < MIN_USABLE_CHARS:
-        return {"verdict": UNVERIFIABLE, "checked": 0,
-                "findings": [{"label": "*", "reason": "no usable text layer (scanned document)"}]}
-    if not text_is_intelligible(corpus) and row.get("extraction_channel") == "pdf_ocr":
+    # The OCR check must come BEFORE the "no text" check. A truly scanned document has no text
+    # layer at all, so it trips MIN_USABLE_CHARS first and would be labelled `unverifiable` — which
+    # is untrue for a row we DID read, natively, from the PDF itself. Same reasoning as the garbled
+    # case: report how the number was actually obtained, not how the text channel feels about it.
+    if row.get("extraction_channel") == "pdf_ocr" and (
+            len(corpus.strip()) < MIN_USABLE_CHARS or not text_is_intelligible(corpus)):
         # The text channel cannot check this row — but the number did not come from the text
         # channel. extract_scanned.py read the PDF natively (images and all), which is the same
         # evidence class as any other extraction and is strictly better than the mojibake
@@ -234,6 +237,9 @@ def check_row(row, corpus, window=DEFAULT_WINDOW):
                 "findings": [{"label": "*",
                               "reason": "text layer unusable; value read natively from the PDF by "
                                         "OCR — not re-verifiable through the text channel"}]}
+    if len(corpus.strip()) < MIN_USABLE_CHARS:
+        return {"verdict": UNVERIFIABLE, "checked": 0,
+                "findings": [{"label": "*", "reason": "no usable text layer (scanned document)"}]}
     if not text_is_intelligible(corpus):
         # Deliberately NOT "unverifiable". Unverifiable means we could not check; this means we DID
         # read the source and it is not language, so anything extracted from it is unsupported.
@@ -264,7 +270,25 @@ def check_row(row, corpus, window=DEFAULT_WINDOW):
     if checked == 0:
         return {"verdict": UNVERIFIABLE, "checked": 0,
                 "findings": [{"label": "*", "reason": "row publishes no thresholds to ground"}]}
-    return {"verdict": GROUNDED if ok else UNGROUNDED, "checked": checked, "findings": findings}
+    if ok:
+        return {"verdict": GROUNDED, "checked": checked, "findings": findings}
+
+    # Severity matters, and flattening it repeats the mistake the verdict list exists to prevent.
+    # A free-care or discount CEILING that the source does not support is a wrong answer to the
+    # question the patient asked ("do I get free care?"). An intermediate sliding-scale BAND EDGE
+    # that doesn't verify is a wrong label on an answer that is otherwise right.
+    #
+    # Measured 2026-08-03: all 9 remaining ungrounded rows failed on band edges only, and the values
+    # are dead giveaways of interpolation rather than transcription — Cottage x4 miss on
+    # 560/570/580/590/600/610..., PIH x3 on 200/225/250/275/300/325... Policies that scale "in 10%
+    # steps" do not print every step, so the model generated them. Same class as the derived
+    # `fpl_low_pct` values excluded from grounding entirely.
+    #
+    # Suppressing those rows sent 9 hospitals' patients to "apply anyway" while their free/discount
+    # ceilings verified perfectly — withholding a correct answer over a cosmetic one.
+    headline_failed = any(not f.get("grounded") and "tiers" not in f["label"] for f in findings)
+    return {"verdict": UNGROUNDED if headline_failed else TIERS_ONLY,
+            "checked": checked, "findings": findings}
 
 
 def main(argv=None):
@@ -285,11 +309,18 @@ def main(argv=None):
     ap.add_argument("--window", type=int, default=DEFAULT_WINDOW)
     ap.add_argument("--limit", type=int, default=0, help="stop after N rows (0 = all)")
     ap.add_argument("--out", default="output/grounding_report.json")
+    ap.add_argument("--verified-on", dest="verified_on", default=None,
+                    help="ISO date to stamp as last_verified_at on grounded rows (default: today). "
+                         "Explicit so a re-run can reproduce a prior stamp.")
     ap.add_argument("--annotate", action="store_true",
                     help="write each row's verdict back into the dataset as row['grounding']. "
                          "This is what navigator.py reads to decide whether to serve a number, so "
                          "the gate is enforced at serve time with no fetch and no LLM call.")
     args = ap.parse_args(argv)
+
+    if args.verified_on is None:
+        import datetime
+        args.verified_on = datetime.date.today().isoformat()
 
     import extract_llm
 
@@ -313,6 +344,16 @@ def main(argv=None):
         if args.annotate:
             # Provenance only — never the findings blob, which is large and belongs in the report.
             row["grounding"] = {"verdict": res["verdict"], "checked": res["checked"]}
+            # last_verified_at is the DATE A MACHINE CONFIRMED THE NUMBER AGAINST ITS SOURCE — not
+            # the date we extracted it, and not the hospital's effective date. It is set ONLY on a
+            # `grounded` verdict, and CLEARED otherwise, so it can never outlive the evidence: if a
+            # document later changes or stops supporting the value, the next run removes the date
+            # rather than leaving a stale reassurance in place. The field sat null on all 469 rows
+            # until this gate existed, which was correct — nothing had verified anything.
+            if res["verdict"] == GROUNDED:
+                row["last_verified_at"] = args.verified_on
+            elif "last_verified_at" in row:
+                row["last_verified_at"] = None
         if res["verdict"] != GROUNDED:
             report.append({"hospital": row.get("hospital"), "permalink": rec.get("permalink"),
                            **res})
@@ -321,7 +362,7 @@ def main(argv=None):
 
     total = sum(tally.values())
     print(f"\ngrounding gate — {total} rows")
-    for v in (GROUNDED, UNGROUNDED, UNVERIFIABLE, OCR_ONLY, UNREADABLE, STALE):
+    for v in (GROUNDED, UNGROUNDED, TIERS_ONLY, UNVERIFIABLE, OCR_ONLY, UNREADABLE, STALE):
         if tally[v]:
             print(f"  {tally[v]:4d}  {v}  ({tally[v] / total * 100:.1f}%)")
     checkable = total - tally[UNVERIFIABLE] - tally[OCR_ONLY] - tally[UNREADABLE] - tally[STALE]
