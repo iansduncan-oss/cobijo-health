@@ -35,12 +35,15 @@ conflating them is how a review queue fills with noise:
     unverifiable       no usable text (scanned PDF / empty extract) — can't check through this channel
     unreadable_source  a text layer exists but decoded to mojibake, so the model had nothing real
                        to read; anything extracted from it is unsupported, not merely unchecked
+    ocr_extracted      same garbled text layer, BUT the number was read natively from the PDF by
+                       extract_scanned.py rather than from that text — unverifiable by this route,
+                       not contradicted
     stale_source       the corpus no longer hashes to source_sha256 — the document moved under us
 
 `ungrounded`, `unreadable_source`, and `stale_source` each carry positive evidence of a problem and
-suppress the number at serve time. `unverifiable` does NOT: absence of evidence is not evidence, and
-withholding on it would deny answers to scanned-policy hospitals over our own blind spot. That
-distinction is the whole reason the verdicts are not a boolean.
+suppress the number at serve time. `unverifiable` and `ocr_extracted` do NOT: absence of evidence is
+not evidence, and withholding on it would deny answers to scanned-policy hospitals over our own blind
+spot. That distinction is the whole reason the verdicts are not a boolean.
 
 Stdlib only, and it reads CACHED PDFs — so it runs offline, and in particular it runs from a host
 whose IP the HCAI WAF blocks (403 from the datacenter, 200 from a residential IP as of 2026-08-03).
@@ -128,6 +131,7 @@ def text_is_intelligible(text):
 
 GROUNDED, UNGROUNDED, UNVERIFIABLE, STALE = "grounded", "ungrounded", "unverifiable", "stale_source"
 UNREADABLE = "unreadable_source"   # text layer present but decoded to mojibake — see text_is_intelligible
+OCR_ONLY = "ocr_extracted"         # garbled text layer, but the number came from a native PDF read
 
 # Below this, `pdftotext` produced nothing usable — a scanned document with no text layer. Mirrors
 # the threshold extract_llm.py uses to route a hospital to needs_ocr, so the two agree on what
@@ -219,6 +223,17 @@ def check_row(row, corpus, window=DEFAULT_WINDOW):
     if len(corpus.strip()) < MIN_USABLE_CHARS:
         return {"verdict": UNVERIFIABLE, "checked": 0,
                 "findings": [{"label": "*", "reason": "no usable text layer (scanned document)"}]}
+    if not text_is_intelligible(corpus) and row.get("extraction_channel") == "pdf_ocr":
+        # The text channel cannot check this row — but the number did not come from the text
+        # channel. extract_scanned.py read the PDF natively (images and all), which is the same
+        # evidence class as any other extraction and is strictly better than the mojibake
+        # pdftotext produced. There is no contradiction here, only an inability to re-verify by
+        # this route, so it SERVES and is surfaced for review. Suppressing would repeat the
+        # absence-of-evidence mistake the equality rule made.
+        return {"verdict": OCR_ONLY, "checked": 0,
+                "findings": [{"label": "*",
+                              "reason": "text layer unusable; value read natively from the PDF by "
+                                        "OCR — not re-verifiable through the text channel"}]}
     if not text_is_intelligible(corpus):
         # Deliberately NOT "unverifiable". Unverifiable means we could not check; this means we DID
         # read the source and it is not language, so anything extracted from it is unsupported.
@@ -306,10 +321,10 @@ def main(argv=None):
 
     total = sum(tally.values())
     print(f"\ngrounding gate — {total} rows")
-    for v in (GROUNDED, UNGROUNDED, UNVERIFIABLE, UNREADABLE, STALE):
+    for v in (GROUNDED, UNGROUNDED, UNVERIFIABLE, OCR_ONLY, UNREADABLE, STALE):
         if tally[v]:
             print(f"  {tally[v]:4d}  {v}  ({tally[v] / total * 100:.1f}%)")
-    checkable = total - tally[UNVERIFIABLE] - tally[UNREADABLE] - tally[STALE]
+    checkable = total - tally[UNVERIFIABLE] - tally[OCR_ONLY] - tally[UNREADABLE] - tally[STALE]
     if checkable:
         print(f"\nauto-verification rate (of checkable rows): "
               f"{tally[GROUNDED] / checkable * 100:.1f}%")

@@ -22,14 +22,26 @@ import sys
 import time
 
 import extract_llm as ex
+import grounding
 
 
 def scanned_hospitals(data):
-    """Hospitals whose concatenated policy text is empty/near-empty (image-only scans)."""
+    """Hospitals whose policy text is unusable — image-only scans OR a garbled text layer.
+
+    The length test alone was the gap that let six hospitals ship fabricated numbers. A PDF whose
+    font carries no ToUnicode map yields tens of thousands of characters of mojibake
+    ("456578\u00ff \u00ff4565\u00ff\u00ff..."), so it sails past `< 500` and is never routed here —
+    while `pdftotext` has in fact produced nothing readable. The extractor, handed that, answered
+    with the statutory 400% for both ceilings.
+
+    So the criterion is "no USABLE text", not "no text": too short, or long enough but not language.
+    grounding.text_is_intelligible is the same check the serving gate uses, so OCR routing and
+    serve-time suppression can never disagree about which documents are readable.
+    """
     out = []
     for rec in data:
         corpus, _ = ex.build_corpus(rec)          # downloads (cached) + pdftotext
-        if len(corpus.strip()) < 500:
+        if len(corpus.strip()) < 500 or not grounding.text_is_intelligible(corpus):
             out.append(rec)
     return out
 
