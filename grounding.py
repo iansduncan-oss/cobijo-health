@@ -27,17 +27,20 @@ Measured expectation from the design sample (n=60): ~98% auto-verification.
 
 VERDICTS
 --------
-Deliberately four, not two — "I could not check this" is a different fact from "this is wrong", and
+Deliberately five, not two — "I could not check this" is a different fact from "this is wrong", and
 conflating them is how a review queue fills with noise:
 
-    grounded      the value occurs near poverty-level language in the source text
-    ungrounded    the source text was read successfully and the value is NOT in it  <- the real flag
-    unverifiable  no usable text (scanned PDF / empty extract) — unverifiable *through this channel*
-    stale_source  the corpus no longer hashes to source_sha256 — the document moved under us
+    grounded           the value occurs near poverty-level language in the source text
+    ungrounded         the source was read successfully and the value is NOT in it   <- the real flag
+    unverifiable       no usable text (scanned PDF / empty extract) — can't check through this channel
+    unreadable_source  a text layer exists but decoded to mojibake, so the model had nothing real
+                       to read; anything extracted from it is unsupported, not merely unchecked
+    stale_source       the corpus no longer hashes to source_sha256 — the document moved under us
 
-Only `ungrounded` accuses the extraction of being wrong. `unverifiable` and `stale_source` are
-routing conditions: under the tier rule, any non-`grounded` verdict degrades the row to the
-statutory floor rather than publishing a number nothing stands behind.
+`ungrounded`, `unreadable_source`, and `stale_source` each carry positive evidence of a problem and
+suppress the number at serve time. `unverifiable` does NOT: absence of evidence is not evidence, and
+withholding on it would deny answers to scanned-policy hospitals over our own blind spot. That
+distinction is the whole reason the verdicts are not a boolean.
 
 Stdlib only, and it reads CACHED PDFs — so it runs offline, and in particular it runs from a host
 whose IP the HCAI WAF blocks (403 from the datacenter, 200 from a residential IP as of 2026-08-03).
@@ -58,12 +61,73 @@ FPL_MARKER = re.compile(
 # false-positive rate down without needing a smarter parser.
 PCT = re.compile(r"(\d{1,4}(?:\.\d+)?)\s*(?:%|percent\b|per\s*cent\b)", re.I)
 
-# How far a value may sit from poverty wording and still count as grounded. Tables put the number and
-# the header in different places; 300 characters covers a table row plus its header without spanning
-# unrelated sections of the policy.
-DEFAULT_WINDOW = 300
+# How far a value may sit from poverty wording and still count as grounded.
+#
+# 600, chosen by measurement rather than intuition. The first version used 300, which was tuned for
+# "a table row plus its header" and turned out to be too tight for a real one: STANISLAUS SURGICAL
+# publishes a six-row sliding scale whose "0-100%" row sits ~360 characters below its "Federal
+# Poverty Level" column header, so a CORRECT free-care ceiling of 100% was reported ungrounded and
+# the serving gate suppressed it. Sweeping the live corpus:
+#
+#     window   grounded  ungrounded
+#        300        425          23
+#        450        427          21
+#        600        433          15     <- knee; 800 is identical, 1200 adds one
+#        800        433          15
+#       1200        434          14
+#
+# The curve flattens at 600 — past that, extra width buys almost nothing and only raises the odds of
+# crediting a number that merely happens to appear near unrelated poverty wording. Verified that
+# widening does not blunt the gate: a poisoned value still reports ungrounded at 600, and a value
+# 6,000 characters from any poverty language still does not ground.
+DEFAULT_WINDOW = 600
+
+# --- Garbled text layers ------------------------------------------------------------------------ #
+# A third failure mode, between "clean text" and "scanned image": a PDF that HAS a text layer which
+# decodes to mojibake, because the font carries no usable ToUnicode map. Real example, RIVERSIDE
+# UNIVERSITY HEALTH SYSTEM:
+#
+#     ===== CHARITY_CARE POLICY ===== 456578ÿ ÿ4565ÿÿ  ÿ !"65"ÿ##$%&#'ÿ 6",ÿ 76
+#
+# 60,442 characters of that. It sails past the `len(corpus) < 500` scanned check — there is plenty of
+# text, it just means nothing — so the row was never routed to OCR. The extractor, given garbage,
+# emitted the statutory 400% for both ceilings, and those numbers reached patients.
+#
+# Detected by stopword density rather than by encoding heuristics, because the failure is "the
+# characters do not form words," which is exactly what that measures. Measured per 1000 chars across
+# all 458 live corpora:
+#
+#     0.10 - 0.14   UCSD x3, Riverside x2      <- garbled
+#     4.52          Hazel Hawkins              <- garbled
+#     19.38         St. Agnes                  <- the next real document
+#     32.9          median
+#
+# A 4.3x gap, and the six below it are exactly the six the grounding gate independently flagged.
+# Threshold sits in the gap at 10.0.
+#
+# The word list is BILINGUAL and that is load-bearing. An English-only list scored NORTHERN INYO
+# HOSPITAL at 5.66 and would have condemned it as garbled — its policy is simply written in Spanish
+# and reads perfectly ("los pacientes y familias con bajos ingresos..."). Flagging a Spanish-language
+# policy as unreadable would suppress answers for exactly the patients this project exists to serve.
+# Add stopwords before adding a language, never the reverse.
+_STOPWORDS = re.compile(
+    r"\b(the|and|of|to|for|is|or|patient|hospital|income"
+    r"|los|las|de|para|con|el|la|que|paciente|ingresos|atenci)\w*\b", re.I)
+MIN_STOPWORD_DENSITY = 10.0          # per 1000 characters
+
+
+def text_is_intelligible(text):
+    """False when a corpus is characters-but-not-words — a text layer that decoded to mojibake.
+
+    Distinct from "no text" (scanned). Numbers extracted from an unintelligible document are not
+    weakly supported, they are unsupported: the model had nothing real to read.
+    """
+    if not text:
+        return False
+    return 1000.0 * len(_STOPWORDS.findall(text)) / max(len(text), 1) >= MIN_STOPWORD_DENSITY
 
 GROUNDED, UNGROUNDED, UNVERIFIABLE, STALE = "grounded", "ungrounded", "unverifiable", "stale_source"
+UNREADABLE = "unreadable_source"   # text layer present but decoded to mojibake — see text_is_intelligible
 
 # Below this, `pdftotext` produced nothing usable — a scanned document with no text layer. Mirrors
 # the threshold extract_llm.py uses to route a hospital to needs_ocr, so the two agree on what
@@ -155,6 +219,14 @@ def check_row(row, corpus, window=DEFAULT_WINDOW):
     if len(corpus.strip()) < MIN_USABLE_CHARS:
         return {"verdict": UNVERIFIABLE, "checked": 0,
                 "findings": [{"label": "*", "reason": "no usable text layer (scanned document)"}]}
+    if not text_is_intelligible(corpus):
+        # Deliberately NOT "unverifiable". Unverifiable means we could not check; this means we DID
+        # read the source and it is not language, so anything extracted from it is unsupported.
+        # Suppresses at serve time.
+        return {"verdict": UNREADABLE, "checked": 0,
+                "findings": [{"label": "*",
+                              "reason": "text layer decoded to mojibake — no number extracted from "
+                                        "this document can be supported; needs OCR"}]}
 
     stored = row.get("source_sha256")
     if stored and hashlib.sha256(corpus.encode()).hexdigest() != stored:
@@ -234,10 +306,10 @@ def main(argv=None):
 
     total = sum(tally.values())
     print(f"\ngrounding gate — {total} rows")
-    for v in (GROUNDED, UNGROUNDED, UNVERIFIABLE, STALE):
+    for v in (GROUNDED, UNGROUNDED, UNVERIFIABLE, UNREADABLE, STALE):
         if tally[v]:
             print(f"  {tally[v]:4d}  {v}  ({tally[v] / total * 100:.1f}%)")
-    checkable = total - tally[UNVERIFIABLE] - tally[STALE]
+    checkable = total - tally[UNVERIFIABLE] - tally[UNREADABLE] - tally[STALE]
     if checkable:
         print(f"\nauto-verification rate (of checkable rows): "
               f"{tally[GROUNDED] / checkable * 100:.1f}%")

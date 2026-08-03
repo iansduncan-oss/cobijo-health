@@ -93,5 +93,67 @@ class TestVerdicts(unittest.TestCase):
         self.assertEqual(grounding.check_row(row, FPL_DOC)["verdict"], grounding.GROUNDED)
 
 
+class TestGarbledTextLayer(unittest.TestCase):
+    """A PDF whose text layer decodes to mojibake must not be treated as a readable source.
+
+    Real failure: RIVERSIDE UNIVERSITY HEALTH SYSTEM shipped 60,442 characters of
+    "456578\u00ff \u00ff4565\u00ff\u00ff  \u00ff !\"65\"\u00ff##$%&#'" — plenty of text, none of it
+    language. It cleared the len<500 scanned check, was never routed to OCR, and the extractor
+    answered with the statutory 400% for both ceilings. Those numbers reached patients.
+    """
+
+    GARBLE = "456578\u00ff \u00ff4565\u00ff\u00ff \u00ff !\"65\"\u00ff##$%&#'\u00ff 6\",\u00ff 76 " * 60
+    ENGLISH = ("The patient is eligible for charity care if family income is at or below 200% of "
+               "the Federal Poverty Level. The hospital will discount the account. ") * 12
+    SPANISH = ("Los pacientes y las familias con bajos ingresos que no tienen seguro pueden "
+               "recibir atencion medica gratuita del hospital para sus ingresos. ") * 12
+
+    def test_mojibake_is_not_intelligible(self):
+        self.assertFalse(grounding.text_is_intelligible(self.GARBLE))
+
+    def test_english_policy_is_intelligible(self):
+        self.assertTrue(grounding.text_is_intelligible(self.ENGLISH))
+
+    def test_spanish_policy_is_intelligible(self):
+        """THE REGRESSION THIS EXISTS TO PREVENT.
+
+        An English-only stopword list scored NORTHERN INYO HOSPITAL — a perfectly legible
+        Spanish-language policy — below the garbled threshold. Condemning a Spanish policy as
+        unreadable would suppress answers for exactly the patients this project serves.
+        """
+        self.assertTrue(grounding.text_is_intelligible(self.SPANISH))
+
+    def test_garbled_corpus_gets_its_own_verdict(self):
+        """Not `unverifiable` — we DID read it, and it is not language."""
+        row = {"hospital": "Test", "source_sha256": None,
+               "policy": {"free_care": {"fpl_ceiling_pct": 400},
+                          "discount_payment": {"fpl_ceiling_pct": 400, "tiers": []}}}
+        self.assertEqual(grounding.check_row(row, self.GARBLE)["verdict"], grounding.UNREADABLE)
+
+    def test_garbled_verdict_suppresses_at_serve_time(self):
+        import navigator
+        row = {"hospital": "Test", "grounding": {"verdict": grounding.UNREADABLE, "checked": 0},
+               "policy": {"free_care": {"fpl_ceiling_pct": 400},
+                          "discount_payment": {"fpl_ceiling_pct": 400, "tiers": []}}}
+        self.assertTrue(navigator.free_care_ceiling_is_untrustworthy(row))
+
+
+class TestWindowRegression(unittest.TestCase):
+    def test_table_spanning_value_grounds(self):
+        """A six-row sliding scale puts its last row ~360 chars below the column header.
+
+        The original 300-char window reported STANISLAUS SURGICAL's CORRECT 100% free-care ceiling
+        as ungrounded and suppressed it. 600 covers the table; it must stay wide enough.
+        """
+        doc = ("Federal Poverty Level    Charity Level    Patient Responsibility\n"
+               + "".join(f"    {lo}-{hi}%        {c}%        {p}%\n"
+                         for lo, hi, c, p in [(301, 400, 50, 50), (251, 300, 60, 40),
+                                              (201, 250, 70, 30), (151, 200, 80, 20),
+                                              (101, 150, 90, 10), (0, 100, 100, 0)])
+               + "padding. " * 80)
+        self.assertTrue(grounding.ground_value(100, doc)[0],
+                        "the last row of a real sliding-scale table must ground")
+
+
 if __name__ == "__main__":
     unittest.main()

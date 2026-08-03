@@ -180,8 +180,10 @@ def free_care_ceiling_is_untrustworthy(row):
 
     `grounding.verdict` is written into each row offline by `grounding.py` (no fetch at serve time):
 
-        ungrounded    the source was read and the number is NOT in it     -> suppress
-        stale_source  the document changed since extraction               -> suppress
+        ungrounded         the source was read and the number is NOT in it   -> suppress
+        stale_source       the document changed since extraction             -> suppress
+        unreadable_source  the text layer decoded to mojibake, so the model
+                           had nothing real to read                          -> suppress
         unverifiable  no text layer; we could not check either way        -> SERVE
         grounded      confirmed present near poverty-level language       -> serve
 
@@ -196,7 +198,7 @@ def free_care_ceiling_is_untrustworthy(row):
     g = row.get("grounding")
     if not isinstance(g, dict):
         return False
-    return g.get("verdict") in ("ungrounded", "stale_source")
+    return g.get("verdict") in ("ungrounded", "stale_source", "unreadable_source")
 
 
 def match_charity_care(row, pct, household, insured, lang="en"):

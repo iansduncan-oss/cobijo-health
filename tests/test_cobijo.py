@@ -206,7 +206,7 @@ class TestGroundingFailSafe(unittest.TestCase):
         for r in rows:
             if navigator.free_care_ceiling_is_untrustworthy(r):
                 self.assertIn((r.get("grounding") or {}).get("verdict"),
-                              ("ungrounded", "stale_source"),
+                              ("ungrounded", "stale_source", "unreadable_source"),
                               f"{r.get('hospital')} suppressed without evidence")
 
 
