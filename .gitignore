@@ -11,7 +11,6 @@ data/extracted_full.json
 data/extracted_spread.json
 data/extracted_smoke.json
 data/extracted_scanned.json
-data/cobijo_charity_care_dataset.json
 data/freshness_baseline.json
 
 # Re-extraction harness intermediates (regenerable via scripts/reextract_*.py)
